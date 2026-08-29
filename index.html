@@ -1842,6 +1842,59 @@ textarea{ margin-bottom:1rem; resize:vertical; }
 
         <div class="ib-list" id="ibList"></div>
       </div>
+
+      <div id="newsPanel" class="member-db-panel" style="display:none;">
+        <div class="member-db-head">
+          <h3>ዜና አስተዳደር</h3>
+          <button type="button" id="newsPanelCloseBtn" class="so-lock-btn">ዝጋ</button>
+        </div>
+        <form id="newsForm" class="ib-form">
+          <input type="text" id="nTitle" placeholder="የዜናው ርዕስ" required>
+          <textarea id="nBody" placeholder="የዜናው ይዘት" rows="4" required></textarea>
+          <input type="date" id="nDate">
+          <button type="submit" class="btn btn-primary">➕ ዜና ጨምር</button>
+        </form>
+        <div class="ib-list" id="newsAdminList"></div>
+      </div>
+
+      <div id="libraryPanel" class="member-db-panel" style="display:none;">
+        <div class="member-db-head">
+          <h3>Library / PDF አስተዳደር</h3>
+          <button type="button" id="libraryPanelCloseBtn" class="so-lock-btn">ዝጋ</button>
+        </div>
+        <form id="libraryForm" class="ib-form">
+          <select id="libType">
+            <option value="library">Library መጽሐፍ</option>
+            <option value="eduPdf">ትምህርታዊ PDF</option>
+            <option value="eduPpt">ትምህርታዊ PPT</option>
+          </select>
+          <input type="text" id="libTitle" placeholder="ርዕስ" required>
+          <input type="text" id="libAuthor" placeholder="ደራሲ">
+          <input type="text" id="libCategory" placeholder="ምድብ">
+          <input type="number" id="libPages" placeholder="የገጽ ብዛት (ለ Library መጽሐፍ)">
+          <input type="file" id="libFile" accept="application/pdf,.ppt,.pptx" required>
+          <button type="submit" class="btn btn-primary">➕ ፋይል ጨምር</button>
+        </form>
+        <div class="ib-list" id="libraryAdminList"></div>
+      </div>
+
+      <div id="videoPanel" class="member-db-panel" style="display:none;">
+        <div class="member-db-head">
+          <h3>ቪዲዮ አስተዳደር</h3>
+          <button type="button" id="videoPanelCloseBtn" class="so-lock-btn">ዝጋ</button>
+        </div>
+        <form id="videoForm" class="ib-form">
+          <select id="vidType">
+            <option value="entVideo">የመዝናኛ ቪዲዮ</option>
+            <option value="entCulture">የባህል ቪዲዮ</option>
+          </select>
+          <input type="text" id="vidTitle" placeholder="ርዕስ" required>
+          <input type="text" id="vidCategory" placeholder="ምድብ">
+          <input type="text" id="vidUrl" placeholder="YouTube URL (ለምሳሌ https://www.youtube.com/watch?v=...)" required>
+          <button type="submit" class="btn btn-primary">➕ ቪዲዮ ጨምር</button>
+        </form>
+        <div class="ib-list" id="videoAdminList"></div>
+      </div>
     </div>
   </div>
 </section>
@@ -2067,7 +2120,7 @@ function escapeHtml(str) {
 function videoEmbedHtml(src, title){
   if (!src) return `<p class="loading-text">የቪዲዮ አድራሻ አልተገኘም።</p>`;
   let embedSrc = src;
-  const ytMatch = src.match(/(?:youtube\.com\/embed\/|youtu\.be\/)([\w-]+)/);
+  const ytMatch = src.match(/(?:youtube\.com\/embed\/|youtu\.be\/|youtube\.com\/watch\?v=|youtube\.com\/.*[?&]v=)([\w-]+)/);
   if (ytMatch) {
     embedSrc = `https://www.youtube-nocookie.com/embed/${ytMatch[1]}`;
   }
@@ -2568,6 +2621,9 @@ renderEntCulture();
   const officeCards = [
     {id:"members", icon:"🗄️", title:"የአባላት ዳታቤዝ", desc:"የተሟላ የአባላት ዝርዝር፣ አድራሻና የአባልነት ሁኔታ መዝገብ። (ለመክፈት ይንኩ)"},
     {id:"infoboard", icon:"📌", title:"የውስጥ መረጃ መለጠፊያ ቦርድ", desc:"የውስጥ ማስታወቂያዎችና ሰነዶች በጽሑፍ ወይም በPDF የሚለጠፉበት ቦርድ። (ለመክፈት ይንኩ)"},
+    {id:"newsmgmt", icon:"📰", title:"ዜና አስተዳደር", desc:"አዲስ ዜና መጨመር ወይም ነባር ዜና ማጥፋት። (ለመክፈት ይንኩ)"},
+    {id:"librarymgmt", icon:"📚", title:"Library / PDF አስተዳደር", desc:"አዲስ መጽሐፍ ወይም PDF ሰነድ መጨመር ወይም ማጥፋት። (ለመክፈት ይንኩ)"},
+    {id:"videomgmt", icon:"🎬", title:"ቪዲዮ አስተዳደር", desc:"አዲስ የመዝናኛ/ባህል ቪዲዮ (YouTube) መጨመር ወይም ማጥፋት። (ለመክፈት ይንኩ)"},
     {icon:"💰", title:"የገንዘብ ሪፖርት", desc:"ወርሃዊና ዓመታዊ የገቢ/ወጪ ሪፖርቶች።"},
     {icon:"📋", title:"የስብሰባ ቃለ ጉባኤዎች", desc:"የሥራ አስፈጻሚ ኮሚቴ ስብሰባ ቃለ ጉባኤዎች ማህደር።"},
     {icon:"📁", title:"ውስጣዊ ሰነዶች", desc:"ደብዳቤዎች፣ ኮንትራቶችና ሌሎች ኦፊሴላዊ ሰነዶች።"},
@@ -2589,6 +2645,18 @@ renderEntCulture();
     const infoCard = cardsGrid.querySelector('[data-card-id="infoboard"]');
     if (infoCard && window.initInfoBoard) {
       infoCard.addEventListener("click", () => window.toggleInfoBoard());
+    }
+    const newsCard = cardsGrid.querySelector('[data-card-id="newsmgmt"]');
+    if (newsCard && window.toggleNewsPanel) {
+      newsCard.addEventListener("click", () => window.toggleNewsPanel());
+    }
+    const libCard = cardsGrid.querySelector('[data-card-id="librarymgmt"]');
+    if (libCard && window.toggleLibraryPanel) {
+      libCard.addEventListener("click", () => window.toggleLibraryPanel());
+    }
+    const vidCard = cardsGrid.querySelector('[data-card-id="videomgmt"]');
+    if (vidCard && window.toggleVideoPanel) {
+      vidCard.addEventListener("click", () => window.toggleVideoPanel());
     }
   }
 
@@ -2860,6 +2928,179 @@ renderEntCulture();
       render();
       panel.scrollIntoView({behavior:"smooth", block:"start"});
     }
+  };
+})();
+
+// ---------------- Admin: News management ----------------
+(function newsAdminController(){
+  const panel = document.getElementById("newsPanel");
+  if (!panel) return;
+  const form = document.getElementById("newsForm");
+  const list = document.getElementById("newsAdminList");
+  const closeBtn = document.getElementById("newsPanelCloseBtn");
+
+  async function render(){
+    let items = [];
+    try { items = await apiGet("/api/news"); } catch(e){ list.innerHTML = "<p class='loading-text'>መጫን አልተቻለም።</p>"; return; }
+    items.sort((a,b) => new Date(b.date) - new Date(a.date));
+    list.innerHTML = items.map(n => `
+      <div class="ib-post">
+        <div class="ib-post-head"><h4>${escapeHtml(n.title)}</h4></div>
+        <p>${escapeHtml(n.body || "")}</p>
+        <div class="ib-post-footer">
+          <span class="ib-post-date">${formatDate(n.date)}</span>
+          <button type="button" class="member-db-del news-del" data-id="${n.id}">አጥፋ</button>
+        </div>
+      </div>`).join("") || "<p class='loading-text'>ገና ምንም ዜና አልተጨመረም።</p>";
+    list.querySelectorAll(".news-del").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        try { await apiSend("/api/news/" + btn.dataset.id, "DELETE"); render(); }
+        catch(e){ alert("ማጥፋት አልተቻለም፦ " + e.message); }
+      });
+    });
+  }
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const title = document.getElementById("nTitle").value.trim();
+    const body = document.getElementById("nBody").value.trim();
+    const date = document.getElementById("nDate").value;
+    if (!title || !body) return;
+    try {
+      await apiSend("/api/news", "POST", { title, body, date: date || undefined });
+      form.reset();
+      render();
+      if (typeof loadFromAPI === "function") loadFromAPI();
+    } catch(err){ alert("ዜና መጨመር አልተቻለም፦ " + err.message); }
+  });
+
+  closeBtn.addEventListener("click", () => { panel.style.display = "none"; });
+  window.toggleNewsPanel = function(){
+    const isOpen = panel.style.display !== "none";
+    panel.style.display = isOpen ? "none" : "block";
+    if (!isOpen){ render(); panel.scrollIntoView({behavior:"smooth", block:"start"}); }
+  };
+})();
+
+// ---------------- Admin: Library / PDF management ----------------
+(function libraryAdminController(){
+  const panel = document.getElementById("libraryPanel");
+  if (!panel) return;
+  const form = document.getElementById("libraryForm");
+  const list = document.getElementById("libraryAdminList");
+  const closeBtn = document.getElementById("libraryPanelCloseBtn");
+
+  async function render(){
+    let items = [];
+    try {
+      const [a,b,c] = await Promise.all([apiGet("/api/content?type=library"), apiGet("/api/content?type=eduPdf"), apiGet("/api/content?type=eduPpt")]);
+      items = [...a, ...b, ...c];
+    } catch(e){ list.innerHTML = "<p class='loading-text'>መጫን አልተቻለም።</p>"; return; }
+    items.sort((x,y) => new Date(y.date) - new Date(x.date));
+    list.innerHTML = items.map(it => `
+      <div class="ib-post">
+        <div class="ib-post-head"><h4>${escapeHtml(it.title)}</h4><span class="ib-post-badge pdf">${it.type}</span></div>
+        <p>${escapeHtml(it.author || "")} ${it.category ? "· " + escapeHtml(it.category) : ""}</p>
+        <div class="ib-post-footer">
+          <span class="ib-post-date">${formatDate(it.date)}</span>
+          ${it.file_url ? `<a href="${it.file_url}" download target="_blank" rel="noopener" class="ib-post-pdf-link">አውርድ</a>` : ""}
+          <button type="button" class="member-db-del lib-del" data-id="${it.id}">አጥፋ</button>
+        </div>
+      </div>`).join("") || "<p class='loading-text'>ገና ምንም ፋይል አልተጨመረም።</p>";
+    list.querySelectorAll(".lib-del").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        try { await apiSend("/api/content/" + btn.dataset.id, "DELETE"); render(); }
+        catch(e){ alert("ማጥፋት አልተቻለም፦ " + e.message); }
+      });
+    });
+  }
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const type = document.getElementById("libType").value;
+    const title = document.getElementById("libTitle").value.trim();
+    const author = document.getElementById("libAuthor").value.trim();
+    const category = document.getElementById("libCategory").value.trim();
+    const pages = document.getElementById("libPages").value;
+    const file = document.getElementById("libFile").files[0];
+    if (!title || !file) return;
+
+    const fd = new FormData();
+    fd.append("type", type);
+    fd.append("title", title);
+    fd.append("author", author);
+    fd.append("category", category);
+    if (pages) fd.append("pages", pages);
+    fd.append("file", file);
+
+    try {
+      await apiSend("/api/content", "POST", fd, true);
+      form.reset();
+      render();
+      if (typeof loadFromAPI === "function") loadFromAPI();
+    } catch(err){ alert("መጨመር አልተቻለም፦ " + err.message); }
+  });
+
+  closeBtn.addEventListener("click", () => { panel.style.display = "none"; });
+  window.toggleLibraryPanel = function(){
+    const isOpen = panel.style.display !== "none";
+    panel.style.display = isOpen ? "none" : "block";
+    if (!isOpen){ render(); panel.scrollIntoView({behavior:"smooth", block:"start"}); }
+  };
+})();
+
+// ---------------- Admin: Video management ----------------
+(function videoAdminController(){
+  const panel = document.getElementById("videoPanel");
+  if (!panel) return;
+  const form = document.getElementById("videoForm");
+  const list = document.getElementById("videoAdminList");
+  const closeBtn = document.getElementById("videoPanelCloseBtn");
+
+  async function render(){
+    let items = [];
+    try {
+      const [a,b] = await Promise.all([apiGet("/api/content?type=entVideo"), apiGet("/api/content?type=entCulture")]);
+      items = [...a, ...b];
+    } catch(e){ list.innerHTML = "<p class='loading-text'>መጫን አልተቻለም።</p>"; return; }
+    items.sort((x,y) => new Date(y.date) - new Date(x.date));
+    list.innerHTML = items.map(it => `
+      <div class="ib-post">
+        <div class="ib-post-head"><h4>${escapeHtml(it.title)}</h4><span class="ib-post-badge pdf">${it.type}</span></div>
+        <p>${escapeHtml(it.category || "")}</p>
+        <div class="ib-post-footer">
+          <span class="ib-post-date">${formatDate(it.date)}</span>
+          <button type="button" class="member-db-del vid-del" data-id="${it.id}">አጥፋ</button>
+        </div>
+      </div>`).join("") || "<p class='loading-text'>ገና ምንም ቪዲዮ አልተጨመረም።</p>";
+    list.querySelectorAll(".vid-del").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        try { await apiSend("/api/content/" + btn.dataset.id, "DELETE"); render(); }
+        catch(e){ alert("ማጥፋት አልተቻለም፦ " + e.message); }
+      });
+    });
+  }
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const type = document.getElementById("vidType").value;
+    const title = document.getElementById("vidTitle").value.trim();
+    const category = document.getElementById("vidCategory").value.trim();
+    const url = document.getElementById("vidUrl").value.trim();
+    if (!title || !url) return;
+    try {
+      await apiSend("/api/content", "POST", { type, title, category, body: url, file_url: url });
+      form.reset();
+      render();
+      if (typeof loadFromAPI === "function") loadFromAPI();
+    } catch(err){ alert("ቪዲዮ መጨመር አልተቻለም፦ " + err.message); }
+  });
+
+  closeBtn.addEventListener("click", () => { panel.style.display = "none"; });
+  window.toggleVideoPanel = function(){
+    const isOpen = panel.style.display !== "none";
+    panel.style.display = isOpen ? "none" : "block";
+    if (!isOpen){ render(); panel.scrollIntoView({behavior:"smooth", block:"start"}); }
   };
 })();
 
