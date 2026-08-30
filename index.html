@@ -910,6 +910,34 @@ p{ margin:0 0 1em; }
    Gallery
 =========================================================== */
 .gallery-grid{ display:grid; grid-template-columns: repeat(auto-fit, minmax(230px,1fr)); gap:1.2rem; margin-top:1rem; }
+
+/* YouTube Channel platform */
+.section-yt-channel{ background: linear-gradient(180deg, #1a1a1a 0%, #0d0d0d 100%); color:#fff; }
+.section-yt-channel .eyebrow{ color:#FF6B6B; }
+.section-yt-channel h2{ color:#fff; }
+.section-yt-channel .section-lead{ color:#cfcfcf; }
+.yt-channel-head{ display:flex; align-items:center; gap:.9rem; margin-bottom:.3rem; }
+.yt-channel-icon{
+  width:56px; height:56px; border-radius:50%; background:#fff;
+  display:flex; align-items:center; justify-content:center; flex:0 0 auto;
+  box-shadow: 0 4px 14px rgba(0,0,0,.4);
+}
+.yt-featured{ margin-top:1.4rem; }
+.yt-featured-embed{
+  position:relative; width:100%; max-width:820px; margin:0 auto;
+  aspect-ratio: 16/9; border-radius:14px; overflow:hidden;
+  box-shadow: 0 12px 34px rgba(0,0,0,.5); border:1px solid rgba(255,255,255,.08);
+}
+.yt-featured-embed iframe{ width:100%; height:100%; border:0; display:block; }
+.section-yt-channel .gallery-item{ background:#161616; border:1px solid rgba(255,255,255,.08); border-radius:10px; overflow:hidden; }
+.section-yt-channel .gallery-caption{ color:#e6e6e6; }
+.yt-channel-link{
+  display:inline-flex; align-items:center; gap:.5rem; margin-top:1.2rem;
+  background:#FF0000; color:#fff; font-weight:700; padding:.6rem 1.3rem;
+  border-radius:30px; text-decoration:none; font-size:.9rem;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.yt-channel-link:hover{ transform: translateY(-2px); box-shadow:0 8px 18px rgba(255,0,0,.35); }
 .gallery-item{
   position:relative; border-radius:var(--radius); overflow:hidden; box-shadow:0 5px 16px rgba(43,36,26,.1); background:#000;
   transition: box-shadow .25s ease;
@@ -1207,6 +1235,7 @@ textarea{ margin-bottom:1rem; resize:vertical; }
       <a href="#about">ስለ እኛ</a>
       <a href="#news">ዜና</a>
       <a href="#news">ሕዝብ ግንኙነት</a>
+      <a href="#youtube-channel">YouTube ቻናል</a>
       <a href="#facebook-wall">ፌስቡክ ግድግዳ</a>
       <div class="nav-dropdown">
         <a href="#training" class="nav-dropdown-toggle">ትምህርትና ስልጠና <span class="caret">▾</span></a>
@@ -1615,6 +1644,41 @@ textarea{ margin-bottom:1rem; resize:vertical; }
   </div>
 </section>
 
+<!-- ===== Official YouTube Channel Platform ===== -->
+<section id="youtube-channel" class="section section-yt-channel">
+  <div class="section-inner">
+    <div class="yt-channel-head">
+      <div class="yt-channel-icon">
+        <svg viewBox="0 0 24 24" width="34" height="34" fill="#FF0000"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31.6 31.6 0 0 0 0 12a31.6 31.6 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31.6 31.6 0 0 0 24 12a31.6 31.6 0 0 0-.5-5.8ZM9.6 15.5V8.5L15.8 12Z"/></svg>
+      </div>
+      <div>
+        <span class="eyebrow">ኦፊሴላዊ ቻናል</span>
+        <h2>ሽዋ ጠቅላይ ግዛት አሳምነው ዕዝ — YouTube ቻናል</h2>
+      </div>
+    </div>
+    <p class="section-lead">ወቅታዊ ዜናዎቻችንንና የመዝናኛ ይዘቶቻችንን በቀጥታ ከኦፊሴላዊ የYouTube ቻናላችን የምንከትልበት መድረክ።</p>
+
+    <div class="yt-featured">
+      <div class="yt-featured-embed">
+        <iframe src="https://www.youtube-nocookie.com/embed/kG-WgRKbZ6g"
+          title="ሽዋ ጠቅላይ ግዛት አሳምነው ዕዝ - ተለይቶ የቀረበ ቪዲዮ"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen loading="lazy"></iframe>
+      </div>
+    </div>
+
+    <div class="gallery-grid" id="channelVideoGrid">
+      <p class="loading-text">ቪዲዮዎች እየተጫኑ ነው...</p>
+    </div>
+
+    <a href="https://www.youtube.com/@%E1%88%B8%E1%8B%8B%E1%8C%A0%E1%89%85%E1%88%8B%E1%8B%AD%E1%8C%8D%E1%8B%9B%E1%89%B5" target="_blank" rel="noopener" class="yt-channel-link">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31.6 31.6 0 0 0 0 12a31.6 31.6 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31.6 31.6 0 0 0 24 12a31.6 31.6 0 0 0-.5-5.8ZM9.6 15.5V8.5L15.8 12Z"/></svg>
+      ቻናሉን ይጎብኙ / Subscribe
+    </a>
+  </div>
+</section>
+
 <!-- ===== Entertainment: Video Platform ===== -->
 <section id="ent-video" class="section section-ent-video alt-bg">
   <div class="section-inner">
@@ -1889,6 +1953,7 @@ textarea{ margin-bottom:1rem; resize:vertical; }
           <select id="vidType">
             <option value="entVideo">የመዝናኛ ቪዲዮ</option>
             <option value="entCulture">የባህል ቪዲዮ</option>
+            <option value="channelVideo">YouTube ቻናል ቪዲዮ</option>
           </select>
           <input type="text" id="vidTitle" placeholder="ርዕስ" required>
           <input type="text" id="vidCategory" placeholder="ምድብ">
@@ -2605,6 +2670,20 @@ function renderEntCulture(){
 }
 renderEntCulture();
 
+// ---------------- Official YouTube Channel Platform ----------------
+function renderChannelVideos(){
+  const grid = document.getElementById("channelVideoGrid");
+  if(!grid) return;
+  const items = [...(DATA.channelVideo || [])].sort((a,b) => new Date(b.date) - new Date(a.date));
+  if(!items.length){ grid.innerHTML = "<p class='loading-text'>ገና ተጨማሪ ቪዲዮ አልተጨመረም።</p>"; return; }
+  grid.innerHTML = items.map(g => `
+    <div class="gallery-item">
+      ${videoEmbedHtml(g.src, g.title)}
+      <div class="gallery-caption">${g.title} · ${formatDate(g.date)}</div>
+    </div>`).join("");
+}
+renderChannelVideos();
+
 // ---------------- Special Office (real admin login) ----------------
 // This now authenticates against the backend (/api/auth/login) and stores
 // a JWT in sessionStorage. The token is sent as "Authorization: Bearer <token>"
@@ -3062,8 +3141,8 @@ renderEntCulture();
   async function render(){
     let items = [];
     try {
-      const [a,b] = await Promise.all([apiGet("/api/content?type=entVideo"), apiGet("/api/content?type=entCulture")]);
-      items = [...a, ...b];
+      const [a,b,c] = await Promise.all([apiGet("/api/content?type=entVideo"), apiGet("/api/content?type=entCulture"), apiGet("/api/content?type=channelVideo")]);
+      items = [...a, ...b, ...c];
     } catch(e){ list.innerHTML = "<p class='loading-text'>መጫን አልተቻለም።</p>"; return; }
     items.sort((x,y) => new Date(y.date) - new Date(x.date));
     list.innerHTML = items.map(it => `
@@ -3201,82 +3280,3 @@ commentForm.addEventListener("submit", async (e) => {
 // ==================================================================
 const PLACEHOLDER_IMAGE = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MDAgMjYwIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjI2MCIgZmlsbD0iI0VGRTNDNCIvPjwvc3ZnPg==";
 const PLACEHOLDER_PHOTO = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI0VGRTNDNCIvPjxjaXJjbGUgY3g9IjEwMCIgY3k9Ijc4IiByPSI0MiIgZmlsbD0iI0I3QTI3MiIvPjxwYXRoIGQ9Ik0zMCAxOTAgUTEwMCAxMjAgMTcwIDE5MCBaIiBmaWxsPSIjQjdBMjcyIi8+PC9zdmc+";
-
-async function loadFromAPI(){
-  try {
-    const [training, urgent, news, announcements, members] = await Promise.all([
-      apiGet("/api/training"),
-      apiGet("/api/urgent"),
-      apiGet("/api/news"),
-      apiGet("/api/announcements"),
-      apiGet("/api/members"),
-    ]);
-
-    if (training.length) { DATA.training = training; renderTraining(); }
-    if (urgent.length) {
-      DATA.urgent = urgent.map(u => ({ ...u, message: u.body }));
-      renderUrgent();
-    }
-    if (news.length) {
-      DATA.news = news.map(n => ({ ...n, summary: n.body, image: n.image || PLACEHOLDER_IMAGE }));
-      renderNews();
-    }
-    if (announcements.length) { DATA.announcements = announcements; renderAnnouncements(); }
-    if (members.length) {
-      DATA.members = members.map(m => ({ ...m, photo: m.photo_url || PLACEHOLDER_PHOTO }));
-      renderMembers();
-    }
-
-    // Generic content sections (library, education, entertainment, topic boards)
-    // all live in the same /api/content table, distinguished by ?type=.
-    const contentMap = [
-      ["library",  d => ({ DATA_KEY: "library",  items: d.map(x => ({ ...x, file: x.file_url, cover: x.cover_url || PLACEHOLDER_IMAGE })), render: renderLibrary }) ],
-      ["eduText",  d => ({ DATA_KEY: "eduText",  items: d.map(x => ({ ...x, excerpt: x.body })), render: renderEduText }) ],
-      ["eduPdf",   d => ({ DATA_KEY: "eduPdf",   items: d.map(x => ({ ...x, file: x.file_url, cover: x.cover_url || PLACEHOLDER_IMAGE })), render: renderEduPdf }) ],
-      ["eduPpt",   d => ({ DATA_KEY: "eduPpt",   items: d.map(x => ({ ...x, file: x.file_url, cover: x.cover_url || PLACEHOLDER_IMAGE })), render: renderEduPpt }) ],
-      ["entVideo", d => ({ DATA_KEY: "entVideo", items: d.map(x => ({ ...x, src: x.file_url })), render: renderEntVideo }) ],
-      ["entAudio", d => ({ DATA_KEY: "entAudio", items: d.map(x => ({ ...x, artist: x.author, src: x.file_url })), render: renderEntAudio }) ],
-      ["entLit",   d => ({ DATA_KEY: "entLit",   items: d.map(x => ({ ...x, excerpt: x.body })), render: renderEntLit }) ],
-      ["entCulture", d => ({ DATA_KEY: "entCulture", items: d.map(x => ({ ...x, src: x.file_url, type: x.file_url && x.file_url.includes("youtube") ? "video" : "photo" })), render: renderEntCulture }) ],
-    ];
-    await Promise.all(contentMap.map(async ([type, mapFn]) => {
-      try {
-        const raw = await apiGet("/api/content?type=" + type);
-        if (raw.length) {
-          const { DATA_KEY, items, render } = mapFn(raw);
-          DATA[DATA_KEY] = items;
-          render();
-        }
-      } catch(e) { /* keep placeholder content for this section */ }
-    }));
-
-    // Topic boards: article + info items, keyed by topic_key.
-    const topics = ["history", "military", "political", "leadership-science", "infotech"];
-    try {
-      const [articlesAll, infoAll] = await Promise.all([
-        apiGet("/api/content?type=topicBoardArticle"),
-        apiGet("/api/content?type=topicBoardInfo"),
-      ]);
-      let any = false;
-      topics.forEach(key => {
-        const articles = articlesAll.filter(a => a.topic_key === key).map(a => ({ ...a, excerpt: a.body }));
-        const info = infoAll.filter(a => a.topic_key === key).map(a => ({ ...a, message: a.body }));
-        if (articles.length || info.length) {
-          any = true;
-          DATA.topicBoards = DATA.topicBoards || {};
-          DATA.topicBoards[key] = { articles, info };
-        }
-      });
-      if (any) renderTopicBoards();
-    } catch(e) { /* keep placeholder content */ }
-  } catch (e) {
-    // API not reachable (e.g. not deployed yet, or API_BASE not set) —
-    // the page keeps showing the built-in placeholder content silently.
-    console.warn("Could not load live data from API, showing placeholder content:", e.message);
-  }
-}
-loadFromAPI();
-
-</script>
-</body>
-</html>
