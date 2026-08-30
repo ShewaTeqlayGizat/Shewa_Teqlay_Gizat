@@ -1653,14 +1653,13 @@ textarea{ margin-bottom:1rem; resize:vertical; }
       </div>
       <div>
         <span class="eyebrow">ኦፊሴላዊ ቻናል</span>
-        <h2>ሽዋ ጠቅላይ ግዛት አሳምነው ዕዝ — YouTube ቻናል</h2>
+        <h2>ሽዋ ጠቅላይ ግዛት — YouTube ቻናል</h2>
       </div>
     </div>
-    <p class="section-lead">ወቅታዊ ዜናዎቻችንንና የመዝናኛ ይዘቶቻችንን በቀጥታ ከኦፊሴላዊ የYouTube ቻናላችን የምንከትልበት መድረክ።</p>
 
     <div class="yt-featured">
       <div class="yt-featured-embed">
-        <iframe src="https://www.youtube-nocookie.com/embed/kG-WgRKbZ6g"
+        <iframe src="https://www.youtube-nocookie.com/embed/kG-WgRKbZ6g?origin=https://shewateqlaygizat.github.io"
           title="ሽዋ ጠቅላይ ግዛት አሳምነው ዕዝ - ተለይቶ የቀረበ ቪዲዮ"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
           referrerpolicy="strict-origin-when-cross-origin"
@@ -2189,7 +2188,7 @@ function videoEmbedHtml(src, title){
   let embedSrc = src;
   const ytMatch = src.match(/(?:youtube\.com\/embed\/|youtu\.be\/|youtube\.com\/watch\?v=|youtube\.com\/.*[?&]v=)([\w-]+)/);
   if (ytMatch) {
-    embedSrc = `https://www.youtube-nocookie.com/embed/${ytMatch[1]}`;
+    embedSrc = `https://www.youtube-nocookie.com/embed/${ytMatch[1]}?origin=${encodeURIComponent(window.location.origin)}`;
   }
   return `<iframe src="${embedSrc}" title="${escapeHtml(title || '')}"
     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
