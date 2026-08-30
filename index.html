@@ -471,7 +471,7 @@ p{ margin:0 0 1em; }
   box-shadow: 0 10px 28px rgba(43,36,26,.12); border:1px solid rgba(43,36,26,.06);
 }
 .news-featured-media{ position:relative; overflow:hidden; }
-.news-featured-media img{ width:100%; height:340px; object-fit:cover; display:block; transition: transform .6s ease; }
+.news-featured-media img{ width:100%; height:340px; object-fit:contain; background:#1a1a1a; display:block; transition: transform .6s ease; }
 .news-featured:hover .news-featured-media img{ transform: scale(1.045); }
 .news-badge{
   position:absolute; top:14px; left:14px; z-index:2;
@@ -565,7 +565,7 @@ p{ margin:0 0 1em; }
   position:relative; aspect-ratio: 3/4; overflow:hidden;
   box-shadow: inset -14px 0 20px -14px rgba(0,0,0,.5);
 }
-.library-cover img{ width:100%; height:100%; object-fit:cover; display:block; transition: transform .4s ease; }
+.library-cover img{ width:100%; height:100%; object-fit:contain; background:#1a1a1a; display:block; transition: transform .4s ease; }
 .library-card:hover .library-cover img{ transform: scale(1.04); }
 .library-body{ padding:1.1rem 1.2rem 1.3rem; display:flex; flex-direction:column; gap:.4rem; flex:1; }
 .library-cat{
@@ -876,7 +876,7 @@ p{ margin:0 0 1em; }
 }
 .news-card:hover{ transform: translateY(-6px); box-shadow: 0 20px 38px rgba(43,36,26,.18); }
 .news-card .news-img-wrap{ position:relative; overflow:hidden; }
-.news-card img{ width:100%; height:150px; object-fit:cover; display:block; transition: transform .5s ease; }
+.news-card img{ width:100%; height:150px; object-fit:contain; background:#1a1a1a; display:block; transition: transform .5s ease; }
 .news-card:hover img{ transform: scale(1.06); }
 .news-card-body{ position:relative; padding:1.2rem 1.3rem 1.5rem; }
 .news-date{ font-family: var(--font-utility); font-size:.72rem; color: var(--bronze); letter-spacing:.08em; text-transform:uppercase; }
@@ -3230,7 +3230,7 @@ async function loadFromAPI(){
     // Generic content sections (library, education, entertainment, topic boards)
     // all live in the same /api/content table, distinguished by ?type=.
     const contentMap = [
-      ["library",  d => ({ DATA_KEY: "library",  items: d, render: renderLibrary }) ],
+      ["library",  d => ({ DATA_KEY: "library",  items: d.map(x => ({ ...x, file: x.file_url, cover: x.cover_url || PLACEHOLDER_IMAGE })), render: renderLibrary }) ],
       ["eduText",  d => ({ DATA_KEY: "eduText",  items: d.map(x => ({ ...x, excerpt: x.body })), render: renderEduText }) ],
       ["eduPdf",   d => ({ DATA_KEY: "eduPdf",   items: d.map(x => ({ ...x, file: x.file_url, cover: x.cover_url || PLACEHOLDER_IMAGE })), render: renderEduPdf }) ],
       ["eduPpt",   d => ({ DATA_KEY: "eduPpt",   items: d.map(x => ({ ...x, file: x.file_url, cover: x.cover_url || PLACEHOLDER_IMAGE })), render: renderEduPpt }) ],
