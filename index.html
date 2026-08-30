@@ -911,6 +911,57 @@ p{ margin:0 0 1em; }
 =========================================================== */
 .gallery-grid{ display:grid; grid-template-columns: repeat(auto-fit, minmax(230px,1fr)); gap:1.2rem; margin-top:1rem; }
 
+/* News Studio Platform (BBC-style) */
+.section-news-studio{ background:#0d0d0d; color:#fff; }
+.section-news-studio .eyebrow{ color:#E31E24; }
+.section-news-studio h2{ color:#fff; }
+.section-news-studio .section-lead{ color:#c9c9c9; }
+.ns-tabs{ display:flex; flex-wrap:wrap; gap:.6rem; margin:1.4rem 0 1.2rem; }
+.ns-tab{
+  background:#1c1c1c; color:#ddd; border:1px solid rgba(255,255,255,.12);
+  padding:.55rem 1.1rem; border-radius:24px; font-size:.85rem; font-weight:600;
+  cursor:pointer; transition: all .2s ease;
+}
+.ns-tab:hover{ background:#2a2a2a; }
+.ns-tab.active{ background:#E31E24; color:#fff; border-color:#E31E24; }
+.ns-panel{ display:none; }
+.ns-panel.active{ display:block; }
+.ns-live-embed{
+  position:relative; width:100%; max-width:860px; margin:0 auto;
+  aspect-ratio:16/9; border-radius:12px; overflow:hidden;
+  box-shadow:0 12px 30px rgba(0,0,0,.5); border:1px solid rgba(255,255,255,.1);
+  display:flex; align-items:center; justify-content:center; background:#161616;
+}
+.ns-live-embed iframe{ width:100%; height:100%; border:0; display:block; }
+.ns-live-badge{
+  position:absolute; top:10px; left:10px; background:#E31E24; color:#fff;
+  font-size:.7rem; font-weight:800; letter-spacing:.05em; padding:.25rem .6rem;
+  border-radius:4px; z-index:2; display:flex; align-items:center; gap:.3rem;
+}
+.ns-live-badge .dot{ width:7px; height:7px; border-radius:50%; background:#fff; animation: nsPulse 1.4s infinite; }
+@keyframes nsPulse{ 0%,100%{opacity:1;} 50%{opacity:.3;} }
+.ns-grid{ display:grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap:1rem; }
+.ns-card{
+  background:#161616; border:1px solid rgba(255,255,255,.1); border-radius:10px;
+  padding:1.1rem; display:flex; flex-direction:column; gap:.5rem;
+}
+.ns-card h4{ color:#fff; font-size:1rem; margin:0; }
+.ns-card p{ color:#bbb; font-size:.85rem; margin:0; }
+.ns-card a{
+  align-self:flex-start; color:#E31E24; font-weight:700; font-size:.85rem;
+  text-decoration:none; margin-top:.3rem;
+}
+.ns-card a:hover{ text-decoration:underline; }
+.ns-list{ display:flex; flex-direction:column; gap:.9rem; }
+.ns-list-item{
+  background:#161616; border:1px solid rgba(255,255,255,.1); border-radius:10px;
+  padding:1rem 1.2rem;
+}
+.ns-list-item h4{ color:#fff; margin:0 0 .3rem; font-size:1rem; }
+.ns-list-item p{ color:#c9c9c9; margin:0; font-size:.9rem; line-height:1.6; }
+.ns-list-item .ns-date{ color:#888; font-size:.75rem; margin-top:.4rem; display:block; }
+.ns-list-item audio{ width:100%; margin-top:.6rem; }
+
 /* YouTube Channel platform */
 .section-yt-channel{ background: linear-gradient(180deg, #1a1a1a 0%, #0d0d0d 100%); color:#fff; }
 .section-yt-channel .eyebrow{ color:#FF6B6B; }
@@ -1235,6 +1286,7 @@ textarea{ margin-bottom:1rem; resize:vertical; }
       <a href="#about">ስለ እኛ</a>
       <a href="#news">ዜና</a>
       <a href="#news">ሕዝብ ግንኙነት</a>
+      <a href="#news-studio-platform">🔴 ዜና ስቱዲዮ</a>
       <a href="#youtube-channel">YouTube ቻናል</a>
       <a href="#facebook-wall">ፌስቡክ ግድግዳ</a>
       <div class="nav-dropdown">
@@ -1426,6 +1478,40 @@ textarea{ margin-bottom:1rem; resize:vertical; }
           facebook.com/ሽዋ ጠቅላይ ግዛት አሳምነው ዕዝ ሚዲያ
         </a>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== News Studio Platform (BBC-style) ===== -->
+<section id="news-studio-platform" class="section section-news-studio">
+  <div class="section-inner">
+    <span class="eyebrow">የዜና መድረክ</span>
+    <h2>የሽዋ ጠቅላይ ግዛት ዜና ስቱዲዮ</h2>
+    <p class="section-lead">ቀጥታ ስርጭት፣ ጋዜጣዊ ጽሑፎች፣ የመምሪያው መልዕክቶችና የራድዮ ዜና በአንድ ቦታ።</p>
+
+    <div class="ns-tabs">
+      <button type="button" class="ns-tab active" data-ns-tab="live">🔴 ቀጥታ ስርጭት</button>
+      <button type="button" class="ns-tab" data-ns-tab="gazette">🗞️ ጋዜጣ</button>
+      <button type="button" class="ns-tab" data-ns-tab="pr">📢 የመምሪያ መልዕክት</button>
+      <button type="button" class="ns-tab" data-ns-tab="radio">📻 ራድዮ / ድምጽ ዜና</button>
+    </div>
+
+    <div class="ns-panel active" id="nsPanelLive">
+      <div class="ns-live-embed" id="nsLiveEmbed">
+        <p class="loading-text">ቀጥታ ስርጭት እየተጫነ ነው...</p>
+      </div>
+    </div>
+
+    <div class="ns-panel" id="nsPanelGazette">
+      <div class="ns-grid" id="nsGazetteGrid"><p class="loading-text">እየተጫነ ነው...</p></div>
+    </div>
+
+    <div class="ns-panel" id="nsPanelPr">
+      <div class="ns-list" id="nsPrList"><p class="loading-text">እየተጫነ ነው...</p></div>
+    </div>
+
+    <div class="ns-panel" id="nsPanelRadio">
+      <div class="ns-list" id="nsRadioList"><p class="loading-text">እየተጫነ ነው...</p></div>
     </div>
   </div>
 </section>
@@ -1932,6 +2018,7 @@ textarea{ margin-bottom:1rem; resize:vertical; }
             <option value="library">Library መጽሐፍ</option>
             <option value="eduPdf">ትምህርታዊ PDF</option>
             <option value="eduPpt">ትምህርታዊ PPT</option>
+            <option value="gazettePdf">🗞️ ጋዜጣ (PDF)</option>
           </select>
           <input type="text" id="libTitle" placeholder="ርዕስ" required>
           <input type="text" id="libAuthor" placeholder="ደራሲ">
@@ -1953,6 +2040,7 @@ textarea{ margin-bottom:1rem; resize:vertical; }
             <option value="entVideo">የመዝናኛ ቪዲዮ</option>
             <option value="entCulture">የባህል ቪዲዮ</option>
             <option value="channelVideo">YouTube ቻናል ቪዲዮ</option>
+            <option value="liveBroadcast">🔴 ቀጥታ ስርጭት (ዜና ስቱዲዮ)</option>
           </select>
           <input type="text" id="vidTitle" placeholder="ርዕስ" required>
           <input type="text" id="vidCategory" placeholder="ምድብ">
@@ -1960,6 +2048,19 @@ textarea{ margin-bottom:1rem; resize:vertical; }
           <button type="submit" class="btn btn-primary">➕ ቪዲዮ ጨምር</button>
         </form>
         <div class="ib-list" id="videoAdminList"></div>
+      </div>
+
+      <div id="radioPanel" class="member-db-panel" style="display:none;">
+        <div class="member-db-head">
+          <h3>ራድዮ / ድምጽ ዜና አስተዳደር</h3>
+          <button type="button" id="radioPanelCloseBtn" class="so-lock-btn">ዝጋ</button>
+        </div>
+        <form id="radioForm" class="ib-form">
+          <input type="text" id="radioTitle" placeholder="ርዕስ" required>
+          <input type="file" id="radioFile" accept="audio/*" required>
+          <button type="submit" class="btn btn-primary">➕ የድምጽ ዜና ጨምር</button>
+        </form>
+        <div class="ib-list" id="radioAdminList"></div>
       </div>
     </div>
   </div>
@@ -2683,6 +2784,86 @@ function renderChannelVideos(){
 }
 renderChannelVideos();
 
+// ---------------- News Studio Platform (BBC-style) ----------------
+(function newsStudioController(){
+  const tabs = document.querySelectorAll(".ns-tab");
+  const panels = {
+    live: document.getElementById("nsPanelLive"),
+    gazette: document.getElementById("nsPanelGazette"),
+    pr: document.getElementById("nsPanelPr"),
+    radio: document.getElementById("nsPanelRadio"),
+  };
+  if (!tabs.length) return;
+
+  tabs.forEach(tab => {
+    tab.addEventListener("click", () => {
+      tabs.forEach(t => t.classList.remove("active"));
+      Object.values(panels).forEach(p => p && p.classList.remove("active"));
+      tab.classList.add("active");
+      const key = tab.dataset.nsTab;
+      if (panels[key]) panels[key].classList.add("active");
+    });
+  });
+
+  async function loadLive(){
+    const el = document.getElementById("nsLiveEmbed");
+    try {
+      const items = await apiGet("/api/content?type=liveBroadcast");
+      if (!items.length) { el.innerHTML = "<p class='loading-text'>በአሁኑ ወቅት ቀጥታ ስርጭት የለም።</p>"; return; }
+      const latest = items.sort((a,b) => new Date(b.date) - new Date(a.date))[0];
+      el.innerHTML = `<span class="ns-live-badge"><span class="dot"></span> LIVE</span>` + videoEmbedHtml(latest.file_url, latest.title);
+    } catch(e){ el.innerHTML = "<p class='loading-text'>መጫን አልተቻለም።</p>"; }
+  }
+
+  async function loadGazette(){
+    const el = document.getElementById("nsGazetteGrid");
+    try {
+      const [pdfs, texts] = await Promise.all([apiGet("/api/content?type=gazettePdf"), apiGet("/api/content?type=gazetteText")]);
+      const all = [...pdfs.map(p => ({...p, isPdf:true})), ...texts.map(t => ({...t, isPdf:false}))]
+        .sort((a,b) => new Date(b.date) - new Date(a.date));
+      if (!all.length) { el.innerHTML = "<p class='loading-text'>ገና ምንም ጋዜጣ አልተለጠፈም።</p>"; return; }
+      el.innerHTML = all.map(g => `
+        <div class="ns-card">
+          <h4>${escapeHtml(g.title)}</h4>
+          <p>${g.isPdf ? (g.author ? escapeHtml(g.author) : "ጋዜጣዊ ሰነድ (PDF)") : escapeHtml((g.body||"").slice(0,120)) + ((g.body||"").length>120 ? "…" : "")}</p>
+          <span class="ns-date">${formatDate(g.date)}</span>
+          ${g.isPdf ? `<a href="${g.file_url}" target="_blank" rel="noopener" download>PDF አውርድ</a>` : ""}
+        </div>`).join("");
+    } catch(e){ el.innerHTML = "<p class='loading-text'>መጫን አልተቻለም።</p>"; }
+  }
+
+  async function loadPr(){
+    const el = document.getElementById("nsPrList");
+    try {
+      const items = await apiGet("/api/info-board");
+      if (!items.length) { el.innerHTML = "<p class='loading-text'>ገና ምንም መልዕክት የለም።</p>"; return; }
+      el.innerHTML = items.sort((a,b) => new Date(b.date) - new Date(a.date)).map(p => `
+        <div class="ns-list-item">
+          <h4>${escapeHtml(p.title)}</h4>
+          ${p.type === "text" ? `<p>${escapeHtml(p.content||"")}</p>` : `<a href="${p.file_url}" target="_blank" rel="noopener" download style="color:#E31E24;font-weight:700;">PDF አውርድ</a>`}
+          <span class="ns-date">${formatDate(p.date)}</span>
+        </div>`).join("");
+    } catch(e){ el.innerHTML = "<p class='loading-text'>መጫን አልተቻለም።</p>"; }
+  }
+
+  async function loadRadio(){
+    const el = document.getElementById("nsRadioList");
+    try {
+      const items = await apiGet("/api/content?type=radioNews");
+      if (!items.length) { el.innerHTML = "<p class='loading-text'>ገና ምንም የድምጽ ዜና አልተለጠፈም።</p>"; return; }
+      el.innerHTML = items.sort((a,b) => new Date(b.date) - new Date(a.date)).map(r => `
+        <div class="ns-list-item">
+          <h4>${escapeHtml(r.title)}</h4>
+          <audio controls src="${r.file_url}"></audio>
+          <span class="ns-date">${formatDate(r.date)}</span>
+        </div>`).join("");
+    } catch(e){ el.innerHTML = "<p class='loading-text'>መጫን አልተቻለም።</p>"; }
+  }
+
+  loadLive(); loadGazette(); loadPr(); loadRadio();
+  window.reloadNewsStudio = function(){ loadLive(); loadGazette(); loadPr(); loadRadio(); };
+})();
+
 // ---------------- Special Office (real admin login) ----------------
 // This now authenticates against the backend (/api/auth/login) and stores
 // a JWT in sessionStorage. The token is sent as "Authorization: Bearer <token>"
@@ -2703,7 +2884,8 @@ renderChannelVideos();
     {id:"infoboard", icon:"📌", title:"የውስጥ መረጃ መለጠፊያ ቦርድ", desc:"የውስጥ ማስታወቂያዎችና ሰነዶች በጽሑፍ ወይም በPDF የሚለጠፉበት ቦርድ። (ለመክፈት ይንኩ)"},
     {id:"newsmgmt", icon:"📰", title:"ዜና አስተዳደር", desc:"አዲስ ዜና መጨመር ወይም ነባር ዜና ማጥፋት። (ለመክፈት ይንኩ)"},
     {id:"librarymgmt", icon:"📚", title:"Library / PDF አስተዳደር", desc:"አዲስ መጽሐፍ ወይም PDF ሰነድ መጨመር ወይም ማጥፋት። (ለመክፈት ይንኩ)"},
-    {id:"videomgmt", icon:"🎬", title:"ቪዲዮ አስተዳደር", desc:"አዲስ የመዝናኛ/ባህል ቪዲዮ (YouTube) መጨመር ወይም ማጥፋት። (ለመክፈት ይንኩ)"},
+    {id:"videomgmt", icon:"🎬", title:"ቪዲዮ አስተዳደር", desc:"አዲስ የመዝናኛ/ባህል/ቀጥታ ስርጭት ቪዲዮ (YouTube) መጨመር ወይም ማጥፋት። (ለመክፈት ይንኩ)"},
+    {id:"radiomgmt", icon:"📻", title:"ራድዮ / ድምጽ ዜና አስተዳደር", desc:"አዲስ የድምጽ ዜና (audio) መጨመር ወይም ማጥፋት። (ለመክፈት ይንኩ)"},
     {icon:"💰", title:"የገንዘብ ሪፖርት", desc:"ወርሃዊና ዓመታዊ የገቢ/ወጪ ሪፖርቶች።"},
     {icon:"📋", title:"የስብሰባ ቃለ ጉባኤዎች", desc:"የሥራ አስፈጻሚ ኮሚቴ ስብሰባ ቃለ ጉባኤዎች ማህደር።"},
     {icon:"📁", title:"ውስጣዊ ሰነዶች", desc:"ደብዳቤዎች፣ ኮንትራቶችና ሌሎች ኦፊሴላዊ ሰነዶች።"},
@@ -2737,6 +2919,10 @@ renderChannelVideos();
     const vidCard = cardsGrid.querySelector('[data-card-id="videomgmt"]');
     if (vidCard && window.toggleVideoPanel) {
       vidCard.addEventListener("click", () => window.toggleVideoPanel());
+    }
+    const radioCard = cardsGrid.querySelector('[data-card-id="radiomgmt"]');
+    if (radioCard && window.toggleRadioPanel) {
+      radioCard.addEventListener("click", () => window.toggleRadioPanel());
     }
   }
 
@@ -3118,6 +3304,7 @@ renderChannelVideos();
       form.reset();
       render();
       if (typeof loadFromAPI === "function") loadFromAPI();
+      if (typeof window.reloadNewsStudio === "function") window.reloadNewsStudio();
     } catch(err){ alert("መጨመር አልተቻለም፦ " + err.message); }
   });
 
@@ -3140,8 +3327,8 @@ renderChannelVideos();
   async function render(){
     let items = [];
     try {
-      const [a,b,c] = await Promise.all([apiGet("/api/content?type=entVideo"), apiGet("/api/content?type=entCulture"), apiGet("/api/content?type=channelVideo")]);
-      items = [...a, ...b, ...c];
+      const [a,b,c,d] = await Promise.all([apiGet("/api/content?type=entVideo"), apiGet("/api/content?type=entCulture"), apiGet("/api/content?type=channelVideo"), apiGet("/api/content?type=liveBroadcast")]);
+      items = [...a, ...b, ...c, ...d];
     } catch(e){ list.innerHTML = "<p class='loading-text'>መጫን አልተቻለም።</p>"; return; }
     items.sort((x,y) => new Date(y.date) - new Date(x.date));
     list.innerHTML = items.map(it => `
@@ -3173,11 +3360,67 @@ renderChannelVideos();
       form.reset();
       render();
       if (typeof loadFromAPI === "function") loadFromAPI();
+      if (typeof window.reloadNewsStudio === "function") window.reloadNewsStudio();
     } catch(err){ alert("ቪዲዮ መጨመር አልተቻለም፦ " + err.message); }
   });
 
   closeBtn.addEventListener("click", () => { panel.style.display = "none"; });
   window.toggleVideoPanel = function(){
+    const isOpen = panel.style.display !== "none";
+    panel.style.display = isOpen ? "none" : "block";
+    if (!isOpen){ render(); panel.scrollIntoView({behavior:"smooth", block:"start"}); }
+  };
+})();
+
+// ---------------- Admin: Radio / Audio News management ----------------
+(function radioAdminController(){
+  const panel = document.getElementById("radioPanel");
+  if (!panel) return;
+  const form = document.getElementById("radioForm");
+  const list = document.getElementById("radioAdminList");
+  const closeBtn = document.getElementById("radioPanelCloseBtn");
+
+  async function render(){
+    let items = [];
+    try { items = await apiGet("/api/content?type=radioNews"); }
+    catch(e){ list.innerHTML = "<p class='loading-text'>መጫን አልተቻለም።</p>"; return; }
+    items.sort((a,b) => new Date(b.date) - new Date(a.date));
+    list.innerHTML = items.map(r => `
+      <div class="ib-post">
+        <div class="ib-post-head"><h4>${escapeHtml(r.title)}</h4></div>
+        <audio controls src="${r.file_url}" style="width:100%; margin-top:.4rem;"></audio>
+        <div class="ib-post-footer">
+          <span class="ib-post-date">${formatDate(r.date)}</span>
+          <button type="button" class="member-db-del radio-del" data-id="${r.id}">አጥፋ</button>
+        </div>
+      </div>`).join("") || "<p class='loading-text'>ገና ምንም የድምጽ ዜና አልተጨመረም።</p>";
+    list.querySelectorAll(".radio-del").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        try { await apiSend("/api/content/" + btn.dataset.id, "DELETE"); render(); if (window.reloadNewsStudio) window.reloadNewsStudio(); }
+        catch(e){ alert("ማጥፋት አልተቻለም፦ " + e.message); }
+      });
+    });
+  }
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const title = document.getElementById("radioTitle").value.trim();
+    const file = document.getElementById("radioFile").files[0];
+    if (!title || !file) return;
+    const fd = new FormData();
+    fd.append("type", "radioNews");
+    fd.append("title", title);
+    fd.append("file", file);
+    try {
+      await apiSend("/api/content", "POST", fd, true);
+      form.reset();
+      render();
+      if (typeof window.reloadNewsStudio === "function") window.reloadNewsStudio();
+    } catch(err){ alert("የድምጽ ዜና መጨመር አልተቻለም፦ " + err.message); }
+  });
+
+  closeBtn.addEventListener("click", () => { panel.style.display = "none"; });
+  window.toggleRadioPanel = function(){
     const isOpen = panel.style.display !== "none";
     panel.style.display = isOpen ? "none" : "block";
     if (!isOpen){ render(); panel.scrollIntoView({behavior:"smooth", block:"start"}); }
