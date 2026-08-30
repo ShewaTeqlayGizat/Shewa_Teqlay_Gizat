@@ -961,6 +961,17 @@ p{ margin:0 0 1em; }
 .ns-list-item p{ color:#c9c9c9; margin:0; font-size:.9rem; line-height:1.6; }
 .ns-list-item .ns-date{ color:#888; font-size:.75rem; margin-top:.4rem; display:block; }
 .ns-list-item audio{ width:100%; margin-top:.6rem; }
+.ns-admin-form{
+  margin-top:1.8rem; padding:1.2rem; background:#161616;
+  border:1px dashed rgba(227,30,36,.5); border-radius:12px;
+  display:flex; flex-direction:column; gap:.6rem; max-width:500px;
+}
+.ns-admin-form-title{ color:#E31E24; font-size:.9rem; margin:0 0 .3rem; }
+.ns-admin-form input, .ns-admin-form textarea{
+  background:#0d0d0d; border:1px solid rgba(255,255,255,.15); color:#fff;
+  padding:.6rem .8rem; border-radius:6px; font-family:inherit; font-size:.9rem;
+}
+.ns-admin-form input::placeholder, .ns-admin-form textarea::placeholder{ color:#888; }
 
 /* YouTube Channel platform */
 .section-yt-channel{ background: linear-gradient(180deg, #1a1a1a 0%, #0d0d0d 100%); color:#fff; }
@@ -1500,18 +1511,43 @@ textarea{ margin-bottom:1rem; resize:vertical; }
       <div class="ns-live-embed" id="nsLiveEmbed">
         <p class="loading-text">ቀጥታ ስርጭት እየተጫነ ነው...</p>
       </div>
+      <form id="nsLiveForm" class="ns-admin-form ib-form" style="display:none;">
+        <h4 class="ns-admin-form-title">🔴 አዲስ ቀጥታ ስርጭት ጨምር (Admin)</h4>
+        <input type="text" id="nsLiveTitle" placeholder="ርዕስ" required>
+        <input type="text" id="nsLiveUrl" placeholder="YouTube URL" required>
+        <button type="submit" class="btn btn-primary">➕ ጨምር</button>
+      </form>
     </div>
 
     <div class="ns-panel" id="nsPanelGazette">
       <div class="ns-grid" id="nsGazetteGrid"><p class="loading-text">እየተጫነ ነው...</p></div>
+      <form id="nsGazetteForm" class="ns-admin-form ib-form" style="display:none;">
+        <h4 class="ns-admin-form-title">🗞️ አዲስ ጋዜጣ (PDF) ጨምር (Admin)</h4>
+        <input type="text" id="nsGazetteTitle" placeholder="ርዕስ" required>
+        <input type="text" id="nsGazetteAuthor" placeholder="አዘጋጅ/ምንጭ (አማራጭ)">
+        <input type="file" id="nsGazetteFile" accept="application/pdf" required>
+        <button type="submit" class="btn btn-primary">➕ ጨምር</button>
+      </form>
     </div>
 
     <div class="ns-panel" id="nsPanelPr">
       <div class="ns-list" id="nsPrList"><p class="loading-text">እየተጫነ ነው...</p></div>
+      <form id="nsPrForm" class="ns-admin-form ib-form" style="display:none;">
+        <h4 class="ns-admin-form-title">📢 አዲስ የመምሪያ መልዕክት ጨምር (Admin)</h4>
+        <input type="text" id="nsPrTitle" placeholder="ርዕስ" required>
+        <textarea id="nsPrContent" placeholder="የመልዕክቱ ይዘት" rows="4" required></textarea>
+        <button type="submit" class="btn btn-primary">➕ ጨምር</button>
+      </form>
     </div>
 
     <div class="ns-panel" id="nsPanelRadio">
       <div class="ns-list" id="nsRadioList"><p class="loading-text">እየተጫነ ነው...</p></div>
+      <form id="nsRadioForm" class="ns-admin-form ib-form" style="display:none;">
+        <h4 class="ns-admin-form-title">📻 አዲስ የድምጽ ዜና ጨምር (Admin)</h4>
+        <input type="text" id="nsRadioTitle" placeholder="ርዕስ" required>
+        <input type="file" id="nsRadioFile" accept="audio/*" required>
+        <button type="submit" class="btn btn-primary">➕ ጨምር</button>
+      </form>
     </div>
   </div>
 </section>
@@ -2862,6 +2898,81 @@ renderChannelVideos();
 
   loadLive(); loadGazette(); loadPr(); loadRadio();
   window.reloadNewsStudio = function(){ loadLive(); loadGazette(); loadPr(); loadRadio(); };
+
+  // Show/hide the inline admin upload forms based on login state.
+  const adminForms = document.querySelectorAll(".ns-admin-form");
+  function refreshAdminFormVisibility(){
+    adminForms.forEach(f => { f.style.display = isAdminLoggedIn() ? "flex" : "none"; });
+  }
+  refreshAdminFormVisibility();
+  window.refreshNewsStudioAdminForms = refreshAdminFormVisibility;
+
+  // Live broadcast form
+  const liveForm = document.getElementById("nsLiveForm");
+  liveForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const title = document.getElementById("nsLiveTitle").value.trim();
+    const url = document.getElementById("nsLiveUrl").value.trim();
+    if (!title || !url) return;
+    try {
+      await apiSend("/api/content", "POST", { type: "liveBroadcast", title, body: url, file_url: url });
+      liveForm.reset();
+      loadLive();
+      if (typeof loadFromAPI === "function") loadFromAPI();
+    } catch(err){ alert("ማከል አልተቻለም፦ " + err.message); }
+  });
+
+  // Gazette PDF form
+  const gazetteForm = document.getElementById("nsGazetteForm");
+  gazetteForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const title = document.getElementById("nsGazetteTitle").value.trim();
+    const author = document.getElementById("nsGazetteAuthor").value.trim();
+    const file = document.getElementById("nsGazetteFile").files[0];
+    if (!title || !file) return;
+    const fd = new FormData();
+    fd.append("type", "gazettePdf");
+    fd.append("title", title);
+    fd.append("author", author);
+    fd.append("file", file);
+    try {
+      await apiSend("/api/content", "POST", fd, true);
+      gazetteForm.reset();
+      loadGazette();
+    } catch(err){ alert("ማከል አልተቻለም፦ " + err.message); }
+  });
+
+  // PR message form (posts to the info board, same source the PR tab reads from)
+  const prForm = document.getElementById("nsPrForm");
+  prForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const title = document.getElementById("nsPrTitle").value.trim();
+    const content = document.getElementById("nsPrContent").value.trim();
+    if (!title || !content) return;
+    try {
+      await apiSend("/api/info-board", "POST", { title, type: "text", content });
+      prForm.reset();
+      loadPr();
+    } catch(err){ alert("ማከል አልተቻለም፦ " + err.message); }
+  });
+
+  // Radio / audio news form
+  const radioForm2 = document.getElementById("nsRadioForm");
+  radioForm2.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const title = document.getElementById("nsRadioTitle").value.trim();
+    const file = document.getElementById("nsRadioFile").files[0];
+    if (!title || !file) return;
+    const fd = new FormData();
+    fd.append("type", "radioNews");
+    fd.append("title", title);
+    fd.append("file", file);
+    try {
+      await apiSend("/api/content", "POST", fd, true);
+      radioForm2.reset();
+      loadRadio();
+    } catch(err){ alert("ማከል አልተቻለም፦ " + err.message); }
+  });
 })();
 
 // ---------------- Special Office (real admin login) ----------------
@@ -2930,6 +3041,7 @@ renderChannelVideos();
     gate.style.display = "none";
     dashboard.style.display = "block";
     renderDashboard();
+    if (typeof window.refreshNewsStudioAdminForms === "function") window.refreshNewsStudioAdminForms();
   }
   function lock(){
     clearAdminToken();
@@ -2937,6 +3049,7 @@ renderChannelVideos();
     gate.style.display = "block";
     input.value = "";
     errorMsg.style.display = "none";
+    if (typeof window.refreshNewsStudioAdminForms === "function") window.refreshNewsStudioAdminForms();
   }
 
   form.addEventListener("submit", async (e) => {
@@ -3522,3 +3635,83 @@ commentForm.addEventListener("submit", async (e) => {
 // ==================================================================
 const PLACEHOLDER_IMAGE = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MDAgMjYwIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjI2MCIgZmlsbD0iI0VGRTNDNCIvPjwvc3ZnPg==";
 const PLACEHOLDER_PHOTO = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI0VGRTNDNCIvPjxjaXJjbGUgY3g9IjEwMCIgY3k9Ijc4IiByPSI0MiIgZmlsbD0iI0I3QTI3MiIvPjxwYXRoIGQ9Ik0zMCAxOTAgUTEwMCAxMjAgMTcwIDE5MCBaIiBmaWxsPSIjQjdBMjcyIi8+PC9zdmc+";
+
+async function loadFromAPI(){
+  try {
+    const [training, urgent, news, announcements, members] = await Promise.all([
+      apiGet("/api/training"),
+      apiGet("/api/urgent"),
+      apiGet("/api/news"),
+      apiGet("/api/announcements"),
+      apiGet("/api/members"),
+    ]);
+
+    if (training.length) { DATA.training = training; renderTraining(); }
+    if (urgent.length) {
+      DATA.urgent = urgent.map(u => ({ ...u, message: u.body }));
+      renderUrgent();
+    }
+    if (news.length) {
+      DATA.news = news.map(n => ({ ...n, summary: n.body, image: n.image || PLACEHOLDER_IMAGE }));
+      renderNews();
+    }
+    if (announcements.length) { DATA.announcements = announcements; renderAnnouncements(); }
+    if (members.length) {
+      DATA.members = members.map(m => ({ ...m, photo: m.photo_url || PLACEHOLDER_PHOTO }));
+      renderMembers();
+    }
+
+    // Generic content sections (library, education, entertainment, topic boards)
+    // all live in the same /api/content table, distinguished by ?type=.
+    const contentMap = [
+      ["library",  d => ({ DATA_KEY: "library",  items: d.map(x => ({ ...x, file: x.file_url, cover: x.cover_url || PLACEHOLDER_IMAGE })), render: renderLibrary }) ],
+      ["eduText",  d => ({ DATA_KEY: "eduText",  items: d.map(x => ({ ...x, excerpt: x.body })), render: renderEduText }) ],
+      ["eduPdf",   d => ({ DATA_KEY: "eduPdf",   items: d.map(x => ({ ...x, file: x.file_url, cover: x.cover_url || PLACEHOLDER_IMAGE })), render: renderEduPdf }) ],
+      ["eduPpt",   d => ({ DATA_KEY: "eduPpt",   items: d.map(x => ({ ...x, file: x.file_url, cover: x.cover_url || PLACEHOLDER_IMAGE })), render: renderEduPpt }) ],
+      ["entVideo", d => ({ DATA_KEY: "entVideo", items: d.map(x => ({ ...x, src: x.file_url })), render: renderEntVideo }) ],
+      ["entAudio", d => ({ DATA_KEY: "entAudio", items: d.map(x => ({ ...x, artist: x.author, src: x.file_url })), render: renderEntAudio }) ],
+      ["entLit",   d => ({ DATA_KEY: "entLit",   items: d.map(x => ({ ...x, excerpt: x.body })), render: renderEntLit }) ],
+      ["entCulture", d => ({ DATA_KEY: "entCulture", items: d.map(x => ({ ...x, src: x.file_url, type: x.file_url && x.file_url.includes("youtube") ? "video" : "photo" })), render: renderEntCulture }) ],
+      ["channelVideo", d => ({ DATA_KEY: "channelVideo", items: d.map(x => ({ ...x, src: x.file_url })), render: renderChannelVideos }) ],
+    ];
+    await Promise.all(contentMap.map(async ([type, mapFn]) => {
+      try {
+        const raw = await apiGet("/api/content?type=" + type);
+        if (raw.length) {
+          const { DATA_KEY, items, render } = mapFn(raw);
+          DATA[DATA_KEY] = items;
+          render();
+        }
+      } catch(e) { /* keep placeholder content for this section */ }
+    }));
+
+    // Topic boards: article + info items, keyed by topic_key.
+    const topics = ["history", "military", "political", "leadership-science", "infotech"];
+    try {
+      const [articlesAll, infoAll] = await Promise.all([
+        apiGet("/api/content?type=topicBoardArticle"),
+        apiGet("/api/content?type=topicBoardInfo"),
+      ]);
+      let any = false;
+      topics.forEach(key => {
+        const articles = articlesAll.filter(a => a.topic_key === key).map(a => ({ ...a, excerpt: a.body }));
+        const info = infoAll.filter(a => a.topic_key === key).map(a => ({ ...a, message: a.body }));
+        if (articles.length || info.length) {
+          any = true;
+          DATA.topicBoards = DATA.topicBoards || {};
+          DATA.topicBoards[key] = { articles, info };
+        }
+      });
+      if (any) renderTopicBoards();
+    } catch(e) { /* keep placeholder content */ }
+  } catch (e) {
+    // API not reachable (e.g. not deployed yet, or API_BASE not set) —
+    // the page keeps showing the built-in placeholder content silently.
+    console.warn("Could not load live data from API, showing placeholder content:", e.message);
+  }
+}
+loadFromAPI();
+
+</script>
+</body>
+</html>
