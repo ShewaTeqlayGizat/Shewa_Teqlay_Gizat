@@ -973,6 +973,31 @@ p{ margin:0 0 1em; }
 }
 .ns-admin-form input::placeholder, .ns-admin-form textarea::placeholder{ color:#888; }
 
+/* Full-article reading modal */
+.news-modal-overlay{
+  display:none; position:fixed; inset:0; background:rgba(0,0,0,.75);
+  z-index:2000; align-items:center; justify-content:center; padding:1.2rem;
+}
+.news-modal-overlay.open{ display:flex; }
+.news-modal{
+  background:#fff; max-width:640px; width:100%; max-height:88vh; overflow-y:auto;
+  border-radius:14px; position:relative; box-shadow:0 20px 60px rgba(0,0,0,.5);
+}
+.news-modal img{ width:100%; max-height:340px; object-fit:contain; background:#1a1a1a; display:block; border-radius:14px 14px 0 0; }
+.news-modal-body{ padding:1.6rem 1.8rem 2rem; }
+.news-modal-body h2{ margin:.4rem 0 .8rem; color:var(--ink, #2B241A); }
+.news-modal-body p{ line-height:1.8; color:#3a3a3a; white-space:pre-wrap; }
+.news-modal-close{
+  position:absolute; top:12px; right:12px; width:34px; height:34px; border-radius:50%;
+  background:rgba(0,0,0,.55); color:#fff; border:0; font-size:1.1rem; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; z-index:2;
+}
+.news-modal-close:hover{ background:rgba(0,0,0,.8); }
+.news-modal-pdf{
+  display:inline-block; margin-top:1rem; background:#E31E24; color:#fff; font-weight:700;
+  padding:.6rem 1.2rem; border-radius:24px; text-decoration:none; font-size:.9rem;
+}
+
 /* YouTube Channel platform */
 .section-yt-channel{ background: linear-gradient(180deg, #1a1a1a 0%, #0d0d0d 100%); color:#fff; }
 .section-yt-channel .eyebrow{ color:#FF6B6B; }
@@ -1295,9 +1320,9 @@ textarea{ margin-bottom:1rem; resize:vertical; }
     <nav class="main-nav" id="mainNav">
       <a href="#home">መነሻ</a>
       <a href="#about">ስለ እኛ</a>
-      <a href="#news">ዜና</a>
-      <a href="#news">ሕዝብ ግንኙነት</a>
-      <a href="#news-studio-platform">🔴 ዜና ስቱዲዮ</a>
+      <a href="#news-studio-platform">ዜና ስቱዲዮ</a>
+      <a href="#news-studio-platform">ሕዝብ ግንኙነት</a>
+
       <a href="#youtube-channel">YouTube ቻናል</a>
       <a href="#facebook-wall">ፌስቡክ ግድግዳ</a>
       <div class="nav-dropdown">
@@ -1408,8 +1433,22 @@ textarea{ margin-bottom:1rem; resize:vertical; }
 
 
 <!-- ===== News ===== -->
-<section id="news" class="section section-news">
+<!-- ===== News Studio Platform (merged: news, live, radio, gazette, PR) ===== -->
+<section id="news-studio-platform" class="section section-news-studio">
   <div class="section-inner">
+    <span class="eyebrow">የዜና መድረክ</span>
+    <h2>የሽዋ ጠቅላይ ግዛት ዜና ስቱዲዮ</h2>
+    <p class="section-lead">ወቅታዊ ዜናዎች፣ ቀጥታ ስርጭት፣ ራድዮ/ድምጽ ዜና፣ ጋዜጣዊ ጽሑፎችና የመምሪያው መልዕክቶች በአንድ መድረክ።</p>
+
+    <div class="ns-tabs">
+      <button type="button" class="ns-tab active" data-ns-tab="news">📰 ዋና ዜና</button>
+      <button type="button" class="ns-tab" data-ns-tab="live">🔴 ቀጥታ ስርጭት</button>
+      <button type="button" class="ns-tab" data-ns-tab="radio">📻 ራድዮ / ድምጽ</button>
+      <button type="button" class="ns-tab" data-ns-tab="gazette">🗞️ ጋዜጣ</button>
+      <button type="button" class="ns-tab" data-ns-tab="pr">📢 የመምሪያ መልዕክት</button>
+    </div>
+
+    <div class="ns-panel active" id="nsPanelNews">
 
     <!-- ===== News Studio Intro (BBC-style animated open) ===== -->
     <div class="news-intro" id="newsIntro">
@@ -1467,6 +1506,15 @@ textarea{ margin-bottom:1rem; resize:vertical; }
       <p class="loading-text">ዜናዎች እየተጫኑ ነው...</p>
     </div>
 
+    <form id="nsNewsForm" class="ns-admin-form ib-form" style="display:none;">
+      <h4 class="ns-admin-form-title">📰 አዲስ ዜና ጨምር (Admin)</h4>
+      <input type="text" id="nsNewsTitle" placeholder="የዜናው ርዕስ" required>
+      <textarea id="nsNewsBody" placeholder="የዜናው ይዘት" rows="4" required></textarea>
+      <input type="date" id="nsNewsDate">
+      <input type="file" id="nsNewsFile" accept="image/*,application/pdf">
+      <button type="submit" class="btn btn-primary">➕ ዜና ጨምር</button>
+    </form>
+
     <div class="fb-wall-card" id="facebook-wall">
       <div class="fb-wall-header">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5.02 3.66 9.18 8.44 9.94v-7.03H7.9v-2.91h2.54V9.85c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.44 2.91h-2.34V22c4.78-.76 8.44-4.92 8.44-9.94Z"/></svg>
@@ -1490,24 +1538,10 @@ textarea{ margin-bottom:1rem; resize:vertical; }
         </a>
       </div>
     </div>
-  </div>
-</section>
 
-<!-- ===== News Studio Platform (BBC-style) ===== -->
-<section id="news-studio-platform" class="section section-news-studio">
-  <div class="section-inner">
-    <span class="eyebrow">የዜና መድረክ</span>
-    <h2>የሽዋ ጠቅላይ ግዛት ዜና ስቱዲዮ</h2>
-    <p class="section-lead">ቀጥታ ስርጭት፣ ጋዜጣዊ ጽሑፎች፣ የመምሪያው መልዕክቶችና የራድዮ ዜና በአንድ ቦታ።</p>
-
-    <div class="ns-tabs">
-      <button type="button" class="ns-tab active" data-ns-tab="live">🔴 ቀጥታ ስርጭት</button>
-      <button type="button" class="ns-tab" data-ns-tab="gazette">🗞️ ጋዜጣ</button>
-      <button type="button" class="ns-tab" data-ns-tab="pr">📢 የመምሪያ መልዕክት</button>
-      <button type="button" class="ns-tab" data-ns-tab="radio">📻 ራድዮ / ድምጽ ዜና</button>
     </div>
 
-    <div class="ns-panel active" id="nsPanelLive">
+    <div class="ns-panel" id="nsPanelLive">
       <div class="ns-live-embed" id="nsLiveEmbed">
         <p class="loading-text">ቀጥታ ስርጭት እየተጫነ ነው...</p>
       </div>
@@ -1515,6 +1549,16 @@ textarea{ margin-bottom:1rem; resize:vertical; }
         <h4 class="ns-admin-form-title">🔴 አዲስ ቀጥታ ስርጭት ጨምር (Admin)</h4>
         <input type="text" id="nsLiveTitle" placeholder="ርዕስ" required>
         <input type="text" id="nsLiveUrl" placeholder="YouTube URL" required>
+        <button type="submit" class="btn btn-primary">➕ ጨምር</button>
+      </form>
+    </div>
+
+    <div class="ns-panel" id="nsPanelRadio">
+      <div class="ns-list" id="nsRadioList"><p class="loading-text">እየተጫነ ነው...</p></div>
+      <form id="nsRadioForm" class="ns-admin-form ib-form" style="display:none;">
+        <h4 class="ns-admin-form-title">📻 አዲስ የድምጽ ዜና ጨምር (Admin)</h4>
+        <input type="text" id="nsRadioTitle" placeholder="ርዕስ" required>
+        <input type="file" id="nsRadioFile" accept="audio/*" required>
         <button type="submit" class="btn btn-primary">➕ ጨምር</button>
       </form>
     </div>
@@ -1536,16 +1580,6 @@ textarea{ margin-bottom:1rem; resize:vertical; }
         <h4 class="ns-admin-form-title">📢 አዲስ የመምሪያ መልዕክት ጨምር (Admin)</h4>
         <input type="text" id="nsPrTitle" placeholder="ርዕስ" required>
         <textarea id="nsPrContent" placeholder="የመልዕክቱ ይዘት" rows="4" required></textarea>
-        <button type="submit" class="btn btn-primary">➕ ጨምር</button>
-      </form>
-    </div>
-
-    <div class="ns-panel" id="nsPanelRadio">
-      <div class="ns-list" id="nsRadioList"><p class="loading-text">እየተጫነ ነው...</p></div>
-      <form id="nsRadioForm" class="ns-admin-form ib-form" style="display:none;">
-        <h4 class="ns-admin-form-title">📻 አዲስ የድምጽ ዜና ጨምር (Admin)</h4>
-        <input type="text" id="nsRadioTitle" placeholder="ርዕስ" required>
-        <input type="file" id="nsRadioFile" accept="audio/*" required>
         <button type="submit" class="btn btn-primary">➕ ጨምር</button>
       </form>
     </div>
@@ -2039,6 +2073,7 @@ textarea{ margin-bottom:1rem; resize:vertical; }
           <input type="text" id="nTitle" placeholder="የዜናው ርዕስ" required>
           <textarea id="nBody" placeholder="የዜናው ይዘት" rows="4" required></textarea>
           <input type="date" id="nDate">
+          <input type="file" id="nFile" accept="image/*,application/pdf">
           <button type="submit" class="btn btn-primary">➕ ዜና ጨምር</button>
         </form>
         <div class="ib-list" id="newsAdminList"></div>
@@ -2617,14 +2652,14 @@ function renderNews(){
         <span class="news-date">${formatDate(featured.date)}</span>
         <h3>${featured.title}</h3>
         <p>${featured.summary}</p>
-        <a href="#news" class="news-read-more">ሙሉውን ያንብቡ <span>→</span></a>
+        <a href="javascript:void(0)" class="news-read-more" data-news-id="${featured.id}">ሙሉውን ያንብቡ <span>→</span></a>
       </div>
     </article>
     <aside class="news-sidebar">
       <div class="news-sidebar-header">ተጨማሪ ዜናዎች</div>
       <div class="news-list">
         ${rest.map((n, i) => `
-          <a href="#news" class="news-list-item">
+          <a href="javascript:void(0)" class="news-list-item" data-news-id="${n.id}">
             <span class="news-list-num">${i+2}</span>
             <img src="${n.image}" alt="${n.title}" loading="lazy">
             <div>
@@ -2636,12 +2671,51 @@ function renderNews(){
     </aside>`;
 
   if(items.length > 1){
-    const headlines = items.map(n => n.title);
-    tickerTrack.innerHTML = [...headlines, ...headlines].map(t => `<span>● ${t}</span>`).join("");
+    tickerTrack.innerHTML = [...items, ...items].map(n => `<span data-news-id="${n.id}">● ${n.title}</span>`).join("");
     ticker.style.display = "flex";
   }
+
+  studio.querySelectorAll("[data-news-id]").forEach(el => {
+    el.addEventListener("click", () => openNewsModal(el.dataset.newsId));
+  });
+  tickerTrack.querySelectorAll("[data-news-id]").forEach(el => {
+    el.style.cursor = "pointer";
+    el.addEventListener("click", () => openNewsModal(el.dataset.newsId));
+  });
 }
 renderNews();
+
+// ---------------- Full article reading modal ----------------
+function openNewsModal(id){
+  const item = (DATA.news || []).find(n => String(n.id) === String(id));
+  if (!item) return;
+  let modal = document.getElementById("newsReadModal");
+  if (!modal) {
+    modal = document.createElement("div");
+    modal.id = "newsReadModal";
+    modal.className = "news-modal-overlay";
+    document.body.appendChild(modal);
+  }
+  const isPdf = item.file_url && item.file_url.toLowerCase().endsWith(".pdf");
+  modal.innerHTML = `
+    <div class="news-modal">
+      <button type="button" class="news-modal-close" aria-label="ዝጋ">✕</button>
+      ${!isPdf && (item.file_url || item.image) ? `<img src="${item.file_url || item.image}" alt="${escapeHtml(item.title)}">` : ""}
+      <div class="news-modal-body">
+        <span class="news-date">${formatDate(item.date)}</span>
+        <h2>${escapeHtml(item.title)}</h2>
+        <p>${escapeHtml(item.body || item.summary || "")}</p>
+        ${isPdf ? `<a href="${item.file_url}" target="_blank" rel="noopener" class="news-modal-pdf">📄 PDF ሰነድ ይመልከቱ</a>` : ""}
+      </div>
+    </div>`;
+  modal.classList.add("open");
+  modal.querySelector(".news-modal-close").addEventListener("click", closeNewsModal);
+  modal.addEventListener("click", (e) => { if (e.target === modal) closeNewsModal(); });
+}
+function closeNewsModal(){
+  const modal = document.getElementById("newsReadModal");
+  if (modal) modal.classList.remove("open");
+}
 
 // ---------------- Announcements ----------------
 function renderAnnouncements(){
@@ -2824,6 +2898,7 @@ renderChannelVideos();
 (function newsStudioController(){
   const tabs = document.querySelectorAll(".ns-tab");
   const panels = {
+    news: document.getElementById("nsPanelNews"),
     live: document.getElementById("nsPanelLive"),
     gazette: document.getElementById("nsPanelGazette"),
     pr: document.getElementById("nsPanelPr"),
@@ -2906,6 +2981,27 @@ renderChannelVideos();
   }
   refreshAdminFormVisibility();
   window.refreshNewsStudioAdminForms = refreshAdminFormVisibility;
+
+  // News form (posts to /api/news, same source the ዜና tab reads from)
+  const newsForm2 = document.getElementById("nsNewsForm");
+  newsForm2.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const title = document.getElementById("nsNewsTitle").value.trim();
+    const body = document.getElementById("nsNewsBody").value.trim();
+    const date = document.getElementById("nsNewsDate").value;
+    const file = document.getElementById("nsNewsFile").files[0];
+    if (!title || !body) return;
+    const fd = new FormData();
+    fd.append("title", title);
+    fd.append("body", body);
+    if (date) fd.append("date", date);
+    if (file) fd.append("image", file);
+    try {
+      await apiSend("/api/news", "POST", fd, true);
+      newsForm2.reset();
+      if (typeof loadFromAPI === "function") loadFromAPI();
+    } catch(err){ alert("ዜና መጨመር አልተቻለም፦ " + err.message); }
+  });
 
   // Live broadcast form
   const liveForm = document.getElementById("nsLiveForm");
@@ -3344,12 +3440,19 @@ renderChannelVideos();
     const title = document.getElementById("nTitle").value.trim();
     const body = document.getElementById("nBody").value.trim();
     const date = document.getElementById("nDate").value;
+    const file = document.getElementById("nFile").files[0];
     if (!title || !body) return;
+    const fd = new FormData();
+    fd.append("title", title);
+    fd.append("body", body);
+    if (date) fd.append("date", date);
+    if (file) fd.append("image", file);
     try {
-      await apiSend("/api/news", "POST", { title, body, date: date || undefined });
+      await apiSend("/api/news", "POST", fd, true);
       form.reset();
       render();
       if (typeof loadFromAPI === "function") loadFromAPI();
+      if (typeof window.reloadNewsStudio === "function") window.reloadNewsStudio();
     } catch(err){ alert("ዜና መጨመር አልተቻለም፦ " + err.message); }
   });
 
