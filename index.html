@@ -2137,6 +2137,23 @@ textarea{ margin-bottom:1rem; resize:vertical; }
         </form>
         <div class="ib-list" id="radioAdminList"></div>
       </div>
+
+      <div id="adminsPanel" class="member-db-panel" style="display:none;">
+        <div class="member-db-head">
+          <h3>የAdmin መለያዎች (Manager / Moderator)</h3>
+          <button type="button" id="adminsPanelCloseBtn" class="so-lock-btn">ዝጋ</button>
+        </div>
+        <form id="adminsForm" class="ib-form">
+          <input type="text" id="aNewUsername" placeholder="የተጠቃሚ ስም" required>
+          <input type="password" id="aNewPassword" placeholder="የይለፍ ቃል" required>
+          <select id="aNewRole">
+            <option value="admin">ዋና ማናጀር (ሙሉ ስልጣን)</option>
+            <option value="moderator">Moderator (ንባብ + አስተያየት ማጥፋት ብቻ)</option>
+          </select>
+          <button type="submit" class="btn btn-primary">➕ መለያ ፍጠር</button>
+        </form>
+        <div class="ib-list" id="adminsList"></div>
+      </div>
     </div>
   </div>
 </section>
@@ -2207,10 +2224,14 @@ textarea{ margin-bottom:1rem; resize:vertical; }
 const API_BASE = "https://asaminew-ez.onrender.com";
 
 const AUTH_TOKEN_KEY = "shewa_admin_token";
+const AUTH_ROLE_KEY = "shewa_admin_role";
 function getAdminToken(){ return sessionStorage.getItem(AUTH_TOKEN_KEY) || ""; }
 function setAdminToken(t){ sessionStorage.setItem(AUTH_TOKEN_KEY, t); }
-function clearAdminToken(){ sessionStorage.removeItem(AUTH_TOKEN_KEY); }
+function clearAdminToken(){ sessionStorage.removeItem(AUTH_TOKEN_KEY); sessionStorage.removeItem(AUTH_ROLE_KEY); }
 function isAdminLoggedIn(){ return !!getAdminToken(); }
+function getAdminRole(){ return sessionStorage.getItem(AUTH_ROLE_KEY) || ""; }
+function setAdminRole(r){ sessionStorage.setItem(AUTH_ROLE_KEY, r); }
+function isFullAdmin(){ return isAdminLoggedIn() && getAdminRole() === "admin"; }
 
 async function apiGet(path){
   const res = await fetch(API_BASE + path);
@@ -2348,6 +2369,19 @@ function formatDate(d) {
     return new Date(d).toLocaleDateString("am-ET", { year: "numeric", month: "long", day: "numeric" });
   } catch (e) { return d; }
 }
+
+// Auto-fill every date input across the admin forms with today's date,
+// so admins don't have to type it manually each time.
+(function autofillTodayOnDateInputs(){
+  const today = new Date().toISOString().slice(0, 10); // yyyy-mm-dd, what <input type="date"> expects
+  document.querySelectorAll('input[type="date"]').forEach(input => {
+    if (!input.value) input.value = today;
+  });
+})();
+window.autofillTodayOnDateInputs = function(){
+  const today = new Date().toISOString().slice(0, 10);
+  document.querySelectorAll('input[type="date"]').forEach(input => { input.value = today; });
+};
 function escapeHtml(str) {
   const div = document.createElement("div");
   div.textContent = str;
@@ -2981,10 +3015,11 @@ renderChannelVideos();
   loadLive(); loadGazette(); loadPr(); loadRadio();
   window.reloadNewsStudio = function(){ loadLive(); loadGazette(); loadPr(); loadRadio(); };
 
-  // Show/hide the inline admin upload forms based on login state.
+  // Show/hide the inline admin upload forms — only the full manager can
+  // upload/add content here; moderators cannot.
   const adminForms = document.querySelectorAll(".ns-admin-form");
   function refreshAdminFormVisibility(){
-    adminForms.forEach(f => { f.style.display = isAdminLoggedIn() ? "flex" : "none"; });
+    adminForms.forEach(f => { f.style.display = isFullAdmin() ? "flex" : "none"; });
   }
   refreshAdminFormVisibility();
   window.refreshNewsStudioAdminForms = refreshAdminFormVisibility;
@@ -3008,6 +3043,7 @@ renderChannelVideos();
     try {
       await apiSend("/api/news", "POST", fd, true);
       newsForm2.reset();
+      if (typeof window.autofillTodayOnDateInputs === "function") window.autofillTodayOnDateInputs();
       if (typeof loadFromAPI === "function") loadFromAPI();
     } catch(err){ alert("ዜና መጨመር አልተቻለም፦ " + err.message); }
   });
@@ -3096,26 +3132,38 @@ renderChannelVideos();
   if(!gate || !form) return;
 
   const officeCards = [
-    {id:"members", icon:"🗄️", title:"የአባላት ዳታቤዝ", desc:"የተሟላ የአባላት ዝርዝር፣ አድራሻና የአባልነት ሁኔታ መዝገብ። (ለመክፈት ይንኩ)"},
-    {id:"infoboard", icon:"📌", title:"የውስጥ መረጃ መለጠፊያ ቦርድ", desc:"የውስጥ ማስታወቂያዎችና ሰነዶች በጽሑፍ ወይም በPDF የሚለጠፉበት ቦርድ። (ለመክፈት ይንኩ)"},
-    {id:"newsmgmt", icon:"📰", title:"ዜና አስተዳደር", desc:"አዲስ ዜና መጨመር ወይም ነባር ዜና ማጥፋት። (ለመክፈት ይንኩ)"},
-    {id:"librarymgmt", icon:"📚", title:"Library / PDF አስተዳደር", desc:"አዲስ መጽሐፍ ወይም PDF ሰነድ መጨመር ወይም ማጥፋት። (ለመክፈት ይንኩ)"},
-    {id:"videomgmt", icon:"🎬", title:"ቪዲዮ አስተዳደር", desc:"አዲስ የመዝናኛ/ባህል/ቀጥታ ስርጭት ቪዲዮ (YouTube) መጨመር ወይም ማጥፋት። (ለመክፈት ይንኩ)"},
-    {id:"radiomgmt", icon:"📻", title:"ራድዮ / ድምጽ ዜና አስተዳደር", desc:"አዲስ የድምጽ ዜና (audio) መጨመር ወይም ማጥፋት። (ለመክፈት ይንኩ)"},
-    {icon:"💰", title:"የገንዘብ ሪፖርት", desc:"ወርሃዊና ዓመታዊ የገቢ/ወጪ ሪፖርቶች።"},
-    {icon:"📋", title:"የስብሰባ ቃለ ጉባኤዎች", desc:"የሥራ አስፈጻሚ ኮሚቴ ስብሰባ ቃለ ጉባኤዎች ማህደር።"},
-    {icon:"📁", title:"ውስጣዊ ሰነዶች", desc:"ደብዳቤዎች፣ ኮንትራቶችና ሌሎች ኦፊሴላዊ ሰነዶች።"},
-    {icon:"🔑", title:"የመዳረሻ ቁጥጥር", desc:"የተጠቃሚ ፍቃዶችና የመዳረሻ ደረጃ አስተዳደር።"},
-    {icon:"📊", title:"ውስጣዊ ስታትስቲክስ", desc:"የመምሪያውን አፈጻጸም የሚያሳዩ ውስጣዊ መረጃዎች።"}
+    {id:"members", icon:"🗄️", title:"የአባላት ዳታቤዝ", desc:"የተሟላ የአባላት ዝርዝር፣ አድራሻና የአባልነት ሁኔታ መዝገብ። (ለመክፈት ይንኩ)", fullOnly:true},
+    {id:"infoboard", icon:"📌", title:"የውስጥ መረጃ መለጠፊያ ቦርድ", desc:"የውስጥ ማስታወቂያዎችና ሰነዶች በጽሑፍ ወይም በPDF የሚለጠፉበት ቦርድ። (ለመክፈት ይንኩ)", fullOnly:true},
+    {id:"newsmgmt", icon:"📰", title:"ዜና አስተዳደር", desc:"አዲስ ዜና መጨመር ወይም ነባር ዜና ማጥፋት። (ለመክፈት ይንኩ)", fullOnly:true},
+    {id:"librarymgmt", icon:"📚", title:"Library / PDF አስተዳደር", desc:"አዲስ መጽሐፍ ወይም PDF ሰነድ መጨመር ወይም ማጥፋት። (ለመክፈት ይንኩ)", fullOnly:true},
+    {id:"videomgmt", icon:"🎬", title:"ቪዲዮ አስተዳደር", desc:"አዲስ የመዝናኛ/ባህል/ቀጥታ ስርጭት ቪዲዮ (YouTube) መጨመር ወይም ማጥፋት። (ለመክፈት ይንኩ)", fullOnly:true},
+    {id:"radiomgmt", icon:"📻", title:"ራድዮ / ድምጽ ዜና አስተዳደር", desc:"አዲስ የድምጽ ዜና (audio) መጨመር ወይም ማጥፋት። (ለመክፈት ይንኩ)", fullOnly:true},
+    {id:"adminsmgmt", icon:"🔑", title:"የAdmin መለያዎች", desc:"አዲስ ማናጀር ወይም Moderator መለያ መፍጠር፣ ማየትና ማጥፋት። (ለመክፈት ይንኩ)", fullOnly:true},
+    {icon:"💰", title:"የገንዘብ ሪፖርት", desc:"ወርሃዊና ዓመታዊ የገቢ/ወጪ ሪፖርቶች።", fullOnly:true},
+    {icon:"📋", title:"የስብሰባ ቃለ ጉባኤዎች", desc:"የሥራ አስፈጻሚ ኮሚቴ ስብሰባ ቃለ ጉባኤዎች ማህደር።", fullOnly:true},
+    {icon:"📁", title:"ውስጣዊ ሰነዶች", desc:"ደብዳቤዎች፣ ኮንትራቶችና ሌሎች ኦፊሴላዊ ሰነዶች።", fullOnly:true},
+    {icon:"📊", title:"ውስጣዊ ስታትስቲክስ", desc:"የመምሪያውን አፈጻጸም የሚያሳዩ ውስጣዊ መረጃዎች።", fullOnly:true}
   ];
 
   function renderDashboard(){
-    cardsGrid.innerHTML = officeCards.map(c => `
+    const fullAccess = isFullAdmin();
+    const visibleCards = officeCards.filter(c => fullAccess || !c.fullOnly);
+    cardsGrid.innerHTML = visibleCards.map(c => `
       <div class="office-card" ${c.id ? `data-card-id="${c.id}"` : ""}>
         <div class="office-card-icon">${c.icon}</div>
         <h4>${c.title}</h4>
         <p>${c.desc}</p>
-      </div>`).join("");
+      </div>`).join("") || "";
+
+    if (!fullAccess) {
+      cardsGrid.insertAdjacentHTML("beforeend", `
+        <div class="office-card" style="cursor:default;">
+          <div class="office-card-icon">💬</div>
+          <h4>የአስተያየት ማጣሪያ (Moderation)</h4>
+          <p>ገጹ ላይ ወዳለው "አስተያየቶች" ክፍል ይሂዱ — ያልተገባ አስተያየት ከጎኑ ባለው "አጥፋ" ቁልፍ ማጥፋት ይችላሉ። ይህ መለያ ንባብ እና አስተያየት ማጥፋት ብቻ ይችላል፣ ይዘት መጨመር/ማርትዕ አይችልም።</p>
+        </div>`);
+    }
+
     const memberCard = cardsGrid.querySelector('[data-card-id="members"]');
     if (memberCard && window.initMemberDb) {
       memberCard.addEventListener("click", () => window.toggleMemberDb());
@@ -3140,6 +3188,10 @@ renderChannelVideos();
     if (radioCard && window.toggleRadioPanel) {
       radioCard.addEventListener("click", () => window.toggleRadioPanel());
     }
+    const adminsCard = cardsGrid.querySelector('[data-card-id="adminsmgmt"]');
+    if (adminsCard && window.toggleAdminsPanel) {
+      adminsCard.addEventListener("click", () => window.toggleAdminsPanel());
+    }
   }
 
   function unlock(){
@@ -3162,8 +3214,9 @@ renderChannelVideos();
     const username = document.getElementById("officeGateUsername").value.trim();
     const password = input.value;
     try {
-      const { token } = await apiSend("/api/auth/login", "POST", { username, password });
+      const { token, role } = await apiSend("/api/auth/login", "POST", { username, password });
       setAdminToken(token);
+      setAdminRole(role || "admin");
       errorMsg.style.display = "none";
       unlock();
     } catch (err) {
@@ -3461,6 +3514,7 @@ renderChannelVideos();
     try {
       await apiSend("/api/news", "POST", fd, true);
       form.reset();
+      if (typeof window.autofillTodayOnDateInputs === "function") window.autofillTodayOnDateInputs();
       render();
       if (typeof loadFromAPI === "function") loadFromAPI();
       if (typeof window.reloadNewsStudio === "function") window.reloadNewsStudio();
@@ -3648,6 +3702,59 @@ renderChannelVideos();
 
   closeBtn.addEventListener("click", () => { panel.style.display = "none"; });
   window.toggleRadioPanel = function(){
+    const isOpen = panel.style.display !== "none";
+    panel.style.display = isOpen ? "none" : "block";
+    if (!isOpen){ render(); panel.scrollIntoView({behavior:"smooth", block:"start"}); }
+  };
+})();
+
+// ---------------- Admin: Manage admin/moderator accounts (full manager only) ----------------
+(function adminsAccountController(){
+  const panel = document.getElementById("adminsPanel");
+  if (!panel) return;
+  const form = document.getElementById("adminsForm");
+  const list = document.getElementById("adminsList");
+  const closeBtn = document.getElementById("adminsPanelCloseBtn");
+
+  function roleLabel(r){ return r === "moderator" ? "Moderator (ንባብ + አስተያየት ማጥፋት)" : "ዋና ማናጀር (ሙሉ ስልጣን)"; }
+
+  async function render(){
+    let items = [];
+    try { items = await apiGet("/api/auth/admins"); }
+    catch(e){ list.innerHTML = "<p class='loading-text'>መጫን አልተቻለም (ይህን ማየት የሚችለው ዋና ማናጀር ብቻ ነው)።</p>"; return; }
+    list.innerHTML = items.map(a => `
+      <div class="ib-post">
+        <div class="ib-post-head"><h4>${escapeHtml(a.username)}</h4><span class="ib-post-badge ${a.role === 'moderator' ? '' : 'pdf'}">${roleLabel(a.role)}</span></div>
+        <div class="ib-post-footer">
+          <span class="ib-post-date">${formatDate(a.created_at)}</span>
+          <button type="button" class="member-db-del admin-del" data-id="${a.id}">አጥፋ</button>
+        </div>
+      </div>`).join("") || "<p class='loading-text'>ገና ምንም መለያ የለም።</p>";
+
+    list.querySelectorAll(".admin-del").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        if (!confirm("ይህን መለያ ማጥፋት ይፈልጋሉ?")) return;
+        try { await apiSend("/api/auth/admins/" + btn.dataset.id, "DELETE"); render(); }
+        catch(e){ alert("ማጥፋት አልተቻለም፦ " + e.message); }
+      });
+    });
+  }
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const username = document.getElementById("aNewUsername").value.trim();
+    const password = document.getElementById("aNewPassword").value;
+    const role = document.getElementById("aNewRole").value;
+    if (!username || !password) return;
+    try {
+      await apiSend("/api/auth/create-admin", "POST", { username, password, role });
+      form.reset();
+      render();
+    } catch(err){ alert("መለያ መፍጠር አልተቻለም፦ " + err.message); }
+  });
+
+  closeBtn.addEventListener("click", () => { panel.style.display = "none"; });
+  window.toggleAdminsPanel = function(){
     const isOpen = panel.style.display !== "none";
     panel.style.display = isOpen ? "none" : "block";
     if (!isOpen){ render(); panel.scrollIntoView({behavior:"smooth", block:"start"}); }
