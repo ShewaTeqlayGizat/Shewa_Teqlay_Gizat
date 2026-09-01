@@ -3278,7 +3278,7 @@ renderChannelVideos();
     body.innerHTML = filtered.map((m, i) => `
       <tr>
         <td>${i + 1}</td>
-        <td>${m.photo_url ? `<img src="${m.photo_url}" alt="${escapeHtml(m.name)}" class="member-row-photo">` : `<span class="member-row-photo-empty">👤</span>`}</td>
+        <td>${m.photo_url ? `<img src="${m.photo_url}" alt="${escapeHtml(m.name)}" class="member-row-photo" style="cursor:zoom-in;" onclick="openMemberPhotoLightbox('${m.photo_url.replace(/'/g,"\\'")}')">` : `<span class="member-row-photo-empty">👤</span>`}</td>
         <td>${escapeHtml(m.name)}</td>
         <td>${escapeHtml(m.gender || "-")}</td>
         <td>${escapeHtml(m.age || "-")}</td>
