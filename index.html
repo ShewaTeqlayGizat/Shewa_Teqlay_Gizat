@@ -3199,6 +3199,10 @@ renderChannelVideos();
     if (libCard && window.toggleLibraryPanel) {
       libCard.addEventListener("click", () => window.toggleLibraryPanel());
     }
+    const trainingCard = cardsGrid.querySelector('[data-card-id="trainingmgmt"]');
+    if (trainingCard && window.toggleTrainingPanel) {
+      trainingCard.addEventListener("click", () => window.toggleTrainingPanel());
+    }
     const vidCard = cardsGrid.querySelector('[data-card-id="videomgmt"]');
     if (vidCard && window.toggleVideoPanel) {
       vidCard.addEventListener("click", () => window.toggleVideoPanel());
