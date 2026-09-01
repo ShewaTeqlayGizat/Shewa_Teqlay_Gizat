@@ -3800,6 +3800,8 @@ renderMembers();
 // visitor sees the same list — not just the ones saved in their own browser.
 async function loadComments() {
   const list = document.getElementById("commentList");
+  const canView = isAdminLoggedIn() && (getAdminRole() === "admin" || getAdminRole() === "moderator");
+  if (!canView) { list.innerHTML = ""; return; }
   let all = [];
   try {
     all = await apiGet("/api/comments");
