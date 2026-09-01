@@ -4025,6 +4025,18 @@ loadFromAPI();
     observer.observe(panel, { attributes: true, attributeFilter: ["style"] });
   }
 })();
-</script>
+function openMemberPhotoLightbox(url){
+  let overlay = document.getElementById("photoLightbox");
+  if (!overlay){
+    overlay = document.createElement("div");
+    overlay.id = "photoLightbox";
+    overlay.className = "news-modal-overlay";
+    overlay.onclick = () => overlay.classList.remove("open");
+    overlay.innerHTML = `<img id="photoLightboxImg" src="" style="max-width:92vw; max-height:92vh; border-radius:10px; box-shadow:0 20px 60px rgba(0,0,0,.6);">`;
+    document.body.appendChild(overlay);
+  }
+  document.getElementById("photoLightboxImg").src = url;
+  overlay.classList.add("open");
+}</script>
 </body>
 </html>
