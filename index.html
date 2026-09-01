@@ -3517,12 +3517,13 @@ renderChannelVideos();
     let items = [];
     try { items = await apiGet("/api/news"); } catch(e){ list.innerHTML = "<p class='loading-text'>መጫን አልተቻለም።</p>"; return; }
     items.sort((a,b) => new Date(b.date) - new Date(a.date));
-    list.innerHTML = items.map(n => `
+        list.innerHTML = items.map(n => `
       <div class="ib-post">
         <div class="ib-post-head"><h4>${escapeHtml(n.title)}</h4></div>
         <p>${escapeHtml(n.body || "")}</p>
         <div class="ib-post-footer">
           <span class="ib-post-date">${formatDate(n.date)}</span>
+          <button type="button" class="member-db-del news-edit" data-id="${n.id}">አርም</button>
           <button type="button" class="member-db-del news-del" data-id="${n.id}">አጥፋ</button>
         </div>
       </div>`).join("") || "<p class='loading-text'>ገና ምንም ዜና አልተጨመረም።</p>";
@@ -3530,6 +3531,23 @@ renderChannelVideos();
       btn.addEventListener("click", async () => {
         try { await apiSend("/api/news/" + btn.dataset.id, "DELETE"); render(); }
         catch(e){ alert("ማጥፋት አልተቻለም፦ " + e.message); }
+      });
+    });
+    list.querySelectorAll(".news-edit").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const n = items.find(x => String(x.id) === btn.dataset.id);
+        if (!n) return;
+        const newTitle = prompt("ርዕስ:", n.title);
+        if (newTitle === null) return;
+        const newBody = prompt("ይዘት:", n.body || "");
+        if (newBody === null) return;
+        const fd = new FormData();
+        fd.append("title", newTitle.trim());
+        fd.append("body", newBody.trim());
+        try {
+          await apiSend("/api/news/" + n.id, "PUT", fd, true);
+          render();
+        } catch(e){ alert("ማርም አልተቻለም፦ " + e.message); }
       });
     });
   }
