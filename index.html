@@ -3148,9 +3148,10 @@ renderChannelVideos();
     {icon:"📊", title:"ውስጣዊ ስታትስቲክስ", desc:"የመምሪያውን አፈጻጸም የሚያሳዩ ውስጣዊ መረጃዎች።", fullOnly:true}
   ];
 
-  function renderDashboard(){
+  ffunction renderDashboard(){
     const fullAccess = isFullAdmin();
-    const visibleCards = officeCards.filter(c => fullAccess || !c.fullOnly);
+    const registrar = isRegistrar();
+    const visibleCards = officeCards.filter(c => fullAccess || (registrar && c.registrarOk) || (!fullAccess && !registrar && !c.fullOnly));
     cardsGrid.innerHTML = visibleCards.map(c => `
       <div class="office-card" ${c.id ? `data-card-id="${c.id}"` : ""}>
         <div class="office-card-icon">${c.icon}</div>
