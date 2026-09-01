@@ -3159,7 +3159,7 @@ renderChannelVideos();
         <p>${c.desc}</p>
       </div>`).join("") || "";
 
-    if (!fullAccess) {
+    if (!fullAccess && !registrar) {
       cardsGrid.insertAdjacentHTML("beforeend", `
         <div class="office-card" style="cursor:default;">
           <div class="office-card-icon">💬</div>
