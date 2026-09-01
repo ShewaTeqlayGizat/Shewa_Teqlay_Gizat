@@ -3312,6 +3312,25 @@ renderChannelVideos();
         } catch(e){ alert("ማጥፋት አልተቻለም፦ " + e.message); }
       });
     });
+    body.querySelectorAll(".member-edit-btn").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const m = all.find(x => String(x.id) === btn.dataset.id);
+        if (!m) return;
+        const newName = prompt("ስም:", m.name);
+        if (newName === null) return;
+        const newAge = prompt("ዕድሜ:", m.age || "");
+        const newBirthplace = prompt("የትውልድ ቦታ:", m.birthplace || "");
+        try {
+          await apiSend("/api/member-registry/" + m.id, "PUT", {
+            name: newName.trim() || m.name,
+            gender: m.gender, age: newAge || m.age, birthplace: newBirthplace || m.birthplace,
+            reg_id: m.reg_id, join_date: m.join_date, marital: m.marital, role: m.role,
+            education: m.education, skill: m.skill, status: m.status, bio: m.bio
+          });
+          render(searchInput.value);
+        } catch(e){ alert("ማርም አልተቻለም፦ " + e.message); }
+      });
+    });
   }
 
   const photoInput = document.getElementById("mPhoto");
