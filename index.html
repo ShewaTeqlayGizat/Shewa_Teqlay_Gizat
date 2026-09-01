@@ -3935,7 +3935,90 @@ async function loadFromAPI(){
   }
 }
 loadFromAPI();
+// ---------------- Admin Accounts Management ----------------
+(function adminAccountsController(){
+  const form = document.getElementById("adminsForm");
+  const listEl = document.getElementById("adminsList");
+  if (!form || !listEl) return;
 
+  async function loadAdmins(){
+    let admins = [];
+    try { admins = await apiGet("/api/auth/admins"); }
+    catch(e){ listEl.innerHTML = `<p style="color:#c00;">መጫን አልተቻለም፦ ${e.message}</p>`; return; }
+
+    if (!admins.length){
+      listEl.innerHTML = `<p>ምንም መለያ አልተገኘም።</p>`;
+      return;
+    }
+
+    listEl.innerHTML = admins.map(a => {
+      const locked = a.locked_until && new Date(a.locked_until) > new Date();
+      const roleLabel = a.role === "admin" ? "ዋና ማናጀር" : "Moderator";
+      return `
+        <div class="ns-list-item" style="display:flex; justify-content:space-between; align-items:center; gap:.6rem; flex-wrap:wrap;">
+          <div>
+            <h4>${escapeHtml(a.username)} <span style="color:#888; font-size:.8rem;">(${roleLabel})</span></h4>
+            <span class="ns-date">${locked ? "🔒 የተቆለፈ" : "✅ ንቁ"} ${a.failed_attempts ? `— ${a.failed_attempts} የተሳሳተ ሙከራ` : ""}</span>
+          </div>
+          <div style="display:flex; gap:.4rem; flex-wrap:wrap;">
+            ${locked ? `<button type="button" class="btn admin-unlock-btn" data-id="${a.id}">🔓 ክፈት</button>` : ""}
+            <button type="button" class="btn admin-reset-btn" data-id="${a.id}" data-username="${escapeHtml(a.username)}">🔑 ፓስወርድ ቀይር</button>
+            <button type="button" class="btn admin-del-btn" data-id="${a.id}" data-username="${escapeHtml(a.username)}">🗑️ አጥፋ</button>
+          </div>
+        </div>`;
+    }).join("");
+
+    listEl.querySelectorAll(".admin-del-btn").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        if (!confirm(`"${btn.dataset.username}" ን ማጥፋት ይፈልጋሉ?`)) return;
+        try {
+          await apiSend("/api/auth/admins/" + btn.dataset.id, "DELETE");
+          loadAdmins();
+        } catch(e){ alert("ማጥፋት አልተቻለም፦ " + e.message); }
+      });
+    });
+
+    listEl.querySelectorAll(".admin-reset-btn").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const newPass = prompt(`ለ "${btn.dataset.username}" አዲስ ፓስወርድ ያስገቡ፦`);
+        if (!newPass) return;
+        try {
+          await apiSend("/api/auth/admins/" + btn.dataset.id + "/password", "PUT", { password: newPass });
+          alert("ፓስወርድ ተቀይሯል።");
+        } catch(e){ alert("ማስተካከል አልተቻለም፦ " + e.message); }
+      });
+    });
+
+    listEl.querySelectorAll(".admin-unlock-btn").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        try {
+          await apiSend("/api/auth/admins/" + btn.dataset.id + "/unlock", "PUT");
+          loadAdmins();
+        } catch(e){ alert("መክፈት አልተቻለም፦ " + e.message); }
+      });
+    });
+  }
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const username = document.getElementById("aNewUsername").value.trim();
+    const password = document.getElementById("aNewPassword").value;
+    const role = document.getElementById("aNewRole").value;
+    try {
+      await apiSend("/api/auth/create-admin", "POST", { username, password, role });
+      form.reset();
+      loadAdmins();
+    } catch(e){ alert("መፍጠር አልተቻለም፦ " + e.message); }
+  });
+
+  const panel = document.getElementById("adminsPanel");
+  if (panel){
+    const observer = new MutationObserver(() => {
+      if (panel.style.display !== "none") loadAdmins();
+    });
+    observer.observe(panel, { attributes: true, attributeFilter: ["style"] });
+  }
+})();
 </script>
 </body>
 </html>
