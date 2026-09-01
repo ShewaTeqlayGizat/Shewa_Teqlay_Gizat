@@ -3815,8 +3815,7 @@ async function loadComments() {
   list.innerHTML = all.map(c => `
     <div class="comment-item">
       <div class="meta"><strong>${escapeHtml(c.name)}</strong> ${c.location ? "· " + escapeHtml(c.location) : ""} · ${formatDate(c.date)}
-        ${isAdminLoggedIn() ? `<button type="button" class="member-db-del comment-del" data-id="${c.id}">አጥፋ</button>` : ""}
-      </div>
+                ${isFullAdmin() ? `<button type="button" class="member-db-del comment-del" data-id="${c.id}">አጥፋ</button>` : ""}      </div>
       <p>${escapeHtml(c.message)}</p>
     </div>`).join("");
 
