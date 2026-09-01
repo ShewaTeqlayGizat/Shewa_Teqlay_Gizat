@@ -2241,7 +2241,6 @@ async function apiGet(path){
   if(!res.ok) throw new Error("API GET " + path + " failed: " + res.status);
   return res.json();
 }
-}
 async function apiSend(path, method, body, isFormData){
   const headers = {};
   const token = getAdminToken();
