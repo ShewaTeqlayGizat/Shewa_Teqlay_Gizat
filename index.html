@@ -3287,7 +3287,7 @@ renderChannelVideos();
         <td>${escapeHtml(m.skill || "-")}</td>
         <td><span class="member-status-badge status-${statusClass(m.status)}">${escapeHtml(m.status || "ንቁ")}</span></td>
         <td class="member-bio-cell" title="${escapeHtml(m.bio || "")}">${m.bio ? escapeHtml(m.bio.slice(0,40)) + (m.bio.length > 40 ? "…" : "") : "-"}</td>
-        <td><button type="button" class="member-db-del" data-id="${m.id}">አጥፋ</button></td>
+        <<td>${isFullAdmin() ? `<button type="button" class="member-db-del" data-id="${m.id}">አጥፋ</button>` : ""}</td>
       </tr>`).join("");
 
     body.querySelectorAll(".member-db-del").forEach(btn => {
