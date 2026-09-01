@@ -2150,7 +2150,20 @@ textarea{ margin-bottom:1rem; resize:vertical; }
         </form>
         <div class="ib-list" id="radioAdminList"></div>
       </div>
-
+<div id="trainingPanel" class="member-db-panel" style="display:none;">
+        <div class="member-db-head">
+          <h3>ስልጠና አስተዳደር</h3>
+          <button type="button" id="trainingPanelCloseBtn" class="so-lock-btn">ዝጋ</button>
+        </div>
+        <form id="trainingForm" class="ib-form">
+          <input type="text" id="tTitle" placeholder="ርዕስ" required>
+          <input type="date" id="tDate" required>
+          <input type="text" id="tDuration" placeholder="ቆይታ (ለምሳሌ 3 ቀናት)">
+          <input type="text" id="tAudience" placeholder="ታዳሚ (ለምሳሌ ለሁሉም አባላት)">
+          <button type="submit" class="btn btn-primary">➕ ስልጠና ጨምር</button>
+        </form>
+        <div class="ib-list" id="trainingAdminList"></div>
+      </div>
       <div id="adminsPanel" class="member-db-panel" style="display:none;">
         <div class="member-db-head">
           <h3>የAdmin መለያዎች (Manager / Moderator)</h3>
