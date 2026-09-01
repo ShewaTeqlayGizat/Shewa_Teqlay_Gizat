@@ -2231,7 +2231,7 @@ function clearAdminToken(){ sessionStorage.removeItem(AUTH_TOKEN_KEY); sessionSt
 function isAdminLoggedIn(){ return !!getAdminToken(); }
 function getAdminRole(){ return sessionStorage.getItem(AUTH_ROLE_KEY) || ""; }
 function setAdminRole(r){ sessionStorage.setItem(AUTH_ROLE_KEY, r); }
-function isFullAdmin(){ return isAdminLoggedIn() && getAdminRole() === "admin"; }
+function isFullAdmin(){ return isAdminLoggedIn() && getAdminRole() === "admin"; }function isRegistrar(){ return isAdminLoggedIn() && getAdminRole() === "registrar"; }
 
 async function apiGet(path){
   const headers = {};
