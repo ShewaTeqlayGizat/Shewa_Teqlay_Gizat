@@ -3149,7 +3149,7 @@ renderChannelVideos();
     {icon:"📊", title:"ውስጣዊ ስታትስቲክስ", desc:"የመምሪያውን አፈጻጸም የሚያሳዩ ውስጣዊ መረጃዎች።", fullOnly:true}
   ];
 
-  ffunction renderDashboard(){
+  function renderDashboard(){
     const fullAccess = isFullAdmin();
     const registrar = isRegistrar();
     const visibleCards = officeCards.filter(c => fullAccess || (registrar && c.registrarOk) || (!fullAccess && !registrar && !c.fullOnly));
