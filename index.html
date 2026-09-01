@@ -4102,6 +4102,83 @@ function openMemberPhotoLightbox(url){
   }
   document.getElementById("photoLightboxImg").src = url;
   overlay.classList.add("open");
-}</script>
+}
+// ---------------- Training Management ----------------
+(function trainingAdminController(){
+  const form = document.getElementById("trainingForm");
+  const list = document.getElementById("trainingAdminList");
+  const panel = document.getElementById("trainingPanel");
+  const closeBtn = document.getElementById("trainingPanelCloseBtn");
+  if (!form || !list || !panel) return;
+
+  let items = [];
+
+  async function render(){
+    try { items = await apiGet("/api/training"); }
+    catch(e){ list.innerHTML = "<p class='loading-text'>መጫን አልተቻለም።</p>"; return; }
+    items.sort((a,b) => new Date(a.date) - new Date(b.date));
+    list.innerHTML = items.map(t => `
+      <div class="ib-post">
+        <div class="ib-post-head"><h4>${escapeHtml(t.title)}</h4></div>
+        <p>${escapeHtml(t.duration || "")} ${t.audience ? "· " + escapeHtml(t.audience) : ""}</p>
+        <div class="ib-post-footer">
+          <span class="ib-post-date">${formatDate(t.date)}</span>
+          <button type="button" class="member-db-del training-edit" data-id="${t.id}">አርም</button>
+          <button type="button" class="member-db-del training-del" data-id="${t.id}">አጥፋ</button>
+        </div>
+      </div>`).join("") || "<p class='loading-text'>ገና ምንም ስልጠና አልተጨመረም።</p>";
+
+    list.querySelectorAll(".training-del").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        try { await apiSend("/api/training/" + btn.dataset.id, "DELETE"); render(); }
+        catch(e){ alert("ማጥፋት አልተቻለም፦ " + e.message); }
+      });
+    });
+
+    list.querySelectorAll(".training-edit").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const t = items.find(x => String(x.id) === btn.dataset.id);
+        if (!t) return;
+        const newTitle = prompt("ርዕስ:", t.title);
+        if (newTitle === null) return;
+        const newDate = prompt("ቀን (YYYY-MM-DD):", t.date ? t.date.slice(0,10) : "");
+        if (newDate === null) return;
+        const newDuration = prompt("ቆይታ:", t.duration || "");
+        const newAudience = prompt("ታዳሚ:", t.audience || "");
+        try {
+          await apiSend("/api/training/" + t.id, "PUT", {
+            title: newTitle.trim(), date: newDate.trim(),
+            duration: newDuration, audience: newAudience
+          });
+          render();
+          if (typeof renderTraining === "function") renderTraining();
+        } catch(e){ alert("ማርም አልተቻለም፦ " + e.message); }
+      });
+    });
+  }
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const title = document.getElementById("tTitle").value.trim();
+    const date = document.getElementById("tDate").value;
+    const duration = document.getElementById("tDuration").value.trim();
+    const audience = document.getElementById("tAudience").value.trim();
+    if (!title || !date) return;
+    try {
+      await apiSend("/api/training", "POST", { title, date, duration, audience });
+      form.reset();
+      render();
+      if (typeof renderTraining === "function") renderTraining();
+    } catch(e){ alert("ስልጠና መጨመር አልተቻለም፦ " + e.message); }
+  });
+
+  window.toggleTrainingPanel = function(){
+    const isOpen = panel.style.display !== "none";
+    document.querySelectorAll(".member-db-panel").forEach(p => p.style.display = "none");
+    if (!isOpen) { panel.style.display = "block"; render(); }
+  };
+  if (closeBtn) closeBtn.addEventListener("click", () => panel.style.display = "none");
+})();
+</script>
 </body>
 </html>
