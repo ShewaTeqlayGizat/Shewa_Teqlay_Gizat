@@ -4300,7 +4300,7 @@ function openMemberPhotoLightbox(url){
   window.toggleEduPanel = function(){
     const isOpen = panel.style.display !== "none";
     document.querySelectorAll(".member-db-panel").forEach(p => p.style.display = "none");
-    if (!isOpen) { panel.style.display = "block"; render(); }
+    if (!isOpen) { panel.style.display = "block"; render(); panel.scrollIntoView({behavior:"smooth", block:"start"}); }
   };
   if (closeBtn) closeBtn.addEventListener("click", () => panel.style.display = "none");
 })();
