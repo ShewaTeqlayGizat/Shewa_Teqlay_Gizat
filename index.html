@@ -4514,6 +4514,18 @@ function openMemberPhotoLightbox(url){
   };
   if (closeBtn) closeBtn.addEventListener("click", () => panel.style.display = "none");
 })();
+// ---------------- Admin Panel: toggle + close (restored) ----------------
+(function adminsPanelToggle(){
+  const panel = document.getElementById("adminsPanel");
+  const closeBtn = document.getElementById("adminsPanelCloseBtn");
+  if (!panel) return;
+  if (closeBtn) closeBtn.addEventListener("click", () => { panel.style.display = "none"; });
+  window.toggleAdminsPanel = function(){
+    const isOpen = panel.style.display !== "none";
+    document.querySelectorAll(".member-db-panel").forEach(p => p.style.display = "none");
+    if (!isOpen){ panel.style.display = "block"; panel.scrollIntoView({behavior:"smooth", block:"start"}); }
+  };
+})();
 </script>
 </body>
 </html>
