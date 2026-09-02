@@ -2364,11 +2364,25 @@ function toggleMore(btn) {
         </form>
         <div class="ib-list" id="internalAdminList"></div>
       </div>
-      <div id="adminsPanel" class="member-db-panel" style="display:none;">
-           </div>
+    <div id="adminsPanel" class="member-db-panel" style="display:none;">
+        <div class="member-db-head">
+          <h3>የAdmin መለያዎች (Manager / Moderator)</h3>
+          <button type="button" id="adminsPanelCloseBtn" class="so-lock-btn">ዝጋ</button>
+        </div>
+        <form id="adminsForm" class="ib-form">
+          <input type="text" id="aNewUsername" placeholder="የተጠቃሚ ስም" required>
+          <input type="password" id="aNewPassword" placeholder="የይለፍ ቃል" required>
+          <select id="aNewRole">
+            <option value="admin">ዋና ማናጀር (ሙሉ ስልጣን)</option>
+            <option value="moderator">Moderator (ንባብ + አስተያየት ማጥፋት ብቻ)</option>
+            <option value="registrar">Registrar (የአባላት ፎርም መሙላት ብቻ)</option>
+          </select>
+          <button type="submit" class="btn btn-primary">➕ መለያ ፍጠር</button>
+        </form>
+        <div class="ib-list" id="adminsList"></div>
+      </div>
   </div>
 </section>
-
 
 <!-- ===== Comments ===== -->
 <section id="comments" class="section section-comments alt-bg">
