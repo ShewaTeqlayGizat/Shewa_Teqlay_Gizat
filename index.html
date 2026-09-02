@@ -2154,7 +2154,27 @@ textarea{ margin-bottom:1rem; resize:vertical; }
         <div class="member-db-head">
           <h3>ስልጠና አስተዳደር</h3>
           <button type="button" id="trainingPanelCloseBtn" class="so-lock-btn">ዝጋ</button>
+        </div>id="
+  <div id="eduPanel" class="member-db-panel" style="display:none;">
+        <div class="member-db-head">
+          <h3>ትምህርታዊ ይዘት አስተዳደር</h3>
+          <button type="button" id="eduPanelCloseBtn" class="so-lock-btn">ዝጋ</button>
         </div>
+        <form id="eduForm" class="ib-form">
+          <select id="eTypeSelect">
+            <option value="eduVideo">ትምህርታዊ ቪዲዮ</option>
+            <option value="eduPhoto">ትምህርታዊ ፎቶ</option>
+            <option value="eduText">ትምህርታዊ ጽሁፍ</option>
+            <option value="eduPdf">ትምህርታዊ PDF</option>
+          </select>
+          <input type="text" id="eTitle" placeholder="ርዕስ" required>
+          <input type="text" id="eUrl" placeholder="YouTube URL (ለቪዲዮ ብቻ)">
+          <textarea id="eBody" placeholder="ጽሁፍ/ማብራሪያ (ለጽሁፍ ወይም መግለጫ)" style="grid-column: 1 / -1; min-height:70px;"></textarea>
+          <input type="file" id="eFile" accept="image/*,application/pdf">
+          <button type="submit" class="btn btn-primary">➕ ይዘት ጨምር</button>
+        </form>
+        <div class="ib-list" id="eduAdminList"></div>
+      </div>
         <form id="trainingForm" class="ib-form">
           <input type="text" id="tTitle" placeholder="ርዕስ" required>
           <input type="date" id="tDate" required>
