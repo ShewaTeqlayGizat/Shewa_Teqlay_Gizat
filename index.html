@@ -4003,57 +4003,6 @@ renderChannelVideos();
 })();
 
 // ---------------- Admin: Manage admin/moderator accounts (full manager only) ----------------
-(function adminsAccountController(){
-  const panel = document.getElementById("adminsPanel");
-  if (!panel) return;
-  const form = document.getElementById("adminsForm");
-  const list = document.getElementById("adminsList");
-  const closeBtn = document.getElementById("adminsPanelCloseBtn");
-
-  function roleLabel(r){ return r === "moderator" ? "Moderator (ንባብ + አስተያየት ማጥፋት)" : "ዋና ማናጀር (ሙሉ ስልጣን)"; }
-
-  async function render(){
-    let items = [];
-    try { items = await apiGet("/api/auth/admins"); }
-    catch(e){ list.innerHTML = "<p class='loading-text'>መጫን አልተቻለም (ይህን ማየት የሚችለው ዋና ማናጀር ብቻ ነው)።</p>"; return; }
-    list.innerHTML = items.map(a => `
-      <div class="ib-post">
-        <div class="ib-post-head"><h4>${escapeHtml(a.username)}</h4><span class="ib-post-badge ${a.role === 'moderator' ? '' : 'pdf'}">${roleLabel(a.role)}</span></div>
-        <div class="ib-post-footer">
-          <span class="ib-post-date">${formatDate(a.created_at)}</span>
-          <button type="button" class="member-db-del admin-del" data-id="${a.id}">አጥፋ</button>
-        </div>
-      </div>`).join("") || "<p class='loading-text'>ገና ምንም መለያ የለም።</p>";
-
-    list.querySelectorAll(".admin-del").forEach(btn => {
-      btn.addEventListener("click", async () => {
-        if (!confirm("ይህን መለያ ማጥፋት ይፈልጋሉ?")) return;
-        try { await apiSend("/api/auth/admins/" + btn.dataset.id, "DELETE"); render(); }
-        catch(e){ alert("ማጥፋት አልተቻለም፦ " + e.message); }
-      });
-    });
-  }
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const username = document.getElementById("aNewUsername").value.trim();
-    const password = document.getElementById("aNewPassword").value;
-    const role = document.getElementById("aNewRole").value;
-    if (!username || !password) return;
-    try {
-      await apiSend("/api/auth/create-admin", "POST", { username, password, role });
-      form.reset();
-      render();
-    } catch(err){ alert("መለያ መፍጠር አልተቻለም፦ " + err.message); }
-  });
-
-  closeBtn.addEventListener("click", () => { panel.style.display = "none"; });
-  window.toggleAdminsPanel = function(){
-    const isOpen = panel.style.display !== "none";
-    panel.style.display = isOpen ? "none" : "block";
-    if (!isOpen){ render(); panel.scrollIntoView({behavior:"smooth", block:"start"}); }
-  };
-})();
 
 // ---------------- Members / leadership ----------------
 function renderMembers(){
