@@ -2184,6 +2184,25 @@ textarea{ margin-bottom:1rem; resize:vertical; }
         </form>
         <div class="ib-list" id="eduAdminList"></div>
       </div>
+      <div id="internalPanel" class="member-db-panel" style="display:none;">
+        <div class="member-db-head">
+          <h3>ውስጣዊ መዝገብ አስተዳደር</h3>
+          <button type="button" id="internalPanelCloseBtn" class="so-lock-btn">ዝጋ</button>
+        </div>
+        <form id="internalForm" class="ib-form">
+          <select id="iTypeSelect">
+            <option value="financeReport">💰 የገንዘብ ሪፖርት</option>
+            <option value="meetingMinutes">📋 የስብሰባ ቃለ ጉባኤ</option>
+            <option value="internalDoc">📁 ውስጣዊ ሰነድ</option>
+            <option value="internalStats">📊 ውስጣዊ ስታትስቲክስ</option>
+          </select>
+          <input type="text" id="iTitle" placeholder="ርዕስ" required>
+          <textarea id="iBody" placeholder="ዝርዝር መግለጫ" style="grid-column: 1 / -1; min-height:70px;"></textarea>
+          <input type="file" id="iFile" accept="application/pdf,image/*,.xlsx,.xls,.doc,.docx">
+          <button type="submit" class="btn btn-primary">➕ ይዘት ጨምር</button>
+        </form>
+        <div class="ib-list" id="internalAdminList"></div>
+      </div>
       <div id="adminsPanel" class="member-db-panel" style="display:none;">
         <div class="member-db-head">
           <h3>የAdmin መለያዎች (Manager / Moderator)</h3>
