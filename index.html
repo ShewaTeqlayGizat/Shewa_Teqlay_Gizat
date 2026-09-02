@@ -4142,8 +4142,7 @@ loadFromAPI();
     } catch(e){ alert("መፍጠር አልተቻለም፦ " + e.message); }
   });
 
-  const panel = document.getElementById("adminsPanel");
-  if (panel){
+    if (panel){
     const observer = new MutationObserver(() => {
       if (panel.style.display !== "none") loadAdmins();
     });
