@@ -4204,6 +4204,91 @@ function openMemberPhotoLightbox(url){
   };
   if (closeBtn) closeBtn.addEventListener("click", () => panel.style.display = "none");
 })();
+  // ---------------- Educational Content Management ----------------
+(function eduContentController(){
+  const form = document.getElementById("eduForm");
+  const list = document.getElementById("eduAdminList");
+  const panel = document.getElementById("eduPanel");
+  const closeBtn = document.getElementById("eduPanelCloseBtn");
+  if (!form || !list || !panel) return;
+
+  const TYPE_LABELS = { eduVideo:"ቪዲዮ", eduPhoto:"ፎቶ", eduText:"ጽሁፍ", eduPdf:"PDF" };
+  let items = [];
+
+  async function render(){
+    try {
+      const [v, p, t, d] = await Promise.all([
+        apiGet("/api/content?type=eduVideo"),
+        apiGet("/api/content?type=eduPhoto"),
+        apiGet("/api/content?type=eduText"),
+        apiGet("/api/content?type=eduPdf"),
+      ]);
+      items = [...v, ...p, ...t, ...d];
+    } catch(e){ list.innerHTML = "<p class='loading-text'>መጫን አልተቻለም።</p>"; return; }
+    items.sort((a,b) => new Date(b.date) - new Date(a.date));
+    list.innerHTML = items.map(c => `
+      <div class="ib-post">
+        <div class="ib-post-head"><h4>[${TYPE_LABELS[c.type]||c.type}] ${escapeHtml(c.title)}</h4></div>
+        <p>${escapeHtml((c.body||"").slice(0,80))}</p>
+        <div class="ib-post-footer">
+          <span class="ib-post-date">${formatDate(c.date)}</span>
+          <button type="button" class="member-db-del edu-edit" data-id="${c.id}">አርም</button>
+          <button type="button" class="member-db-del edu-del" data-id="${c.id}">አጥፋ</button>
+        </div>
+      </div>`).join("") || "<p class='loading-text'>ገና ምንም ይዘት አልተጨመረም።</p>";
+
+    list.querySelectorAll(".edu-del").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        try { await apiSend("/api/content/" + btn.dataset.id, "DELETE"); render(); }
+        catch(e){ alert("ማጥፋት አልተቻለም፦ " + e.message); }
+      });
+    });
+
+    list.querySelectorAll(".edu-edit").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const c = items.find(x => String(x.id) === btn.dataset.id);
+        if (!c) return;
+        const newTitle = prompt("ርዕስ:", c.title);
+        if (newTitle === null) return;
+        const newBody = prompt("ጽሁፍ/ማብራሪያ:", c.body || "");
+        try {
+          await apiSend("/api/content/" + c.id, "PUT", { title: newTitle.trim(), body: newBody });
+          render();
+          if (typeof loadFromAPI === "function") loadFromAPI();
+        } catch(e){ alert("ማርም አልተቻለም፦ " + e.message); }
+      });
+    });
+  }
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const type = document.getElementById("eTypeSelect").value;
+    const title = document.getElementById("eTitle").value.trim();
+    const url = document.getElementById("eUrl").value.trim();
+    const body = document.getElementById("eBody").value.trim();
+    const file = document.getElementById("eFile").files[0];
+    if (!title) return;
+    const fd = new FormData();
+    fd.append("type", type);
+    fd.append("title", title);
+    if (body) fd.append("body", body);
+    if (url) fd.append("url", url);
+    if (file) fd.append("file", file);
+    try {
+      await apiSend("/api/content", "POST", fd, true);
+      form.reset();
+      render();
+      if (typeof loadFromAPI === "function") loadFromAPI();
+    } catch(e){ alert("ይዘት መጨመር አልተቻለም፦ " + e.message); }
+  });
+
+  window.toggleEduPanel = function(){
+    const isOpen = panel.style.display !== "none";
+    document.querySelectorAll(".member-db-panel").forEach(p => p.style.display = "none");
+    if (!isOpen) { panel.style.display = "block"; render(); }
+  };
+  if (closeBtn) closeBtn.addEventListener("click", () => panel.style.display = "none");
+})();
 </script>
 </body>
 </html>
