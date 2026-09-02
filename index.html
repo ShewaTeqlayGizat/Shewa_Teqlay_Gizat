@@ -4324,6 +4324,87 @@ function openMemberPhotoLightbox(url){
   };
   if (closeBtn) closeBtn.addEventListener("click", () => panel.style.display = "none");
 })();
+  // ---------------- Internal Records Management ----------------
+(function internalRecordsController(){
+  const form = document.getElementById("internalForm");
+  const list = document.getElementById("internalAdminList");
+  const panel = document.getElementById("internalPanel");
+  const closeBtn = document.getElementById("internalPanelCloseBtn");
+  if (!form || !list || !panel) return;
+
+  const TYPE_LABELS = { financeReport:"💰 ገንዘብ ሪፖርት", meetingMinutes:"📋 ቃለ ጉባኤ", internalDoc:"📁 ሰነድ", internalStats:"📊 ስታትስቲክስ" };
+  let items = [];
+
+  async function render(){
+    try {
+      const [a, b, c, d] = await Promise.all([
+        apiGet("/api/content?type=financeReport"),
+        apiGet("/api/content?type=meetingMinutes"),
+        apiGet("/api/content?type=internalDoc"),
+        apiGet("/api/content?type=internalStats"),
+      ]);
+      items = [...a, ...b, ...c, ...d];
+    } catch(e){ list.innerHTML = "<p class='loading-text'>መጫን አልተቻለም።</p>"; return; }
+    items.sort((a,b) => new Date(b.date) - new Date(a.date));
+    list.innerHTML = items.map(c => `
+      <div class="ib-post">
+        <div class="ib-post-head"><h4>[${TYPE_LABELS[c.type]||c.type}] ${escapeHtml(c.title)}</h4></div>
+        <p>${escapeHtml((c.body||"").slice(0,80))}</p>
+        <div class="ib-post-footer">
+          <span class="ib-post-date">${formatDate(c.date)}</span>
+          <button type="button" class="member-db-del internal-edit" data-id="${c.id}">አርም</button>
+          <button type="button" class="member-db-del internal-del" data-id="${c.id}">አጥፋ</button>
+        </div>
+      </div>`).join("") || "<p class='loading-text'>ገና ምንም ይዘት አልተጨመረም።</p>";
+
+    list.querySelectorAll(".internal-del").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        try { await apiSend("/api/content/" + btn.dataset.id, "DELETE"); render(); }
+        catch(e){ alert("ማጥፋት አልተቻለም፦ " + e.message); }
+      });
+    });
+
+    list.querySelectorAll(".internal-edit").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const c = items.find(x => String(x.id) === btn.dataset.id);
+        if (!c) return;
+        const newTitle = prompt("ርዕስ:", c.title);
+        if (newTitle === null) return;
+        const newBody = prompt("ዝርዝር:", c.body || "");
+        try {
+          await apiSend("/api/content/" + c.id, "PUT", { title: newTitle.trim(), body: newBody });
+          render();
+        } catch(e){ alert("ማርም አልተቻለም፦ " + e.message); }
+      });
+    });
+  }
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const type = document.getElementById("iTypeSelect").value;
+    const title = document.getElementById("iTitle").value.trim();
+    const body = document.getElementById("iBody").value.trim();
+    const file = document.getElementById("iFile").files[0];
+    if (!title) return;
+    const fd = new FormData();
+    fd.append("type", type);
+    fd.append("title", title);
+    if (body) fd.append("body", body);
+    if (file) fd.append("file", file);
+    try {
+      await apiSend("/api/content", "POST", fd, true);
+      form.reset();
+      render();
+    } catch(e){ alert("ይዘት መጨመር አልተቻለም፦ " + e.message); }
+  });
+
+  window.toggleInternalPanel = function(){
+    const isOpen = panel.style.display !== "none";
+    document.querySelectorAll(".member-db-panel").forEach(p => p.style.display = "none");
+    if (!isOpen) { panel.style.display = "block"; render(); panel.scrollIntoView({behavior:"smooth", block:"start"}); }
+  };
+  if (closeBtn) closeBtn.addEventListener("click", () => panel.style.display = "none");
+})();
 </script>
 </body>
 </html>
