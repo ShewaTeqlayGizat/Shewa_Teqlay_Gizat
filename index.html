@@ -3414,7 +3414,7 @@ renderChannelVideos();
     }
     const trainingCard = cardsGrid.querySelector('[data-card-id="trainingmgmt"]');
     if (trainingCard && window.toggleTrainingPanel) {
-      trainingCard.addEventListener("click", () => window.toggleTrainingPanel());
+      trainingCard.addEventListener("click", () => { window.toggleTrainingPanel(); if (window.toggleEduPanel) window.toggleEduPanel(); });
     }
     
     const internalCard = cardsGrid.querySelector('[data-card-id="internalmgmt"]');
