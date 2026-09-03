@@ -4328,7 +4328,7 @@ function openMemberPhotoLightbox(url){
     document.querySelectorAll(".member-db-panel").forEach(p => { if (p.id !== "eduPanel") p.style.display = "none"; });
     if (!isOpen) { panel.style.display = "block"; render(); panel.scrollIntoView({behavior:"smooth", block:"start"}); }
   };
-  if (closeBtn) closeBtn.addEventListener("click", () => panel.style.display = "none");
+  if (closeBtn) closeBtn.addEventListener("click", () => { panel.style.display = "none"; const ep = document.getElementById("eduPanel"); if (ep) ep.style.display = "none"; });
 })();
   // ---------------- Educational Content Management ----------------
 (function eduContentController(){
