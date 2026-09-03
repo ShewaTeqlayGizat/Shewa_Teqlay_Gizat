@@ -3403,7 +3403,7 @@ renderChannelVideos();
     }
     const newsCard = cardsGrid.querySelector('[data-card-id="newsmgmt"]');
     if (newsCard && window.toggleNewsPanel) {
-      newsCard.addEventListener("click", () => window.toggleNewsPanel());
+      newsCard.addEventListener("click", () => { window.toggleNewsPanel(); if (window.toggleRadioPanel) window.toggleRadioPanel(); });
     }
     const libCard = cardsGrid.querySelector('[data-card-id="librarymgmt"]');
     if (libCard && window.toggleLibraryPanel) {
