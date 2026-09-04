@@ -4551,6 +4551,92 @@ function openMemberPhotoLightbox(url){
     if (!isOpen){ panel.style.display = "block"; panel.scrollIntoView({behavior:"smooth", block:"start"}); }
   };
 })();
+// ---------------- Student Portal: Login/Signup ----------------
+(function studentPortalController(){
+  const loggedOut = document.getElementById("spLoggedOut");
+  const loggedIn = document.getElementById("spLoggedIn");
+  if (!loggedOut || !loggedIn) return;
+
+  const tabLogin = document.getElementById("spTabLogin");
+  const tabSignup = document.getElementById("spTabSignup");
+  const loginForm = document.getElementById("spLoginForm");
+  const signupForm = document.getElementById("spSignupForm");
+  const welcomeName = document.getElementById("spWelcomeName");
+  const logoutBtn = document.getElementById("spLogoutBtn");
+
+  function getStudentToken(){ return localStorage.getItem("studentToken") || ""; }
+  function setStudentToken(t){ localStorage.setItem("studentToken", t); }
+  function clearStudentToken(){ localStorage.removeItem("studentToken"); localStorage.removeItem("studentName"); }
+
+  function showLoggedIn(name){
+    loggedOut.style.display = "none";
+    loggedIn.style.display = "block";
+    welcomeName.textContent = name;
+  }
+  function showLoggedOut(){
+    loggedOut.style.display = "block";
+    loggedIn.style.display = "none";
+  }
+
+  tabLogin.addEventListener("click", () => {
+    tabLogin.classList.add("active"); tabSignup.classList.remove("active");
+    loginForm.style.display = "flex"; signupForm.style.display = "none";
+  });
+  tabSignup.addEventListener("click", () => {
+    tabSignup.classList.add("active"); tabLogin.classList.remove("active");
+    signupForm.style.display = "flex"; loginForm.style.display = "none";
+  });
+
+  loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = document.getElementById("spLoginEmail").value.trim();
+    const password = document.getElementById("spLoginPassword").value;
+    const status = document.getElementById("spLoginStatus");
+    status.textContent = "እየገባ ነው...";
+    try {
+      const res = await fetch(API_BASE + "/api/students/login", {
+        method: "POST", headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ email, password })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Login failed");
+      setStudentToken(data.token);
+      localStorage.setItem("studentName", data.student.full_name);
+      showLoggedIn(data.student.full_name);
+    } catch(err){ status.textContent = "ስህተት፦ " + err.message; }
+  });
+
+  signupForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const full_name = document.getElementById("spSignupName").value.trim();
+    const email = document.getElementById("spSignupEmail").value.trim();
+    const phone = document.getElementById("spSignupPhone").value.trim();
+    const password = document.getElementById("spSignupPassword").value;
+    const status = document.getElementById("spSignupStatus");
+    status.textContent = "እየተፈጠረ ነው...";
+    try {
+      const res = await fetch(API_BASE + "/api/students/signup", {
+        method: "POST", headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ full_name, email, phone, password })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Signup failed");
+      setStudentToken(data.token);
+      localStorage.setItem("studentName", data.student.full_name);
+      showLoggedIn(data.student.full_name);
+    } catch(err){ status.textContent = "ስህተት፦ " + err.message; }
+  });
+
+  logoutBtn.addEventListener("click", () => {
+    clearStudentToken();
+    showLoggedOut();
+  });
+
+  // On page load, check if already logged in
+  const existingToken = getStudentToken();
+  const existingName = localStorage.getItem("studentName");
+  if (existingToken && existingName) showLoggedIn(existingName);
+})();
 </script>
 </body>
 </html>
