@@ -105,9 +105,16 @@ p{ margin:0 0 1em; }
   box-shadow: 0 1px 0 rgba(29,36,48,.03), 0 2px 16px rgba(11,30,60,.15);
 }
 .site-header::after{
-  content:""; display:block; height:3px; width:100%;
-  background: linear-gradient(90deg, #078930 0%, #4DB848 25%, #FCDD09 50%, #F0A32A 75%, #DA121A 100%);
-  box-shadow: 0 0 10px rgba(252,221,9,.55), 0 0 6px rgba(7,137,48,.4), 0 1px 2px rgba(0,0,0,.15);
+  content:"";
+  display:block;
+  height:6px;
+  width:100%;
+  background: linear-gradient(
+    to top,
+    #E53935 0% 33.33%,
+    #FFD600 33.33% 66.66%,
+    #43A047 66.66% 100%
+  );
 }
 .header-inner{
   max-width: var(--max-w); margin:0 auto; padding:.85rem 1.5rem;
