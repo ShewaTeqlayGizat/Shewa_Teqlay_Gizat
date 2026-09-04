@@ -1795,7 +1795,44 @@ function toggleMore(btn) {
 </section>
 
 <!-- ===== Educational Media Viewer ===== -->
-<section id="edu-media" class="section section-edu-media alt-bg">
+<!-- ===== Student Portal: Bootcamp ===== -->
+<section id="student-portal" class="section section-student-portal alt-bg">
+  <div class="section-inner">
+    <span class="eyebrow">ትምህርትና ስልጠና</span>
+    <h2>🎓 Bootcamp የተማሪ መግቢያ</h2>
+    <p class="section-lead">የ Bootcamp ትምህርቶችን ለመከታተል፣ ውጤትዎን እና እድገትዎን ለማየት እዚህ ይግቡ ወይም አዲስ መለያ ይክፈቱ።</p>
+
+    <div id="spLoggedOut">
+      <div class="sp-tabs">
+        <button type="button" id="spTabLogin" class="sp-tab active">ግባ</button>
+        <button type="button" id="spTabSignup" class="sp-tab">አዲስ መለያ ክፈት</button>
+      </div>
+
+      <form id="spLoginForm" class="ns-admin-form" style="max-width:420px;">
+        <input type="email" id="spLoginEmail" placeholder="ኢሜይል" required>
+        <input type="password" id="spLoginPassword" placeholder="የይለፍ ቃል" required>
+        <button type="submit" class="btn btn-primary">ግባ</button>
+        <p id="spLoginStatus" class="form-status"></p>
+      </form>
+
+      <form id="spSignupForm" class="ns-admin-form" style="max-width:420px; display:none;">
+        <input type="text" id="spSignupName" placeholder="ሙሉ ስም" required>
+        <input type="email" id="spSignupEmail" placeholder="ኢሜይል" required>
+        <input type="text" id="spSignupPhone" placeholder="ስልክ ቁጥር">
+        <input type="password" id="spSignupPassword" placeholder="የይለፍ ቃል" required>
+        <button type="submit" class="btn btn-primary">መለያ ክፈት</button>
+        <p id="spSignupStatus" class="form-status"></p>
+      </form>
+    </div>
+
+    <div id="spLoggedIn" style="display:none;">
+      <p>እንኳን ደህና መጡ፣ <strong id="spWelcomeName"></strong>!</p>
+      <button type="button" id="spLogoutBtn" class="btn">ውጣ</button>
+      <p style="margin-top:1rem; color:var(--ink-soft);">📚 የኮርስ ዝርዝር እና ውጤት ገጽ በቅርቡ እዚህ ይታያል።</p>
+    </div>
+  </div>
+</section>
+  <section id="edu-media" class="section section-edu-media alt-bg">
   <div class="section-inner">
     <span class="eyebrow">ትምህርትና ስልጠና</span>
     <h2>ትምህርታዊ ምስልና ቪዲዮ መመልከቻ</h2>
