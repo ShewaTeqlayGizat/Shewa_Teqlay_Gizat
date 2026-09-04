@@ -3470,11 +3470,14 @@ renderChannelVideos();
       vidCard.addEventListener("click", () => window.toggleVideoPanel());
     }
    
-    const adminsCard = cardsGrid.querySelector('[data-card-id="adminsmgmt"]');
+   const adminsCard = cardsGrid.querySelector('[data-card-id="adminsmgmt"]');
     if (adminsCard && window.toggleAdminsPanel) {
       adminsCard.addEventListener("click", () => window.toggleAdminsPanel());
     }
-  }
+    const coursesCard = cardsGrid.querySelector('[data-card-id="coursesmgmt"]');
+    if (coursesCard && window.toggleCoursesPanel) {
+      coursesCard.addEventListener("click", () => window.toggleCoursesPanel());
+    }
 
   function unlock(){
     gate.style.display = "none";
