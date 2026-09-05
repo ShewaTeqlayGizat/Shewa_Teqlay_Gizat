@@ -3478,9 +3478,8 @@ renderChannelVideos();
     if (coursesCard && window.toggleCoursesPanel) {
       coursesCard.addEventListener("click", () => window.toggleCoursesPanel());
     }
-
-  function unlock(){
-    gate.style.display = "none";
+  }
+  function unlock(){    gate.style.display = "none";
     dashboard.style.display = "block";
     renderDashboard();
     if (typeof window.refreshNewsStudioAdminForms === "function") window.refreshNewsStudioAdminForms();
