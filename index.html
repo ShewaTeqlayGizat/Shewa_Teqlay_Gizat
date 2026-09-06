@@ -2411,6 +2411,30 @@ function toggleMore(btn) {
         </form>
         <div class="ib-list" id="internalAdminList"></div>
       </div>
+      <div id="coursesPanel" class="member-db-panel" style="display:none;">
+        <div class="member-db-head">
+          <h3>Bootcamp ኮርስ አስተዳደር</h3>
+          <button type="button" id="coursesPanelCloseBtn" class="so-lock-btn">ዝጋ</button>
+        </div>
+        <form id="courseForm" class="ib-form">
+          <input type="text" id="cTitle" placeholder="የኮርስ ርዕስ" required>
+          <input type="text" id="cInstructor" placeholder="አስተማሪ ስም">
+          <textarea id="cDescription" placeholder="የኮርስ መግለጫ" style="grid-column: 1 / -1; min-height:60px;"></textarea>
+          <button type="submit" class="btn btn-primary">➕ ኮርስ ፍጠር</button>
+        </form>
+        <div class="ib-list" id="coursesAdminList"></div>
+
+        <div id="lessonSubPanel" style="display:none; margin-top:1.5rem; padding-top:1.5rem; border-top:2px dashed rgba(227,30,36,.3);">
+          <h4 style="color:#E31E24;">🎬 "<span id="lessonCourseTitle"></span>" ቪዲዮ ትምህርቶች</h4>
+          <form id="lessonForm" class="ib-form">
+            <input type="text" id="lTitle" placeholder="የትምህርት ርዕስ" required>
+            <input type="text" id="lVideoUrl" placeholder="YouTube URL" required>
+            <button type="submit" class="btn btn-primary">➕ ትምህርት ጨምር</button>
+          </form>
+          <div class="ib-list" id="lessonsAdminList"></div>
+          <button type="button" id="lessonSubPanelCloseBtn" class="btn" style="margin-top:.5rem;">ወደ ኮርስ ዝርዝር ተመለስ</button>
+        </div>
+      </div>
     <div id="adminsPanel" class="member-db-panel" style="display:none;">
         <div class="member-db-head">
           <h3>የAdmin መለያዎች (Manager / Moderator)</h3>
