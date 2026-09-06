@@ -1317,6 +1317,18 @@ textarea{ margin-bottom:1rem; resize:vertical; }
 .sp-tabs{ display:flex; gap:.5rem; margin-bottom:1rem; }
 .sp-tab{ padding:.5rem 1.2rem; border-radius:8px; border:1px solid rgba(227,30,36,.4); background:transparent; color:var(--ink); cursor:pointer; font-weight:600; }
 .sp-tab.active{ background:#E31E24; color:#fff; }
+.cert-design{ border:12px solid #E31E24; border-image: linear-gradient(45deg, #E31E24, #B7A272, #E31E24) 1; padding:2.5rem; text-align:center; background:#fffdf8; font-family:serif; position:relative; }
+.cert-design::before{ content:"🎓"; font-size:3rem; display:block; margin-bottom:.5rem; }
+.cert-design h1{ color:#E31E24; font-size:1.8rem; margin:.3rem 0; letter-spacing:2px; }
+.cert-design .cert-photo{ width:90px; height:90px; border-radius:50%; object-fit:cover; border:3px solid #B7A272; margin:1rem auto; display:block; }
+.cert-design .cert-name{ font-size:1.6rem; font-weight:700; color:#2B241A; margin:.8rem 0; border-bottom:2px solid #B7A272; display:inline-block; padding-bottom:.3rem; }
+.cert-design .cert-course{ font-size:1.2rem; color:#2B241A; margin:.6rem 0; font-style:italic; }
+.cert-design .cert-date{ color:#666; margin:.5rem 0; }
+.cert-design .cert-footer{ display:flex; justify-content:space-between; margin-top:2rem; padding-top:1rem; border-top:1px dashed #B7A272; }
+.cert-design .cert-sig{ text-align:center; }
+.cert-design .cert-sig .sig-name{ font-family:cursive; font-size:1.3rem; border-bottom:1px solid #333; padding:0 1rem .2rem; }
+.cert-design .cert-sig .sig-title{ font-size:.8rem; color:#666; margin-top:.3rem; }
+.cert-design .cert-code{ font-size:.75rem; color:#999; margin-top:1.5rem; }
 </style>
 </head>
 <body>
