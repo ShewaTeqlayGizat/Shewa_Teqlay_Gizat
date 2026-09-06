@@ -5124,6 +5124,82 @@ function openMemberPhotoLightbox(url){
   // Also load immediately if already logged in on page load
   if (localStorage.getItem("studentToken")) loadCourses();
 })();
+// ---------------- Student Portal: Tabs, Results, Progress, Certificates ----------------
+(function studentTabsController(){
+  const tabCourses = document.getElementById("spTabCourses");
+  const tabResults = document.getElementById("spTabResults");
+  const tabCerts = document.getElementById("spTabCerts");
+  const courseListView = document.getElementById("spCourseListView");
+  const courseDetailView = document.getElementById("spCourseDetailView");
+  const resultsView = document.getElementById("spResultsView");
+  const certsView = document.getElementById("spCertsView");
+  if (!tabCourses || !tabResults || !tabCerts) return;
+
+  function studentToken(){ return localStorage.getItem("studentToken") || ""; }
+  async function studentGet(path){
+    const headers = {};
+    const t = studentToken();
+    if (t) headers["Authorization"] = "Bearer " + t;
+    const res = await fetch(API_BASE + path, { headers });
+    if (!res.ok) throw new Error("Request failed: " + res.status);
+    return res.json();
+  }
+
+  function showView(view){
+    [courseListView, courseDetailView, resultsView, certsView].forEach(v => { if (v) v.style.display = "none"; });
+    [tabCourses, tabResults, tabCerts].forEach(t => t.classList.remove("active"));
+    if (view === "courses"){ courseListView.style.display = "block"; tabCourses.classList.add("active"); }
+    if (view === "results"){ resultsView.style.display = "block"; tabResults.classList.add("active"); loadResults(); }
+    if (view === "certs"){ certsView.style.display = "block"; tabCerts.classList.add("active"); loadCerts(); }
+  }
+
+  tabCourses.addEventListener("click", () => showView("courses"));
+  tabResults.addEventListener("click", () => showView("results"));
+  tabCerts.addEventListener("click", () => showView("certs"));
+
+  async function loadResults(){
+    const resultsList = document.getElementById("spResultsList");
+    const progressList = document.getElementById("spProgressList");
+    try {
+      const results = await studentGet("/api/students/my-results");
+      resultsList.innerHTML = results.map(r => `
+        <div class="ib-post">
+          <div class="ib-post-head"><h4>${escapeHtml(r.quiz_title)}</h4></div>
+          <p>ኮርስ፦ ${escapeHtml(r.course_title)}</p>
+          <p style="font-weight:700;">ውጤት፦ ${r.score} / ${r.total} (${Math.round(r.score/r.total*100)}%)</p>
+          <span class="ib-post-date">${formatDate(r.taken_at)}</span>
+        </div>`).join("") || "<p class='loading-text'>ገና ምንም ፈተና አልወሰዱም።</p>";
+    } catch(e){ resultsList.innerHTML = "<p class='loading-text'>መጫን አልተቻለም።</p>"; }
+
+    try {
+      const progress = await studentGet("/api/students/my-progress");
+      progressList.innerHTML = progress.map(p => {
+        const pct = p.total_lessons > 0 ? Math.round(p.completed_lessons / p.total_lessons * 100) : 0;
+        return `
+        <div class="ib-post">
+          <div class="ib-post-head"><h4>${escapeHtml(p.title)}</h4></div>
+          <p>${p.completed_lessons} / ${p.total_lessons} ትምህርቶች ተጠናቅቀዋል (${pct}%)</p>
+          <div style="background:#eee; border-radius:6px; height:10px; overflow:hidden;">
+            <div style="background:#E31E24; height:100%; width:${pct}%;"></div>
+          </div>
+        </div>`;
+      }).join("") || "<p class='loading-text'>ገና ምንም ኮርስ አልገቡም።</p>";
+    } catch(e){ progressList.innerHTML = "<p class='loading-text'>መጫን አልተቻለም።</p>"; }
+  }
+
+  async function loadCerts(){
+    const certsList = document.getElementById("spCertsList");
+    try {
+      const certs = await studentGet("/api/certificates/my");
+      certsList.innerHTML = certs.map(c => `
+        <div class="ib-post">
+          <div class="ib-post-head"><h4>🏆 ${escapeHtml(c.course_title)}</h4></div>
+          <p>የምስክር ወረቀት ኮድ፦ <strong>${c.certificate_code}</strong></p>
+          <span class="ib-post-date">${formatDate(c.issued_at)}</span>
+        </div>`).join("") || "<p class='loading-text'>ገና ምንም ሰርተፍኬት አላገኙም።</p>";
+    } catch(e){ certsList.innerHTML = "<p class='loading-text'>መጫን አልተቻለም።</p>"; }
+  }
+})();
 </script>
 </body>
 </html>
