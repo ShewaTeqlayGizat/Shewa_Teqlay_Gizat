@@ -5310,8 +5310,9 @@ function openMemberPhotoLightbox(url){
     try {
       const cert = await studentGet("/api/certificates/verify/" + code);
       const studentPhoto = localStorage.getItem("studentPhoto");
-      body.innerHTML = `
-        <div class="cert-design">
+            body.innerHTML = `
+        <div class="cert-frame">
+          ${cert.logo_url ? `<img src="${cert.logo_url}" class="cert-logo">` : ""}
           <h1>የስኬት ሰርተፍኬት</h1>
           <p style="color:#666;">Certificate of Completion</p>
           ${studentPhoto ? `<img src="${studentPhoto}" class="cert-photo">` : ""}
