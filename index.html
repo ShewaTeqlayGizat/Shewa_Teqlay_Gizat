@@ -1833,6 +1833,24 @@ function toggleMore(btn) {
       <p>እንኳን ደህና መጡ፣ <strong id="spWelcomeName"></strong>!</p>
       <button type="button" id="spLogoutBtn" class="btn">ውጣ</button>
 
+      <div class="sp-tabs" style="margin-top:1rem;">
+        <button type="button" id="spTabCourses" class="sp-tab active">📚 ኮርሶች</button>
+        <button type="button" id="spTabResults" class="sp-tab">📊 ውጤት እና እድገት</button>
+        <button type="button" id="spTabCerts" class="sp-tab">🏆 ሰርተፍኬቶች</button>
+      </div>
+
+      <div id="spResultsView" style="display:none;">
+        <h3>📊 የፈተና ውጤቶች</h3>
+        <div class="ib-list" id="spResultsList"></div>
+        <h3 style="margin-top:1.5rem;">📈 የኮርስ እድገት</h3>
+        <div class="ib-list" id="spProgressList"></div>
+      </div>
+
+      <div id="spCertsView" style="display:none;">
+        <h3>🏆 ሰርተፍኬቶቼ</h3>
+        <div class="ib-list" id="spCertsList"></div>
+      </div>
+
       <div id="spCourseListView">
         <h3 style="margin-top:1.5rem;">📚 ያሉ ኮርሶች</h3>
         <div class="ib-list" id="spCoursesList"></div>
