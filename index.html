@@ -4949,6 +4949,163 @@ function openMemberPhotoLightbox(url){
     if (!isOpen) { panel.style.display = "block"; render(); panel.scrollIntoView({behavior:"smooth", block:"start"}); }
   };
 })();
+// ---------------- Student Portal: Courses, Lessons, Quizzes ----------------
+(function studentCoursesController(){
+  const coursesList = document.getElementById("spCoursesList");
+  const courseListView = document.getElementById("spCourseListView");
+  const courseDetailView = document.getElementById("spCourseDetailView");
+  if (!coursesList || !courseListView || !courseDetailView) return;
+
+  const courseTitle = document.getElementById("spCourseTitle");
+  const courseDesc = document.getElementById("spCourseDesc");
+  const lessonsList = document.getElementById("spLessonsList");
+  const videoPlayer = document.getElementById("spVideoPlayer");
+  const quizzesList = document.getElementById("spQuizzesList");
+  const backBtn = document.getElementById("spBackToCourses");
+  const quizTakeView = document.getElementById("spQuizTakeView");
+  const quizTitle = document.getElementById("spQuizTitle");
+  const quizForm = document.getElementById("spQuizForm");
+  const quizSubmitBtn = document.getElementById("spQuizSubmitBtn");
+  const quizResult = document.getElementById("spQuizResult");
+
+  function studentToken(){ return localStorage.getItem("studentToken") || ""; }
+
+  async function studentGet(path){
+    const headers = {};
+    const t = studentToken();
+    if (t) headers["Authorization"] = "Bearer " + t;
+    const res = await fetch(API_BASE + path, { headers });
+    if (!res.ok) throw new Error("Request failed: " + res.status);
+    return res.json();
+  }
+  async function studentPost(path, body){
+    const t = studentToken();
+    const res = await fetch(API_BASE + path, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...(t ? {"Authorization":"Bearer "+t} : {}) },
+      body: JSON.stringify(body || {})
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || "Request failed");
+    return data;
+  }
+
+  async function loadCourses(){
+    let courses = [];
+    try { courses = await studentGet("/api/courses"); }
+    catch(e){ coursesList.innerHTML = "<p class='loading-text'>መጫን አልተቻለም።</p>"; return; }
+    coursesList.innerHTML = courses.map(c => `
+      <div class="ib-post">
+        <div class="ib-post-head"><h4>${escapeHtml(c.title)}</h4></div>
+        <p>${escapeHtml(c.instructor || "")} ${c.description ? "· " + escapeHtml(c.description.slice(0,80)) : ""}</p>
+        <div class="ib-post-footer">
+          <button type="button" class="btn btn-primary sp-open-course" data-id="${c.id}">ክፈት</button>
+        </div>
+      </div>`).join("") || "<p class='loading-text'>ገና ምንም ኮርስ የለም።</p>";
+
+    coursesList.querySelectorAll(".sp-open-course").forEach(btn => {
+      btn.addEventListener("click", () => openCourse(btn.dataset.id));
+    });
+  }
+
+  async function openCourse(courseId){
+    let course;
+    try {
+      await studentPost("/api/courses/" + courseId + "/enroll", {});
+      course = await studentGet("/api/courses/" + courseId);
+    } catch(e){ alert("መክፈት አልተቻለም፦ " + e.message); return; }
+
+    courseListView.style.display = "none";
+    courseDetailView.style.display = "block";
+    quizTakeView.style.display = "none";
+    courseTitle.textContent = course.title;
+    courseDesc.textContent = course.description || "";
+
+    const lessons = course.lessons || [];
+    lessonsList.innerHTML = lessons.map(l => `
+      <div class="ib-post">
+        <div class="ib-post-head"><h4>${escapeHtml(l.title)}</h4></div>
+        <div class="ib-post-footer">
+          <button type="button" class="btn sp-watch" data-url="${l.video_url}" data-title="${escapeHtml(l.title)}">▶ ተመልከት</button>
+        </div>
+      </div>`).join("") || "<p class='loading-text'>ገና ምንም ትምህርት የለም።</p>";
+
+    lessonsList.querySelectorAll(".sp-watch").forEach(btn => {
+      btn.addEventListener("click", () => {
+        videoPlayer.style.display = "block";
+        videoPlayer.innerHTML = videoEmbedHtml(btn.dataset.url, btn.dataset.title);
+        videoPlayer.scrollIntoView({behavior:"smooth", block:"center"});
+      });
+    });
+
+    let quizzes = [];
+    try { quizzes = await studentGet("/api/quizzes?course_id=" + courseId); } catch(e){}
+    quizzesList.innerHTML = quizzes.map(q => `
+      <div class="ib-post">
+        <div class="ib-post-head"><h4>${escapeHtml(q.title)}</h4></div>
+        <div class="ib-post-footer">
+          <button type="button" class="btn btn-primary sp-take-quiz" data-id="${q.id}" data-title="${escapeHtml(q.title)}">ፈተና ውሰድ</button>
+        </div>
+      </div>`).join("") || "<p class='loading-text'>ገና ምንም ፈተና የለም።</p>";
+
+    quizzesList.querySelectorAll(".sp-take-quiz").forEach(btn => {
+      btn.addEventListener("click", () => takeQuiz(btn.dataset.id, btn.dataset.title));
+    });
+  }
+
+  let activeQuizId = null;
+  async function takeQuiz(quizId, title){
+    activeQuizId = quizId;
+    let quiz;
+    try { quiz = await studentGet("/api/quizzes/" + quizId); }
+    catch(e){ alert("ፈተና መጫን አልተቻለም፦ " + e.message); return; }
+    quizTakeView.style.display = "block";
+    quizResult.textContent = "";
+    quizTitle.textContent = title;
+    const questions = quiz.questions || [];
+    quizForm.innerHTML = questions.map((q, i) => `
+      <div style="margin-bottom:1rem;">
+        <p><strong>${i+1}. ${escapeHtml(q.question)}</strong></p>
+        ${["a","b","c","d"].map(opt => q["option_"+opt] ? `
+          <label style="display:block; margin:.3rem 0;">
+            <input type="radio" name="q${q.id}" value="${opt.toUpperCase()}"> ${escapeHtml(q["option_"+opt])}
+          </label>` : "").join("")}
+      </div>`).join("");
+    quizTakeView.scrollIntoView({behavior:"smooth", block:"start"});
+  }
+
+  quizSubmitBtn.addEventListener("click", async () => {
+    const formData = new FormData(quizForm);
+    const answers = {};
+    for (const [key, value] of formData.entries()) {
+      const qId = key.replace("q", "");
+      answers[qId] = value;
+    }
+    try {
+      const result = await studentPost("/api/quizzes/" + activeQuizId + "/submit", { answers });
+      quizResult.textContent = `ውጤትዎ፦ ${result.score} / ${result.total}`;
+    } catch(e){ quizResult.textContent = "ስህተት፦ " + e.message; }
+  });
+
+  backBtn.addEventListener("click", () => {
+    courseDetailView.style.display = "none";
+    courseListView.style.display = "block";
+    videoPlayer.style.display = "none";
+    videoPlayer.innerHTML = "";
+    quizTakeView.style.display = "none";
+  });
+
+  // Hook into login: load courses once logged in
+  const originalShowLoggedIn = window.showLoggedInHook;
+  const loggedInDiv = document.getElementById("spLoggedIn");
+  const observer = new MutationObserver(() => {
+    if (loggedInDiv.style.display !== "none") loadCourses();
+  });
+  observer.observe(loggedInDiv, { attributes: true, attributeFilter: ["style"] });
+
+  // Also load immediately if already logged in on page load
+  if (localStorage.getItem("studentToken")) loadCourses();
+})();
 </script>
 </body>
 </html>
