@@ -4711,24 +4711,29 @@ function openMemberPhotoLightbox(url){
     } catch(err){ status.textContent = "ስህተት፦ " + err.message; }
   });
 
-  signupForm.addEventListener("submit", async (e) => {
+    signupForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const full_name = document.getElementById("spSignupName").value.trim();
     const email = document.getElementById("spSignupEmail").value.trim();
     const phone = document.getElementById("spSignupPhone").value.trim();
     const password = document.getElementById("spSignupPassword").value;
+    const photoFile = document.getElementById("spSignupPhoto").files[0];
     const status = document.getElementById("spSignupStatus");
     status.textContent = "እየተፈጠረ ነው...";
     try {
-      const res = await fetch(API_BASE + "/api/students/signup", {
-        method: "POST", headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({ full_name, email, phone, password })
-      });
+      const fd = new FormData();
+      fd.append("full_name", full_name);
+      fd.append("email", email);
+      fd.append("phone", phone);
+      fd.append("password", password);
+      if (photoFile) fd.append("photo", photoFile);
+      const res = await fetch(API_BASE + "/api/students/signup", { method: "POST", body: fd });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Signup failed");
       setStudentToken(data.token);
       localStorage.setItem("studentName", data.student.full_name);
-      showLoggedIn(data.student.full_name);
+      localStorage.setItem("studentPhoto", data.student.photo_url || "");
+      showLoggedIn(data.student.full_name, data.student.photo_url);
     } catch(err){ status.textContent = "ስህተት፦ " + err.message; }
   });
 
