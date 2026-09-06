@@ -4815,6 +4815,9 @@ function openMemberPhotoLightbox(url){
     list.querySelectorAll(".course-quizzes").forEach(btn => {
       btn.addEventListener("click", () => openQuizzes(btn.dataset.id, btn.dataset.title));
     });
+    list.querySelectorAll(".course-certs").forEach(btn => {
+      btn.addEventListener("click", () => openCertPanel(btn.dataset.id, btn.dataset.title));
+    });
   }
 
   async function openLessons(courseId, title){
