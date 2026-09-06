@@ -4673,10 +4673,13 @@ function openMemberPhotoLightbox(url){
   function setStudentToken(t){ localStorage.setItem("studentToken", t); }
   function clearStudentToken(){ localStorage.removeItem("studentToken"); localStorage.removeItem("studentName"); }
 
-  function showLoggedIn(name){
+    function showLoggedIn(name, photoUrl){
     loggedOut.style.display = "none";
     loggedIn.style.display = "block";
     welcomeName.textContent = name;
+    const photoEl = document.getElementById("spWelcomePhoto");
+    const url = photoUrl || localStorage.getItem("studentPhoto");
+    if (photoEl && url){ photoEl.src = url; photoEl.style.display = "inline-block"; }
   }
   function showLoggedOut(){
     loggedOut.style.display = "block";
