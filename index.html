@@ -4797,6 +4797,109 @@ function openMemberPhotoLightbox(url){
 
   lessonSubCloseBtn.addEventListener("click", () => { lessonSubPanel.style.display = "none"; });
 
+  // ---- Quizzes ----
+  const quizSubPanel = document.getElementById("quizSubPanel");
+  const quizCreateForm = document.getElementById("quizCreateForm");
+  const quizzesList = document.getElementById("quizzesAdminList");
+  const quizCourseTitle = document.getElementById("quizCourseTitle");
+  const questionSubPanel = document.getElementById("questionSubPanel");
+  const questionForm = document.getElementById("questionForm");
+  const questionsList = document.getElementById("questionsAdminList");
+  const questionQuizTitle = document.getElementById("questionQuizTitle");
+  const questionSubPanelCloseBtn = document.getElementById("questionSubPanelCloseBtn");
+  let currentQuizCourseId = null;
+  let currentQuizId = null;
+
+  window.openQuizzes = async function(courseId, title){
+    currentQuizCourseId = courseId;
+    quizCourseTitle.textContent = title;
+    quizSubPanel.style.display = "block";
+    await renderQuizzes();
+  };
+
+  async function renderQuizzes(){
+    let quizzes = [];
+    try { quizzes = await apiGet("/api/quizzes?course_id=" + currentQuizCourseId); }
+    catch(e){ quizzesList.innerHTML = "<p class='loading-text'>መጫን አልተቻለም።</p>"; return; }
+    quizzesList.innerHTML = quizzes.map(q => `
+      <div class="ib-post">
+        <div class="ib-post-head"><h4>${escapeHtml(q.title)}</h4></div>
+        <div class="ib-post-footer">
+          <button type="button" class="member-db-del quiz-questions" data-id="${q.id}" data-title="${escapeHtml(q.title)}">❓ ጥያቄዎች</button>
+          <button type="button" class="member-db-del quiz-del" data-id="${q.id}">አጥፋ</button>
+        </div>
+      </div>`).join("") || "<p class='loading-text'>ገና ምንም ፈተና አልተጨመረም።</p>";
+
+    quizzesList.querySelectorAll(".quiz-del").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        try { await apiSend("/api/quizzes/" + btn.dataset.id, "DELETE"); renderQuizzes(); }
+        catch(e){ alert("ማጥፋት አልተቻለም፦ " + e.message); }
+      });
+    });
+    quizzesList.querySelectorAll(".quiz-questions").forEach(btn => {
+      btn.addEventListener("click", () => openQuestions(btn.dataset.id, btn.dataset.title));
+    });
+  }
+
+  quizCreateForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const title = document.getElementById("qTitle").value.trim();
+    if (!title) return;
+    try {
+      await apiSend("/api/quizzes", "POST", { course_id: currentQuizCourseId, title });
+      quizCreateForm.reset();
+      renderQuizzes();
+    } catch(e){ alert("ፈተና መፍጠር አልተቻለም፦ " + e.message); }
+  });
+
+  async function openQuestions(quizId, title){
+    currentQuizId = quizId;
+    questionQuizTitle.textContent = title;
+    questionSubPanel.style.display = "block";
+    await renderQuestions();
+  }
+
+  async function renderQuestions(){
+    let quiz;
+    try { quiz = await apiGet("/api/quizzes/" + currentQuizId + "/admin"); }
+    catch(e){ questionsList.innerHTML = "<p class='loading-text'>መጫን አልተቻለም።</p>"; return; }
+    const questions = quiz.questions || [];
+    questionsList.innerHTML = questions.map(q => `
+      <div class="ib-post">
+        <div class="ib-post-head"><h4>${escapeHtml(q.question)}</h4></div>
+        <p>A) ${escapeHtml(q.option_a||"")} · B) ${escapeHtml(q.option_b||"")} ${q.option_c ? "· C) " + escapeHtml(q.option_c) : ""} ${q.option_d ? "· D) " + escapeHtml(q.option_d) : ""}</p>
+        <p style="color:green;">✓ ትክክለኛ መልስ: ${q.correct_option}</p>
+        <div class="ib-post-footer">
+          <button type="button" class="member-db-del question-del" data-id="${q.id}">አጥፋ</button>
+        </div>
+      </div>`).join("") || "<p class='loading-text'>ገና ምንም ጥያቄ አልተጨመረም።</p>";
+
+    questionsList.querySelectorAll(".question-del").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        try { await apiSend("/api/quizzes/questions/" + btn.dataset.id, "DELETE"); renderQuestions(); }
+        catch(e){ alert("ማጥፋት አልተቻለም፦ " + e.message); }
+      });
+    });
+  }
+
+  questionForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const question = document.getElementById("qnQuestion").value.trim();
+    const option_a = document.getElementById("qnA").value.trim();
+    const option_b = document.getElementById("qnB").value.trim();
+    const option_c = document.getElementById("qnC").value.trim();
+    const option_d = document.getElementById("qnD").value.trim();
+    const correct_option = document.getElementById("qnCorrect").value;
+    if (!question || !option_a || !option_b) return;
+    try {
+      await apiSend("/api/quizzes/" + currentQuizId + "/questions", "POST", { question, option_a, option_b, option_c, option_d, correct_option });
+      questionForm.reset();
+      renderQuestions();
+    } catch(e){ alert("ጥያቄ መጨመር አልተቻለም፦ " + e.message); }
+  });
+
+  questionSubPanelCloseBtn.addEventListener("click", () => { questionSubPanel.style.display = "none"; });
+
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const title = document.getElementById("cTitle").value.trim();
