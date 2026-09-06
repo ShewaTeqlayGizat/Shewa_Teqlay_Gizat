@@ -5327,18 +5327,18 @@ function openMemberPhotoLightbox(url){
           ${studentPhoto ? `<img src="${studentPhoto}" class="cert-photo">` : ""}
           <p style="margin-top:1rem;">ይህ የምስክር ወረቀት የሚሰጠው ለ፦</p>
           <div class="cert-name">${escapeHtml(cert.full_name)}</div>
-          <p class="cert-course">"${escapeHtml(cert.course_title)}" የተሰኘውን ኮርስ በተሳካ ሁኔታ ስላጠናቀቀ/ስላጠናቀቀች</p>
+                    <p class="cert-course">"${escapeHtml(cert.course_title)}" የተሰኘውን ኮርስ በተሳካ ሁኔታ ስላጠናቀቀ/ስላጠናቀቀች</p>
+          <div class="cert-praise">🌟 ጎበዝ! የላቀ ጥረትና ትጋት አሳይተዋል። ይህ ስኬት የወደፊት ብሩህ ተስፋዎ ማሳያ ነው። እንኳን ደስ አለዎት!</div>
           <p class="cert-date">የተሰጠበት ቀን፦ ${formatDate(cert.issued_at)}</p>
           <div class="cert-footer">
             <div class="cert-sig">
-              <div class="sig-name">ልባርጋቸው ይታፈሩ</div>
+              ${cert.signature_url ? `<img src="${cert.signature_url}" class="cert-sig-img">` : `<div class="sig-name">ልባርጋቸው ይታፈሩ</div>`}
               <div class="sig-title">ዋና ዳይሬክተር</div>
             </div>
             <div class="cert-sig">
               <div class="sig-name">✓</div>
               <div class="sig-title">የተረጋገጠ</div>
-            </div>
-          </div>
+            </div>          </div>
           <div class="cert-code">የማረጋገጫ ኮድ፦ ${cert.certificate_code}</div>
         </div>
         <div style="text-align:center; margin-top:1rem;">
