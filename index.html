@@ -5035,14 +5035,20 @@ function openMemberPhotoLightbox(url){
 
   certSubPanelCloseBtn.addEventListener("click", () => { certSubPanel.style.display = "none"; });
 
-  form.addEventListener("submit", async (e) => {
+    form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const title = document.getElementById("cTitle").value.trim();
     const instructor = document.getElementById("cInstructor").value.trim();
     const description = document.getElementById("cDescription").value.trim();
+    const logoFile = document.getElementById("cLogo").files[0];
     if (!title) return;
     try {
-      await apiSend("/api/courses", "POST", { title, instructor, description });
+      const fd = new FormData();
+      fd.append("title", title);
+      fd.append("instructor", instructor);
+      fd.append("description", description);
+      if (logoFile) fd.append("logo", logoFile);
+      await apiSend("/api/courses", "POST", fd, true);
       form.reset();
       render();
     } catch(e){ alert("ኮርስ መፍጠር አልተቻለም፦ " + e.message); }
