@@ -1832,7 +1832,35 @@ function toggleMore(btn) {
     <div id="spLoggedIn" style="display:none;">
       <p>እንኳን ደህና መጡ፣ <strong id="spWelcomeName"></strong>!</p>
       <button type="button" id="spLogoutBtn" class="btn">ውጣ</button>
-      <p style="margin-top:1rem; color:var(--ink-soft);">📚 የኮርስ ዝርዝር እና ውጤት ገጽ በቅርቡ እዚህ ይታያል።</p>
+
+      <div id="spCourseListView">
+        <h3 style="margin-top:1.5rem;">📚 ያሉ ኮርሶች</h3>
+        <div class="ib-list" id="spCoursesList"></div>
+      </div>
+
+      <div id="spCourseDetailView" style="display:none;">
+        <button type="button" id="spBackToCourses" class="btn" style="margin-bottom:1rem;">← ወደ ኮርስ ዝርዝር</button>
+        <h3 id="spCourseTitle"></h3>
+        <p id="spCourseDesc" style="color:var(--ink-soft);"></p>
+
+        <div id="spLessonsSection">
+          <h4>🎬 ቪዲዮ ትምህርቶች</h4>
+          <div id="spLessonsList" class="ib-list"></div>
+          <div id="spVideoPlayer" style="display:none; margin-top:1rem;"></div>
+        </div>
+
+        <div id="spQuizzesSection" style="margin-top:1.5rem;">
+          <h4>📝 ፈተናዎች</h4>
+          <div id="spQuizzesList" class="ib-list"></div>
+        </div>
+
+        <div id="spQuizTakeView" style="display:none; margin-top:1rem;">
+          <h4 id="spQuizTitle"></h4>
+          <form id="spQuizForm"></form>
+          <button type="button" id="spQuizSubmitBtn" class="btn btn-primary" style="margin-top:1rem;">ፈተናውን አስገባ</button>
+          <p id="spQuizResult" style="margin-top:1rem; font-weight:700;"></p>
+        </div>
+      </div>
     </div>
   </div>
 </section>
