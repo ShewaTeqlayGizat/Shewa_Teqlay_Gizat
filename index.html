@@ -4664,6 +4664,127 @@ function openMemberPhotoLightbox(url){
   const existingName = localStorage.getItem("studentName");
   if (existingToken && existingName) showLoggedIn(existingName);
 })();
+// ---------------- Bootcamp Courses Management ----------------
+(function coursesAdminController(){
+  const panel = document.getElementById("coursesPanel");
+  if (!panel) return;
+  const form = document.getElementById("courseForm");
+  const list = document.getElementById("coursesAdminList");
+  const closeBtn = document.getElementById("coursesPanelCloseBtn");
+  const lessonSubPanel = document.getElementById("lessonSubPanel");
+  const lessonForm = document.getElementById("lessonForm");
+  const lessonsList = document.getElementById("lessonsAdminList");
+  const lessonCourseTitle = document.getElementById("lessonCourseTitle");
+  const lessonSubCloseBtn = document.getElementById("lessonSubPanelCloseBtn");
+
+  let courses = [];
+  let currentCourseId = null;
+
+  async function render(){
+    try { courses = await apiGet("/api/courses"); }
+    catch(e){ list.innerHTML = "<p class='loading-text'>መጫን አልተቻለም።</p>"; return; }
+    list.innerHTML = courses.map(c => `
+      <div class="ib-post">
+        <div class="ib-post-head"><h4>${escapeHtml(c.title)}</h4></div>
+        <p>${escapeHtml(c.instructor || "")} ${c.description ? "· " + escapeHtml(c.description.slice(0,60)) : ""}</p>
+        <div class="ib-post-footer">
+          <button type="button" class="member-db-del course-lessons" data-id="${c.id}" data-title="${escapeHtml(c.title)}">🎬 ቪዲዮዎች</button>
+          <button type="button" class="member-db-del course-edit" data-id="${c.id}">አርም</button>
+          <button type="button" class="member-db-del course-del" data-id="${c.id}">አጥፋ</button>
+        </div>
+      </div>`).join("") || "<p class='loading-text'>ገና ምንም ኮርስ አልተጨመረም።</p>";
+
+    list.querySelectorAll(".course-del").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        if (!confirm("ይህን ኮርስ ማጥፋት ይፈልጋሉ?")) return;
+        try { await apiSend("/api/courses/" + btn.dataset.id, "DELETE"); render(); }
+        catch(e){ alert("ማጥፋት አልተቻለም፦ " + e.message); }
+      });
+    });
+
+    list.querySelectorAll(".course-edit").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const c = courses.find(x => String(x.id) === btn.dataset.id);
+        if (!c) return;
+        const newTitle = prompt("ርዕስ:", c.title);
+        if (newTitle === null) return;
+        const newInstructor = prompt("አስተማሪ:", c.instructor || "");
+        const newDesc = prompt("መግለጫ:", c.description || "");
+        try {
+          await apiSend("/api/courses/" + c.id, "PUT", { title: newTitle.trim(), instructor: newInstructor, description: newDesc });
+          render();
+        } catch(e){ alert("ማርም አልተቻለም፦ " + e.message); }
+      });
+    });
+
+    list.querySelectorAll(".course-lessons").forEach(btn => {
+      btn.addEventListener("click", () => openLessons(btn.dataset.id, btn.dataset.title));
+    });
+  }
+
+  async function openLessons(courseId, title){
+    currentCourseId = courseId;
+    lessonCourseTitle.textContent = title;
+    lessonSubPanel.style.display = "block";
+    await renderLessons();
+  }
+
+  async function renderLessons(){
+    let course;
+    try { course = await apiGet("/api/courses/" + currentCourseId); }
+    catch(e){ lessonsList.innerHTML = "<p class='loading-text'>መጫን አልተቻለም።</p>"; return; }
+    const lessons = course.lessons || [];
+    lessonsList.innerHTML = lessons.map(l => `
+      <div class="ib-post">
+        <div class="ib-post-head"><h4>${escapeHtml(l.title)}</h4></div>
+        <div class="ib-post-footer">
+          <button type="button" class="member-db-del lesson-del" data-id="${l.id}">አጥፋ</button>
+        </div>
+      </div>`).join("") || "<p class='loading-text'>ገና ምንም ትምህርት አልተጨመረም።</p>";
+
+    lessonsList.querySelectorAll(".lesson-del").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        try { await apiSend("/api/courses/lessons/" + btn.dataset.id, "DELETE"); renderLessons(); }
+        catch(e){ alert("ማጥፋት አልተቻለም፦ " + e.message); }
+      });
+    });
+  }
+
+  lessonForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const title = document.getElementById("lTitle").value.trim();
+    const video_url = document.getElementById("lVideoUrl").value.trim();
+    if (!title || !video_url) return;
+    try {
+      await apiSend("/api/courses/" + currentCourseId + "/lessons", "POST", { title, video_url });
+      lessonForm.reset();
+      renderLessons();
+    } catch(e){ alert("ትምህርት መጨመር አልተቻለም፦ " + e.message); }
+  });
+
+  lessonSubCloseBtn.addEventListener("click", () => { lessonSubPanel.style.display = "none"; });
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const title = document.getElementById("cTitle").value.trim();
+    const instructor = document.getElementById("cInstructor").value.trim();
+    const description = document.getElementById("cDescription").value.trim();
+    if (!title) return;
+    try {
+      await apiSend("/api/courses", "POST", { title, instructor, description });
+      form.reset();
+      render();
+    } catch(e){ alert("ኮርስ መፍጠር አልተቻለም፦ " + e.message); }
+  });
+
+  if (closeBtn) closeBtn.addEventListener("click", () => { panel.style.display = "none"; lessonSubPanel.style.display = "none"; });
+
+  window.toggleCoursesPanel = function(){
+    const isOpen = panel.style.display !== "none";
+    document.querySelectorAll(".member-db-panel").forEach(p => p.style.display = "none");
+    if (!isOpen) { panel.style.display = "block"; render(); panel.scrollIntoView({behavior:"smooth", block:"start"}); }
+  };
+})();
 </script>
 </body>
 </html>
