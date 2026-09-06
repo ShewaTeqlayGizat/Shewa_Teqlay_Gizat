@@ -5335,10 +5335,12 @@ function openMemberPhotoLightbox(url){
               ${cert.signature_url ? `<img src="${cert.signature_url}" class="cert-sig-img">` : `<div class="sig-name">ልባርጋቸው ይታፈሩ</div>`}
               <div class="sig-title">ዋና ዳይሬክተር</div>
             </div>
-            <div class="cert-sig">
+                        <div class="cert-sig">
               <div class="sig-name">✓</div>
               <div class="sig-title">የተረጋገጠ</div>
-            </div>          </div>
+            </div>
+          </div>
+          ${cert.stamp_url ? `<img src="${cert.stamp_url}" class="cert-stamp cert-stamp-img">` : `<div class="cert-stamp">ኦፊሴላዊ<br>ማህተም</div>`}
           <div class="cert-code">የማረጋገጫ ኮድ፦ ${cert.certificate_code}</div>
         </div>
         <div style="text-align:center; margin-top:1rem;">
