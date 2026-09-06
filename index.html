@@ -4708,12 +4708,12 @@ function openMemberPhotoLightbox(url){
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Login failed");
-      setStudentToken(data.token);
+            setStudentToken(data.token);
       localStorage.setItem("studentName", data.student.full_name);
-      showLoggedIn(data.student.full_name);
+      localStorage.setItem("studentPhoto", data.student.photo_url || "");
+      showLoggedIn(data.student.full_name, data.student.photo_url);
     } catch(err){ status.textContent = "ስህተት፦ " + err.message; }
   });
-
     signupForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const full_name = document.getElementById("spSignupName").value.trim();
