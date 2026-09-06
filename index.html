@@ -4748,7 +4748,7 @@ function openMemberPhotoLightbox(url){
   // On page load, check if already logged in
   const existingToken = getStudentToken();
   const existingName = localStorage.getItem("studentName");
-  if (existingToken && existingName) showLoggedIn(existingName);
+  if (existingToken && existingName) showLoggedIn(existingName, localStorage.getItem("studentPhoto"));
 })();
 // ---------------- Bootcamp Courses Management ----------------
 (function coursesAdminController(){
