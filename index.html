@@ -2432,7 +2432,36 @@ function toggleMore(btn) {
             <button type="submit" class="btn btn-primary">➕ ትምህርት ጨምር</button>
           </form>
           <div class="ib-list" id="lessonsAdminList"></div>
-          <button type="button" id="lessonSubPanelCloseBtn" class="btn" style="margin-top:.5rem;">ወደ ኮርስ ዝርዝር ተመለስ</button>
+                    <button type="button" id="lessonSubPanelCloseBtn" class="btn" style="margin-top:.5rem;">ወደ ኮርስ ዝርዝር ተመለስ</button>
+        </div>
+
+        <div id="quizSubPanel" style="display:none; margin-top:1.5rem; padding-top:1.5rem; border-top:2px dashed rgba(227,30,36,.3);">
+          <h4 style="color:#E31E24;">📝 "<span id="quizCourseTitle"></span>" ፈተናዎች</h4>
+          <form id="quizCreateForm" class="ib-form">
+            <input type="text" id="qTitle" placeholder="የፈተና ርዕስ" required>
+            <button type="submit" class="btn btn-primary">➕ ፈተና ፍጠር</button>
+          </form>
+          <div class="ib-list" id="quizzesAdminList"></div>
+
+          <div id="questionSubPanel" style="display:none; margin-top:1rem; padding-top:1rem; border-top:1px dashed rgba(227,30,36,.2);">
+            <h4 style="color:#E31E24;">❓ "<span id="questionQuizTitle"></span>" ጥያቄዎች</h4>
+            <form id="questionForm" class="ib-form">
+              <textarea id="qnQuestion" placeholder="ጥያቄ" required style="grid-column: 1 / -1;"></textarea>
+              <input type="text" id="qnA" placeholder="አማራጭ A" required>
+              <input type="text" id="qnB" placeholder="አማራጭ B" required>
+              <input type="text" id="qnC" placeholder="አማራጭ C">
+              <input type="text" id="qnD" placeholder="አማራጭ D">
+              <select id="qnCorrect">
+                <option value="A">ትክክለኛው መልስ: A</option>
+                <option value="B">ትክክለኛው መልስ: B</option>
+                <option value="C">ትክክለኛው መልስ: C</option>
+                <option value="D">ትክክለኛው መልስ: D</option>
+              </select>
+              <button type="submit" class="btn btn-primary">➕ ጥያቄ ጨምር</button>
+            </form>
+            <div class="ib-list" id="questionsAdminList"></div>
+            <button type="button" id="questionSubPanelCloseBtn" class="btn" style="margin-top:.5rem;">ወደ ፈተና ዝርዝር ተመለስ</button>
+          </div>
         </div>
       </div>
     <div id="adminsPanel" class="member-db-panel" style="display:none;">
