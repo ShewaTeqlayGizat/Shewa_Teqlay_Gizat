@@ -5269,18 +5269,65 @@ function openMemberPhotoLightbox(url){
     } catch(e){ progressList.innerHTML = "<p class='loading-text'>መጫን አልተቻለም።</p>"; }
   }
 
-  async function loadCerts(){
+    async function loadCerts(){
     const certsList = document.getElementById("spCertsList");
-    try {
-      const certs = await studentGet("/api/certificates/my");
-      certsList.innerHTML = certs.map(c => `
-        <div class="ib-post">
-          <div class="ib-post-head"><h4>🏆 ${escapeHtml(c.course_title)}</h4></div>
-          <p>የምስክር ወረቀት ኮድ፦ <strong>${c.certificate_code}</strong></p>
-          <span class="ib-post-date">${formatDate(c.issued_at)}</span>
-        </div>`).join("") || "<p class='loading-text'>ገና ምንም ሰርተፍኬት አላገኙም።</p>";
-    } catch(e){ certsList.innerHTML = "<p class='loading-text'>መጫን አልተቻለም።</p>"; }
+    let certs = [];
+    try { certs = await studentGet("/api/certificates/my"); }
+    catch(e){ certsList.innerHTML = "<p class='loading-text'>መጫን አልተቻለም።</p>"; return; }
+    certsList.innerHTML = certs.map(c => `
+      <div class="ib-post">
+        <div class="ib-post-head"><h4>🏆 ${escapeHtml(c.course_title)}</h4></div>
+        <p>የምስክር ወረቀት ኮድ፦ <strong>${c.certificate_code}</strong></p>
+        <span class="ib-post-date">${formatDate(c.issued_at)}</span>
+        <div class="ib-post-footer">
+          <button type="button" class="btn btn-primary cert-view" data-code="${c.certificate_code}">🏆 ተመልከት</button>
+        </div>
+      </div>`).join("") || "<p class='loading-text'>ገና ምንም ሰርተፍኬት አላገኙም።</p>";
+
+    certsList.querySelectorAll(".cert-view").forEach(btn => {
+      btn.addEventListener("click", () => showCertModal(btn.dataset.code));
+    });
   }
+
+  async function showCertModal(code){
+    const overlay = document.getElementById("certModalOverlay");
+    const body = document.getElementById("certModalBody");
+    body.innerHTML = "<p class='loading-text'>እየተጫነ ነው...</p>";
+    overlay.classList.add("open");
+    try {
+      const cert = await studentGet("/api/certificates/verify/" + code);
+      const studentPhoto = localStorage.getItem("studentPhoto");
+      body.innerHTML = `
+        <div class="cert-design">
+          <h1>የስኬት ሰርተፍኬት</h1>
+          <p style="color:#666;">Certificate of Completion</p>
+          ${studentPhoto ? `<img src="${studentPhoto}" class="cert-photo">` : ""}
+          <p style="margin-top:1rem;">ይህ የምስክር ወረቀት የሚሰጠው ለ፦</p>
+          <div class="cert-name">${escapeHtml(cert.full_name)}</div>
+          <p class="cert-course">"${escapeHtml(cert.course_title)}" የተሰኘውን ኮርስ በተሳካ ሁኔታ ስላጠናቀቀ/ስላጠናቀቀች</p>
+          <p class="cert-date">የተሰጠበት ቀን፦ ${formatDate(cert.issued_at)}</p>
+          <div class="cert-footer">
+            <div class="cert-sig">
+              <div class="sig-name">ልባርጋቸው ይታፈሩ</div>
+              <div class="sig-title">ዋና ዳይሬክተር</div>
+            </div>
+            <div class="cert-sig">
+              <div class="sig-name">✓</div>
+              <div class="sig-title">የተረጋገጠ</div>
+            </div>
+          </div>
+          <div class="cert-code">የማረጋገጫ ኮድ፦ ${cert.certificate_code}</div>
+        </div>
+        <div style="text-align:center; margin-top:1rem;">
+          <button type="button" class="btn btn-primary" onclick="window.print()">🖨️ አትም / አውርድ</button>
+        </div>`;
+    } catch(e){ body.innerHTML = "<p class='loading-text'>ማምጣት አልተቻለም።</p>"; }
+  }
+
+  const certModalCloseBtn = document.getElementById("certModalCloseBtn");
+  if (certModalCloseBtn) certModalCloseBtn.addEventListener("click", () => {
+    document.getElementById("certModalOverlay").classList.remove("open");
+  });
 })();
 </script>
 </body>
