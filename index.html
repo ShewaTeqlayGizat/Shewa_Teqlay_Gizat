@@ -5038,12 +5038,14 @@ function openMemberPhotoLightbox(url){
 
   certSubPanelCloseBtn.addEventListener("click", () => { certSubPanel.style.display = "none"; });
 
-    form.addEventListener("submit", async (e) => {
+      form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const title = document.getElementById("cTitle").value.trim();
     const instructor = document.getElementById("cInstructor").value.trim();
     const description = document.getElementById("cDescription").value.trim();
     const logoFile = document.getElementById("cLogo").files[0];
+    const stampFile = document.getElementById("cStamp").files[0];
+    const signatureFile = document.getElementById("cSignature").files[0];
     if (!title) return;
     try {
       const fd = new FormData();
@@ -5051,6 +5053,8 @@ function openMemberPhotoLightbox(url){
       fd.append("instructor", instructor);
       fd.append("description", description);
       if (logoFile) fd.append("logo", logoFile);
+      if (stampFile) fd.append("stamp", stampFile);
+      if (signatureFile) fd.append("signature", signatureFile);
       await apiSend("/api/courses", "POST", fd, true);
       form.reset();
       render();
