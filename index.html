@@ -4965,6 +4965,49 @@ function openMemberPhotoLightbox(url){
 
   questionSubPanelCloseBtn.addEventListener("click", () => { questionSubPanel.style.display = "none"; });
 
+  // ---- Certificates ----
+  const certSubPanel = document.getElementById("certSubPanel");
+  const certCourseTitle = document.getElementById("certCourseTitle");
+  const eligibleStudentsList = document.getElementById("eligibleStudentsList");
+  const certSubPanelCloseBtn = document.getElementById("certSubPanelCloseBtn");
+  let currentCertCourseId = null;
+
+  window.openCertPanel = async function(courseId, title){
+    currentCertCourseId = courseId;
+    certCourseTitle.textContent = title;
+    certSubPanel.style.display = "block";
+    await renderEligibleStudents();
+  };
+
+  async function renderEligibleStudents(){
+    let students = [];
+    try { students = await apiGet("/api/certificates/eligible-students?course_id=" + currentCertCourseId); }
+    catch(e){ eligibleStudentsList.innerHTML = "<p class='loading-text'>መጫን አልተቻለም።</p>"; return; }
+    eligibleStudentsList.innerHTML = students.map(s => `
+      <div class="ib-post">
+        <div class="ib-post-head">
+          ${s.photo_url ? `<img src="${s.photo_url}" style="width:36px; height:36px; border-radius:50%; object-fit:cover; margin-right:.5rem; vertical-align:middle;">` : ""}
+          <h4 style="display:inline;">${escapeHtml(s.full_name)}</h4>
+        </div>
+        <p>${escapeHtml(s.email)}</p>
+        <div class="ib-post-footer">
+          <button type="button" class="btn btn-primary cert-issue" data-id="${s.id}">🏆 ሰርተፍኬት ስጥ</button>
+        </div>
+      </div>`).join("") || "<p class='loading-text'>ብቁ ተማሪ የለም (ሁሉም ደረጃውን ጨርሰው ሰርተፍኬት ተሰጥቷቸዋል፣ ወይም ገና ማንም አልገባም)።</p>";
+
+    eligibleStudentsList.querySelectorAll(".cert-issue").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        try {
+          await apiSend("/api/certificates/issue", "POST", { student_id: btn.dataset.id, course_id: currentCertCourseId });
+          alert("ሰርተፍኬት ተሰጥቷል!");
+          renderEligibleStudents();
+        } catch(e){ alert("መስጠት አልተቻለም፦ " + e.message); }
+      });
+    });
+  }
+
+  certSubPanelCloseBtn.addEventListener("click", () => { certSubPanel.style.display = "none"; });
+
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const title = document.getElementById("cTitle").value.trim();
