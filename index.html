@@ -2492,7 +2492,9 @@ function toggleMore(btn) {
         <form id="courseForm" class="ib-form">
           <input type="text" id="cTitle" placeholder="የኮርስ ርዕስ" required>
           <input type="text" id="cInstructor" placeholder="አስተማሪ ስም">
-          <textarea id="cDescription" placeholder="የኮርስ መግለጫ" style="grid-column: 1 / -1; min-height:60px;"></textarea>
+          <<textarea id="cDescription" placeholder="የኮርስ መግለጫ" style="grid-column: 1 / -1; min-height:60px;"></textarea>
+          <label style="display:block; font-size:.85rem; color:var(--ink-soft);">የኮርስ/ድርጅት ሎጎ (ለሰርተፍኬት)</label>
+          <input type="file" id="cLogo" accept="image/*">
           <button type="submit" class="btn btn-primary">➕ ኮርስ ፍጠር</button>
         </form>
         <div class="ib-list" id="coursesAdminList"></div>
