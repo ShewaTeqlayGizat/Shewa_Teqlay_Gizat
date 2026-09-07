@@ -4892,7 +4892,7 @@ function openMemberPhotoLightbox(url){
     });
   }
 
-  lessonForm.addEventListener("submit", async (e) => {
+  if (lessonForm) lessonForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const title = document.getElementById("lTitle").value.trim();
     const video_url = document.getElementById("lVideoUrl").value.trim();
