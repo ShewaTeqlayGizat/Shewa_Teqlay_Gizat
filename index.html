@@ -5050,7 +5050,7 @@ function openMemberPhotoLightbox(url){
     });
   }
 
-  certSubPanelCloseBtn.addEventListener("click", () => { certSubPanel.style.display = "none"; });
+  if (certSubPanelCloseBtn) certSubPanelCloseBtn.addEventListener("click", () => { certSubPanel.style.display = "none"; });
 
       form.addEventListener("submit", async (e) => {
     e.preventDefault();
