@@ -4904,7 +4904,7 @@ function openMemberPhotoLightbox(url){
     } catch(e){ alert("ትምህርት መጨመር አልተቻለም፦ " + e.message); }
   });
 
-  lessonSubCloseBtn.addEventListener("click", () => { lessonSubPanel.style.display = "none"; });
+  if (lessonSubCloseBtn) lessonSubCloseBtn.addEventListener("click", () => { lessonSubPanel.style.display = "none"; });
 
   // ---- Quizzes ----
   const quizSubPanel = document.getElementById("quizSubPanel");
