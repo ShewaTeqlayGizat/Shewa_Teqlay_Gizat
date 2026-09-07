@@ -5338,27 +5338,30 @@ function openMemberPhotoLightbox(url){
             body.innerHTML = `
         <div class="cert-frame">
           ${cert.logo_url ? `<img src="${cert.logo_url}" class="cert-logo">` : ""}
-          <h1>የስኬት ሰርተፍኬት</h1>
-          <p style="color:#666;">Certificate of Completion</p>
+          <h1>የስኬት ሰርተፍኬት <span style="font-size:1rem; color:#666; display:block; font-weight:400;">Certificate of Completion</span></h1>
           ${studentPhoto ? `<img src="${studentPhoto}" class="cert-photo">` : ""}
-          <p style="margin-top:1rem;">ይህ የምስክር ወረቀት የሚሰጠው ለ፦</p>
+          <p style="margin-top:1rem;">ይህ የምስክር ወረቀት የሚሰጠው ለ፦ <span style="color:#666; font-size:.85rem;">This certifies that</span></p>
           <div class="cert-name">${escapeHtml(cert.full_name)}</div>
-                    <p class="cert-course">"${escapeHtml(cert.course_title)}" የተሰኘውን ኮርስ በተሳካ ሁኔታ ስላጠናቀቀ/ስላጠናቀቀች</p>
-          <div class="cert-praise">🌟 ጎበዝ! የላቀ ጥረትና ትጋት አሳይተዋል። ይህ ስኬት የወደፊት ብሩህ ተስፋዎ ማሳያ ነው። እንኳን ደስ አለዎት!</div>
-          <p class="cert-date">የተሰጠበት ቀን፦ ${formatDate(cert.issued_at)}</p>
+          <p class="cert-course">"${escapeHtml(cert.course_title)}" የተሰኘውን ኮርስ በተሳካ ሁኔታ ስላጠናቀቀ/ስላጠናቀቀች<br><span style="color:#666; font-size:.85rem;">has successfully completed the course "${escapeHtml(cert.course_title)}"</span></p>
+          <div class="cert-praise">🌟 ጎበዝ! የላቀ ጥረትና ትጋት አሳይተዋል። ይህ ስኬት የወደፊት ብሩህ ተስፋዎ ማሳያ ነው። እንኳን ደስ አለዎት!<br><span style="font-size:.8rem;">Congratulations on this remarkable achievement!</span></div>
+          <p class="cert-date">የተሰጠበት ቀን / Date Issued፦ ${formatDate(cert.issued_at)}</p>
           <div class="cert-footer">
             <div class="cert-sig">
               ${cert.signature_url ? `<img src="${cert.signature_url}" class="cert-sig-img">` : `<div class="sig-name">ልባርጋቸው ይታፈሩ</div>`}
-              <div class="sig-title">ዋና ዳይሬክተር</div>
+              <div class="sig-title">ዋና ዳይሬክተር<br><span style="font-size:.7rem;">Director</span></div>
             </div>
-                        <div class="cert-sig">
+            ${cert.signature2_url || cert.signature2_name ? `
+            <div class="cert-sig">
+              ${cert.signature2_url ? `<img src="${cert.signature2_url}" class="cert-sig-img">` : `<div class="sig-name">${escapeHtml(cert.signature2_name || "")}</div>`}
+              <div class="sig-title">የትምህርትና ስልጠና ኃላፊ<br><span style="font-size:.7rem;">Head of Training</span></div>
+            </div>` : ""}
+            <div class="cert-sig">
               <div class="sig-name">✓</div>
-              <div class="sig-title">የተረጋገጠ</div>
+              <div class="sig-title">የተረጋገጠ<br><span style="font-size:.7rem;">Verified</span></div>
             </div>
           </div>
           ${cert.stamp_url ? `<img src="${cert.stamp_url}" class="cert-stamp cert-stamp-img">` : `<div class="cert-stamp">ኦፊሴላዊ<br>ማህተም</div>`}
-          <div class="cert-code">የማረጋገጫ ኮድ፦ ${cert.certificate_code}</div>
-        </div>
+          <div class="cert-code">የማረጋገጫ ኮድ / Verification Code፦ ${cert.certificate_code}</div>        </div>
         <div style="text-align:center; margin-top:1rem;">
           <button type="button" class="btn btn-primary" onclick="window.print()">🖨️ አትም / አውርድ</button>
         </div>`;
