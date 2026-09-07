@@ -2546,18 +2546,22 @@ function toggleMore(btn) {
 
         <div id="certSubPanel" style="display:none; margin-top:1.5rem; padding-top:1.5rem; border-top:2px dashed rgba(227,30,36,.3);">
           <h4 style="color:#E31E24;">🏆 "<span id="certCourseTitle"></span>" ሰርተፍኬት ስጥ</h4>
-          <div class="ib-list" id="eligibleStudentsList"></div>
-          <button type="button" id="certSubPanelCloseBtn" class="btn" style="margin-top:.5rem;">ወደ ኮርስ ዝርዝር ተመለስ</button>
-        </div>
-      </div>
-    <div id="adminsPanel" class="member-db-panel" style="display:none;">        <div class="member-db-head">
-          <h3>የAdmin መለያዎች (Manager / Moderator)</h3>
-          <button type="button" id="adminsPanelCloseBtn" class="so-lock-btn">ዝጋ</button>
-        </div>
-        <form id="adminsForm" class="ib-form">
-          <input type="text" id="aNewUsername" placeholder="የተጠቃሚ ስም" required>
-          <input type="password" id="aNewPassword" placeholder="የይለፍ ቃል" required>
-          <select id="aNewRole">
+              const stampFile = document.getElementById("cStamp").files[0];
+    const signatureFile = document.getElementById("cSignature").files[0];
+    const sig2Name = document.getElementById("cSig2Name").value.trim();
+    const signature2File = document.getElementById("cSignature2").files[0];
+    if (!title) return;
+    try {
+      const fd = new FormData();
+      fd.append("title", title);
+      fd.append("instructor", instructor);
+      fd.append("description", description);
+      if (logoFile) fd.append("logo", logoFile);
+      if (stampFile) fd.append("stamp", stampFile);
+      if (signatureFile) fd.append("signature", signatureFile);
+      if (sig2Name) fd.append("signature2_name", sig2Name);
+      if (signature2File) fd.append("signature2", signature2File);
+      await apiSend("/api/courses", "POST", fd, true);
             <option value="admin">ዋና ማናጀር </option>
             <option value="moderator">Moderator</option>
             <option value="registrar">Registrar (የአባላት መዝገብ ቤት)</option>
