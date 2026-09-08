@@ -2524,6 +2524,16 @@ function toggleMore(btn) {
         </form>
         <div class="ib-list" id="coursesAdminList"></div>
 
+        <div style="margin-top:1.5rem; padding-top:1.5rem; border-top:2px dashed rgba(227,30,36,.3);">
+          <h4 style="color:#E31E24;">🎓 Bootcamp ሞደሬተር ፍጠር (ሙሉ ስልጣን በ Bootcamp ብቻ)</h4>
+          <form id="bootcampModForm" class="ib-form">
+            <input type="text" id="bmUsername" placeholder="የተጠቃሚ ስም" required>
+            <input type="password" id="bmPassword" placeholder="የይለፍ ቃል" required>
+            <button type="submit" class="btn btn-primary">➕ Bootcamp ሞደሬተር ፍጠር</button>
+          </form>
+          <p id="bmStatus" class="form-status"></p>
+        </div>
+
         <div id="lessonSubPanel" style="display:none; margin-top:1.5rem; padding-top:1.5rem; border-top:2px dashed rgba(227,30,36,.3);">
           <h4 style="color:#E31E24;">🎬 "<span id="lessonCourseTitle"></span>" ቪዲዮ ትምህርቶች</h4>
           <form id="lessonForm" class="ib-form">
