@@ -5118,21 +5118,28 @@ function openMemberPhotoLightbox(url){
 
     const createStudentForm = document.getElementById("createStudentForm");
   if (createStudentForm) {
-    createStudentForm.addEventListener("submit", async (e) => {
+   createStudentForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       const full_name = document.getElementById("csName").value.trim();
       const email = document.getElementById("csEmail").value.trim();
       const phone = document.getElementById("csPhone").value.trim();
       const password = document.getElementById("csPassword").value;
+      const photoFile = document.getElementById("csPhoto").files[0];
       const status = document.getElementById("csStatus");
       if (!full_name || !email || !password) return;
       status.textContent = "እየተመዘገበ ነው...";
       try {
         const token = getAdminToken();
+        const fd = new FormData();
+        fd.append("full_name", full_name);
+        fd.append("email", email);
+        fd.append("phone", phone);
+        fd.append("password", password);
+        if (photoFile) fd.append("photo", photoFile);
         const res = await fetch(API_BASE + "/api/students/admin-create", {
           method: "POST",
-          headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
-          body: JSON.stringify({ full_name, email, phone, password })
+          headers: { "Authorization": "Bearer " + token },
+          body: fd
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || "Failed");
