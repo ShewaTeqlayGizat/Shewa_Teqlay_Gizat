@@ -3623,8 +3623,9 @@ renderChannelVideos();
 
   function renderDashboard(){
     const fullAccess = isFullAdmin();
-    const registrar = isRegistrar();
-    const visibleCards = officeCards.filter(c => fullAccess || (registrar && c.registrarOk) || (!fullAccess && !registrar && !c.fullOnly));
+   const registrar = isRegistrar();
+    const bootcampAdmin = isBootcampAdmin();
+    const visibleCards = officeCards.filter(c => fullAccess || (registrar && c.registrarOk) || (bootcampAdmin && c.bootcampOk) || (!fullAccess && !registrar && !bootcampAdmin && !c.fullOnly));
     cardsGrid.innerHTML = visibleCards.map(c => `
       <div class="office-card" ${c.id ? `data-card-id="${c.id}"` : ""}>
         <div class="office-card-icon">${c.icon}</div>
