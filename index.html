@@ -4765,8 +4765,8 @@ function openMemberPhotoLightbox(url){
   }
 
   tabLogin.addEventListener("click", () => {
-    tabLogin.classList.add("active"); tabSignup.classList.remove("active");
-    loginForm.style.display = "flex"; signupForm.style.display = "none";
+    tabLogin.classList.add("active"); if (tabSignup) tabSignup.classList.remove("active");
+    loginForm.style.display = "flex"; if (signupForm) signupForm.style.display = "none";
   });
   if (tabSignup) {
     tabSignup.addEventListener("click", () => {
