@@ -5079,7 +5079,7 @@ function openMemberPhotoLightbox(url){
       fd.append("description", description);
       if (logoFile) fd.append("logo", logoFile);
       if (stampFile) fd.append("stamp", stampFile);
-      if (signatureFile) fd.append("signature", signatureFile);
+     
       if (sig2Name) fd.append("signature2_name", sig2Name);
       if (signature2File) fd.append("signature2", signature2File);
       await apiSend("/api/courses", "POST", fd, true);
