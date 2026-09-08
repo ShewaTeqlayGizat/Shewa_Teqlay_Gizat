@@ -2620,9 +2620,10 @@ function toggleMore(btn) {
           <input type="text" id="aNewUsername" placeholder="የተጠቃሚ ስም" required>
           <input type="password" id="aNewPassword" placeholder="የይለፍ ቃል" required>
           <select id="aNewRole">
-            <option value="admin">ዋና ማናጀር </option>
-            <option value="moderator">Moderator</option>
-            <option value="registrar">Registrar (የአባላት መዝገብ ቤት)</option>
+            <option value="admin">ዋና ማናጀር (ሙሉ ስልጣን)</option>
+            <option value="moderator">Moderator (ንባብ + አስተያየት ማጥፋት ብቻ)</option>
+            <option value="registrar">Registrar (የአባላት ፎርም መሙላት ብቻ)</option>
+            <option value="bootcamp_admin">Bootcamp ሞደሬተር (ሙሉ ስልጣን በ Bootcamp ብቻ)</option>
           </select>
           <button type="submit" class="btn btn-primary">➕ መለያ ፍጠር</button>
         </form>
