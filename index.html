@@ -1346,6 +1346,12 @@ textarea{ margin-bottom:1rem; resize:vertical; }
 .cert-stamp-img{ width:90px; height:90px; object-fit:contain; border-radius:50%; background:#fff; }
 .cert-stamp{ width:75px; height:75px; margin:-1rem 0 .8rem auto; border:3px double #078930; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#078930; font-weight:700; font-size:.6rem; text-align:center; transform:rotate(-12deg); opacity:.85; }
 .cert-praise{ background:#fff8e1; border:1px dashed #FCDD09; border-radius:8px; padding:.6rem; margin:.6rem 0; font-style:italic; color:#5a4a1a; font-size:.9rem; }
+@media print {
+  body > *:not(#certModalOverlay) { display:none !important; }
+  #certModalOverlay.open { display:block !important; position:static !important; background:none !important; }
+  #certModalOverlay .news-modal { position:static !important; max-width:none !important; max-height:none !important; overflow:visible !important; box-shadow:none !important; margin:0 !important; }
+  .news-modal-close, #certModalBody button { display:none !important; }
+}
 </style>
 </head>
 <body>
