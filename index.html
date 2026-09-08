@@ -1334,6 +1334,12 @@ textarea{ margin-bottom:1rem; resize:vertical; }
 .cert-design{ border:none; padding:0; background:none; }
 .cert-frame{ border:12px solid; border-image: linear-gradient(180deg, #078930 0 33%, #FCDD09 33% 66%, #DA121A 66% 100%) 1; padding:1.5rem 2rem; background:#fffdf8; position:relative; font-family:'Noto Serif Ethiopic', serif; width:210mm; min-height:297mm; box-sizing:border-box; max-width:100%; margin:0 auto; text-align:center; }
 .cert-frame h1{ color:#E31E24; font-weight:700; text-align:center; }
+@media print {
+  body * { visibility:hidden; }
+  #certModalBody, #certModalBody * { visibility:visible; }
+  #certModalBody { position:absolute; left:0; top:0; width:100%; }
+  .news-modal-close, #certModalBody button { display:none !important; }
+}
 .cert-logo{ width:70px; height:70px; border-radius:50%; object-fit:contain; margin:-1rem auto .5rem; display:block; border:2px solid #B7A272; background:#fff; padding:4px; box-sizing:border-box; }
 .cert-sig-img{ height:45px; object-fit:contain; display:block; margin:0 auto; background:#fff; }
 .cert-stamp-img{ width:90px; height:90px; object-fit:contain; border-radius:50%; background:#fff; }
