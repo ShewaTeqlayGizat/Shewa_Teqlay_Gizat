@@ -5100,6 +5100,22 @@ function openMemberPhotoLightbox(url){
 
   if (closeBtn) closeBtn.addEventListener("click", () => { panel.style.display = "none"; lessonSubPanel.style.display = "none"; });
 
+  const bootcampModForm = document.getElementById("bootcampModForm");
+  if (bootcampModForm) {
+    bootcampModForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const username = document.getElementById("bmUsername").value.trim();
+      const password = document.getElementById("bmPassword").value;
+      const status = document.getElementById("bmStatus");
+      if (!username || !password) return;
+      try {
+        await apiSend("/api/auth/create-admin", "POST", { username, password, role: "bootcamp_admin" });
+        status.textContent = "ተሳክቷል! Bootcamp ሞደሬተር ተፈጥሯል።";
+        bootcampModForm.reset();
+      } catch(err){ status.textContent = "ስህተት፦ " + err.message; }
+    });
+  }
+
   window.toggleCoursesPanel = function(){
     const isOpen = panel.style.display !== "none";
     document.querySelectorAll(".member-db-panel").forEach(p => p.style.display = "none");
