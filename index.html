@@ -5111,18 +5111,28 @@ function openMemberPhotoLightbox(url){
 
   if (closeBtn) closeBtn.addEventListener("click", () => { panel.style.display = "none"; lessonSubPanel.style.display = "none"; });
 
-  const bootcampModForm = document.getElementById("bootcampModForm");
-  if (bootcampModForm) {
-    bootcampModForm.addEventListener("submit", async (e) => {
+    const createStudentForm = document.getElementById("createStudentForm");
+  if (createStudentForm) {
+    createStudentForm.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const username = document.getElementById("bmUsername").value.trim();
-      const password = document.getElementById("bmPassword").value;
-      const status = document.getElementById("bmStatus");
-      if (!username || !password) return;
+      const full_name = document.getElementById("csName").value.trim();
+      const email = document.getElementById("csEmail").value.trim();
+      const phone = document.getElementById("csPhone").value.trim();
+      const password = document.getElementById("csPassword").value;
+      const status = document.getElementById("csStatus");
+      if (!full_name || !email || !password) return;
+      status.textContent = "እየተመዘገበ ነው...";
       try {
-        await apiSend("/api/auth/create-admin", "POST", { username, password, role: "bootcamp_admin" });
-        status.textContent = "ተሳክቷል! Bootcamp ሞደሬተር ተፈጥሯል።";
-        bootcampModForm.reset();
+        const token = getAdminToken();
+        const res = await fetch(API_BASE + "/api/students/admin-create", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
+          body: JSON.stringify({ full_name, email, phone, password })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Failed");
+        status.textContent = "ተሳክቷል! ተማሪ ተመዝግቧል።";
+        createStudentForm.reset();
       } catch(err){ status.textContent = "ስህተት፦ " + err.message; }
     });
   }
