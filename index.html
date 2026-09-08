@@ -5142,7 +5142,12 @@ function openMemberPhotoLightbox(url){
   window.toggleCoursesPanel = function(){
     const isOpen = panel.style.display !== "none";
     document.querySelectorAll(".member-db-panel").forEach(p => p.style.display = "none");
-    if (!isOpen) { panel.style.display = "block"; render(); panel.scrollIntoView({behavior:"smooth", block:"start"}); }
+    if (!isOpen) {
+      panel.style.display = "block"; render(); panel.scrollIntoView({behavior:"smooth", block:"start"});
+      const bmForm = document.getElementById("bootcampModForm");
+      const bmFormParent = bmForm ? bmForm.closest("div") : null;
+      if (bmFormParent) bmFormParent.style.display = isFullAdmin() ? "block" : "none";
+    }
   };
 })();
 // ---------------- Student Portal: Courses, Lessons, Quizzes ----------------
