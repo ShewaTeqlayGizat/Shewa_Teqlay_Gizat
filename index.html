@@ -5352,7 +5352,7 @@ function openMemberPhotoLightbox(url){
           <div class="cert-footer">
             ${cert.signature2_url || cert.signature2_name ? `
             <div class="cert-sig">
-              ${cert.signature2_url ? `<img src="${cert.signature2_url}" class="cert-sig-img">` : `<div class="sig-name">${escapeHtml(cert.signature2_name || "")}</div>`}
+              ${cert.signature2_url ? `<img src="${cert.signature2_url}" class="cert-sig-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"><div class="sig-name" style="display:none;">${escapeHtml(cert.signature2_name || "")}</div>` : `<div class="sig-name">${escapeHtml(cert.signature2_name || "")}</div>`}
               <div class="sig-title">የትምህርትና ስልጠና ኃላፊ<br><span style="font-size:.7rem;">HEAD OF TRAINING</span></div>
             </div>` : ""}
             <div class="cert-sig">
