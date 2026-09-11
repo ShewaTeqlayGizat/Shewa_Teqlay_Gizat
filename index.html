@@ -2570,8 +2570,15 @@ function toggleMore(btn) {
         <div id="lessonSubPanel" style="display:none; margin-top:1.5rem; padding-top:1.5rem; border-top:2px dashed rgba(227,30,36,.3);">
           <h4 style="color:#E31E24;">🎬 "<span id="lessonCourseTitle"></span>" ቪዲዮ ትምህርቶች</h4>
           <form id="lessonForm" class="ib-form">
+            <select id="lType">
+              <option value="video_url">🎬 የYouTube ቪዲዮ URL</option>
+              <option value="video">📹 ቪዲዮ ፋይል (Upload)</option>
+              <option value="pdf">📄 PDF / መጽሐፍ</option>
+              <option value="audio">🎙️ የድምጽ ትረካ</option>
+            </select>
             <input type="text" id="lTitle" placeholder="የትምህርት ርዕስ" required>
-            <input type="text" id="lVideoUrl" placeholder="YouTube URL" required>
+            <input type="text" id="lVideoUrl" placeholder="YouTube URL">
+            <input type="file" id="lFile" style="display:none;">
             <button type="submit" class="btn btn-primary">➕ ትምህርት ጨምር</button>
           </form>
           <div class="ib-list" id="lessonsAdminList"></div>
@@ -4957,14 +4964,45 @@ function openMemberPhotoLightbox(url){
     });
   }
 
-  if (lessonForm) lessonForm.addEventListener("submit", async (e) => {
+  if (lessonForm) const lTypeSelect = document.getElementById("lType");
+  const lVideoUrlInput = document.getElementById("lVideoUrl");
+  const lFileInput = document.getElementById("lFile");
+
+  function updateLessonFormFields(){
+    const type = lTypeSelect.value;
+    if (type === "video_url") {
+      lVideoUrlInput.style.display = "";
+      lFileInput.style.display = "none";
+      lFileInput.accept = "";
+    } else {
+      lVideoUrlInput.style.display = "none";
+      lFileInput.style.display = "";
+      if (type === "video") lFileInput.accept = "video/*";
+      else if (type === "pdf") lFileInput.accept = "application/pdf";
+      else if (type === "audio") lFileInput.accept = "audio/*";
+    }
+  }
+  lTypeSelect.addEventListener("change", updateLessonFormFields);
+  updateLessonFormFields();
+
+  lessonForm.addEventListener("submit", async (e) => {
     e.preventDefault();
+    const lesson_type = lTypeSelect.value;
     const title = document.getElementById("lTitle").value.trim();
-    const video_url = document.getElementById("lVideoUrl").value.trim();
-    if (!title || !video_url) return;
+    const video_url = lVideoUrlInput.value.trim();
+    const file = lFileInput.files[0];
+    if (!title) return;
+    if (lesson_type === "video_url" && !video_url) { alert("YouTube URL ያስፈልጋል"); return; }
+    if (lesson_type !== "video_url" && !file) { alert("ፋይል መምረጥ አለብዎት"); return; }
     try {
-      await apiSend("/api/courses/" + currentCourseId + "/lessons", "POST", { title, video_url });
+      const fd = new FormData();
+      fd.append("title", title);
+      fd.append("lesson_type", lesson_type);
+      if (video_url) fd.append("video_url", video_url);
+      if (file) fd.append("file", file);
+      await apiSend("/api/courses/" + currentCourseId + "/lessons", "POST", fd, true);
       lessonForm.reset();
+      updateLessonFormFields();
       renderLessons();
     } catch(e){ alert("ትምህርት መጨመር አልተቻለም፦ " + e.message); }
   });
@@ -5289,18 +5327,33 @@ function openMemberPhotoLightbox(url){
     courseDesc.textContent = course.description || "";
 
     const lessons = course.lessons || [];
-    lessonsList.innerHTML = lessons.map(l => `
+    const typeLabels = { video_url:"🎬 ቪዲዮ", video:"📹 ቪዲዮ", pdf:"📄 PDF/መጽሐፍ", audio:"🎙️ ትረካ" };
+    lessonsList.innerHTML = lessons.map(l => {
+      const type = l.lesson_type || "video_url";
+      const btnLabel = type === "pdf" ? "📄 ክፈት" : type === "audio" ? "🎧 አዳምጥ" : "▶ ተመልከት";
+      return `
       <div class="ib-post">
-        <div class="ib-post-head"><h4>${escapeHtml(l.title)}</h4></div>
+        <div class="ib-post-head"><h4>${typeLabels[type]||""} ${escapeHtml(l.title)}</h4></div>
         <div class="ib-post-footer">
-          <button type="button" class="btn sp-watch" data-url="${l.video_url}" data-title="${escapeHtml(l.title)}">▶ ተመልከት</button>
+          <button type="button" class="btn sp-watch" data-type="${type}" data-url="${type==='video_url'?l.video_url:(l.file_url||'')}" data-title="${escapeHtml(l.title)}">${btnLabel}</button>
         </div>
-      </div>`).join("") || "<p class='loading-text'>ገና ምንም ትምህርት የለም።</p>";
+      </div>`;
+    }).join("") || "<p class='loading-text'>ገና ምንም ትምህርት የለም።</p>";
 
     lessonsList.querySelectorAll(".sp-watch").forEach(btn => {
       btn.addEventListener("click", () => {
         videoPlayer.style.display = "block";
-        videoPlayer.innerHTML = videoEmbedHtml(btn.dataset.url, btn.dataset.title);
+        const type = btn.dataset.type;
+        const url = btn.dataset.url;
+        if (type === "video_url") {
+          videoPlayer.innerHTML = videoEmbedHtml(url, btn.dataset.title);
+        } else if (type === "video") {
+          videoPlayer.innerHTML = `<video controls style="width:100%; border-radius:10px;"><source src="${url}"></video>`;
+        } else if (type === "audio") {
+          videoPlayer.innerHTML = `<audio controls style="width:100%;"><source src="${url}"></audio>`;
+        } else if (type === "pdf") {
+          videoPlayer.innerHTML = `<a href="${url}" target="_blank" rel="noopener" class="btn btn-primary">📄 PDF ን በአዲስ ትር ክፈት</a>`;
+        }
         videoPlayer.scrollIntoView({behavior:"smooth", block:"center"});
       });
     });
