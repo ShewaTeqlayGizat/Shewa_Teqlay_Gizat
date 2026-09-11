@@ -1367,17 +1367,38 @@ textarea{ margin-bottom:1rem; resize:vertical; }
 @media print {
   body.printing-cert * { visibility:hidden !important; }
   body.printing-cert #certModalOverlay, body.printing-cert #certModalOverlay * { visibility:visible !important; }
-  body.printing-cert #certModalOverlay { position:fixed !important; inset:0 !important; display:block !important; background:#fff !important; margin:0 !important; overflow:visible !important; }
+  body.printing-cert #certModalOverlay {
+    position:fixed !important; inset:0 !important; display:block !important;
+    background:#fff !important; margin:0 !important; padding:0 !important;
+    overflow:visible !important;
+  }
+  body.printing-cert #certModalOverlay .news-modal {
+    width:200mm !important; max-width:none !important; max-height:none !important;
+    height:287mm !important; overflow:visible !important; margin:5mm auto !important;
+    border-radius:0 !important; box-shadow:none !important;
+  }
   body.printing-cert .news-modal-close,
   body.printing-cert #certModalBody > div:not(.cert-frame),
   body.printing-cert #certModalBody button { display:none !important; }
   body.printing-cert #certModalBody { margin:0 !important; padding:0 !important; }
   body.printing-cert .cert-frame {
-    width:210mm !important;
-    height:297mm !important;
+    width:200mm !important;
+    height:287mm !important;
     min-height:0 !important;
     margin:0 !important;
-    overflow:hidden !important;
+    padding:1.5rem 2.5rem 1.8rem !important;
+    overflow:visible !important;
+  }
+  body.printing-cert .cert-logo { width:60px !important; height:60px !important; margin:-.5rem auto .3rem !important; }
+  body.printing-cert .cert-stamp-img { width:70px !important; height:70px !important; }
+  body.printing-cert .cert-stamp { width:65px !important; height:65px !important; margin:-.5rem auto .5rem !important; }
+  body.printing-cert .cert-praise { padding:.4rem !important; margin:.4rem 0 !important; font-size:.8rem !important; }
+  body.printing-cert .cert-footer { margin-top:.6rem !important; padding-top:.4rem !important; }
+  body.printing-cert .cert-code { margin-top:.7rem !important; }
+  body.printing-cert .cert-frame h1 { font-size:1.7rem !important; }
+  body.printing-cert .cert-frame p { margin-top:.6rem !important; margin-bottom:.6rem !important; }
+  body.printing-cert .cert-frame .cert-course { margin:.3rem 0 !important; }
+  body.printing-cert .cert-frame .cert-date { margin:.2rem 0 !important;
   }
   @page { size: A4 portrait; margin: 0; }
 }
