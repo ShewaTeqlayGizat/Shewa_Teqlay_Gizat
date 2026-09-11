@@ -119,31 +119,36 @@ p{ margin:0 0 1em; }
   );
 }
 .header-inner{
-  max-width: var(--max-w); margin:0 auto; padding:.55rem 1.5rem;
-  display:flex; align-items:center; gap:1.5rem;
+  max-width: var(--max-w); margin:0 auto; padding:.4rem 1rem;
+  display:flex; align-items:center; gap:1rem;
   flex-wrap: wrap;
   box-sizing: border-box;
 }
 .brand{
   display:flex; align-items:center; gap:.5rem;
-  flex-direction: row-reverse;
-  order: 2;
-  margin-left: auto;
+  order: 1;
+  flex-shrink: 0;
 }
 .brand-logo{
-  width:44px; height:44px; border-radius:50%; flex-shrink:0;
+  width:36px; height:36px; border-radius:50%; flex-shrink:0;
   box-shadow: 0 0 0 2px #078930, 0 0 0 3px #FCDD09, 0 0 0 4px #DA121A, 0 4px 12px rgba(0,0,0,.25);
 }
 .brand-text{
   display:flex; flex-direction:column; line-height:1.2;
-  border: 1px solid #078930; border-radius:6px; padding:.25rem .5rem;
-  max-width: 92px;
-  text-align:right;
+  border: 1px solid #078930; border-radius:6px; padding:.2rem .45rem;
+  max-width: 100px;
+  text-align:left;
 }
 .brand-text strong{ font-family: var(--font-display); font-size:.72rem; color:#fff; }
 .brand-text small{ color: #F5D066; font-size:.62rem; letter-spacing:.02em; }
 
-.main-nav{ display:flex; flex-wrap:wrap; gap:1.2rem; order: 1; }
+.main-nav{
+  display:flex; flex-wrap:wrap; gap:.6rem .7rem;
+  order: 2;
+  margin-left: auto;
+  max-width: 58%;
+  justify-content: flex-end;
+}
 .main-nav a{
   font-size:.95rem; font-weight:600; color: #EAF2FF;
   position:relative; padding:.15rem 0;
