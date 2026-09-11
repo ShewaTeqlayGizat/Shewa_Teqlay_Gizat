@@ -461,7 +461,7 @@ p{ margin:0 0 1em; }
   display:inline-flex; align-items:center; gap:.35rem;
   background: rgba(255,255,255,.12); color:#fff; border:1px solid rgba(255,255,255,.35);
   padding:.45rem .9rem; border-radius:999px; font-size:.82rem; font-weight:600;
-  cursor:pointer; backdrop-filter: blur(4px);
+  cursor:pointer; -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
   transition: background .2s ease, transform .2s ease;
 }
 .news-intro-skip:hover{ background: rgba(255,255,255,.22); transform: translateY(-2px); }
@@ -631,7 +631,7 @@ p{ margin:0 0 1em; }
 /* ---- Library reader modal ---- */
 .library-reader-modal{
   position:fixed; inset:0; z-index:200; display:none;
-  background: rgba(8,10,14,.78); backdrop-filter: blur(3px);
+  background: rgba(8,10,14,.78); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
   align-items:center; justify-content:center; padding:1.5rem;
 }
 .library-reader-modal.is-open{ display:flex; }
@@ -1102,8 +1102,8 @@ p{ margin:0 0 1em; }
   content:""; position:absolute; inset:0; border-radius:999px; padding:1.5px;
   background: linear-gradient(120deg, var(--navy-bright), #F5D066, var(--navy-bright));
   background-size:200% 200%;
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor; mask-composite: exclude;
   opacity:0; transition: opacity .25s ease;
 }
@@ -1152,7 +1152,7 @@ p{ margin:0 0 1em; }
 .library-badge{
   position:absolute; top:10px; right:10px; z-index:2;
   background: rgba(255,255,255,.16); color:#fff; font-size:.68rem; font-weight:800;
-  letter-spacing:.05em; padding:.25rem .6rem; border-radius:999px; backdrop-filter: blur(3px);
+  letter-spacing:.05em; padding:.25rem .6rem; border-radius:999px; -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
   border:1px solid rgba(255,255,255,.35);
 }
 .library-body{ padding:1.1rem 1.2rem 1.3rem; display:flex; flex-direction:column; flex:1 1 auto; }
@@ -1191,8 +1191,8 @@ p{ margin:0 0 1em; }
 .leader-card.is-chairman::before{
   content:""; position:absolute; inset:0; border-radius:var(--radius); padding:2px;
   background: linear-gradient(135deg, var(--gold), #F5D066, var(--gold));
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor; mask-composite: exclude;
   pointer-events:none;
 }
@@ -1214,8 +1214,8 @@ p{ margin:0 0 1em; }
 .leader-card.is-vice::before{
   content:""; position:absolute; inset:0; border-radius:var(--radius); padding:2px;
   background: linear-gradient(135deg, #B7C0C9, #E8EDF1, #B7C0C9);
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor; mask-composite: exclude;
   pointer-events:none;
 }
@@ -1396,6 +1396,25 @@ textarea{ margin-bottom:1rem; resize:vertical; }
 .is-hidden{ display:none; }
 .brand-subtitle{ font-size:.7em; color:#40C4FF; text-shadow:0 0 6px rgba(64,196,255,.6); letter-spacing:.5px; }
 .hero-subtitle{ font-size:.55em; color:#40C4FF; text-shadow:0 0 8px rgba(64,196,255,.65); letter-spacing:.5px; }
+.form-label{ display:block; font-size:.85rem; color:var(--ink-soft); }
+.mt-1{ margin-top:1rem; }
+.mt-15{ margin-top:1.5rem; }
+.mb-1{ margin-bottom:1rem; }
+.wide-modal{ max-width:800px; }
+.cert-modal-body{ padding:2.5rem; }
+.muted-text{ color:var(--ink-soft); }
+.inline-block{ display:inline-block; }
+.auth-form{ max-width:420px; }
+.welcome-photo{ width:60px; height:60px; border-radius:50%; object-fit:cover; vertical-align:middle; margin-right:.6rem; }
+.font-bold-mt-1{ margin-top:1rem; font-weight:700; }
+.textarea-full{ grid-column:1 / -1; min-height:70px; }
+.textarea-course{ grid-column:1 / -1; min-height:60px; }
+.panel-heading{ color:#E31E24; }
+.panel-section{ margin-top:1.5rem; padding-top:1.5rem; border-top:2px dashed rgba(227,30,36,.3); }
+.panel-button{ margin-top:.5rem; }
+.textarea-bio{ grid-column:1 / -1; min-height:70px; padding:.55rem .7rem; border:1.5px solid rgba(43,36,26,.15); border-radius:8px; font-size:.85rem; font-family:var(--font-body); resize:vertical; }
+.question-section{ margin-top:1rem; padding-top:1rem; border-top:1px dashed rgba(227,30,36,.2); }
+.fb-iframe{ border:none; overflow:hidden; }
 @media print {
   body.printing-cert * { visibility:hidden !important; }
   body.printing-cert #certModalOverlay, body.printing-cert #certModalOverlay * { visibility:visible !important; }
@@ -1558,7 +1577,6 @@ textarea{ margin-bottom:1rem; resize:vertical; }
     <span class="eyebrow">ውርስ</span>
     <h2>የሸዋ ጠቅላይ ግዛት ታሪክ</h2>
       <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>የሸዋ ጠቅላይ ግዛት እውነተኛ ታሪክና የአስተዳደር መዋቅር</title>
     <style>
         body {
@@ -1635,11 +1653,11 @@ textarea{ margin-bottom:1rem; resize:vertical; }
       <p class="history-text-violet"><strong>የዕውቀትና አውሮፓውያን ግንኙነት፦</strong> በሣህለ ሥላሴ ዘመን እንግሊዝ፣ ፈረንሳይና ጣሊያን ጨምሮ የውጭ ሀገር መልእክተኞች ወደ አንኮበር በመምጣት የመጀመሪያዎቹን የዲፕሎማሲ ግንኙነቶች መሠረቱ።</p>
       
     <span class="more-text">
-    <p style="text-align: justify; color: #B8860B;"><strong>የዘመናዊት ኢትዮጵያ መሠረት፦</strong> የንጉሥ ሣህለ ሥላሴ የልጅ ልጅ የሆኑት ዳግማዊ አጼ ምኒልክ የሸዋ ንጉሥ በነበሩበት ወቅት የሸዋ ክፍል የሆነችውን አዲስ አበባን በ1879 ዓ.ም እንጦጦ(ቁስቋም) በማድረግ የዘመናዊቷን ኢትዮጵያ ዋና ከተማ አደረጓት።</p>
-      <p style="text-align: justify; color: #2F4F4F;"><strong>የማዕከላዊነት ሚና፦</strong> ምኒልክ መላ ኢትዮጵያን ከአንድ ማዕከላዊ መንግሥት ሥር ባስተሳሰሩበት ወቅት ሸዋ የኢትዮጵያ የፖለቲካ እና የወታደራዊ መነሻ ማዕከል ሆኖ አገልግሏል።</p>
-      <p style="text-align: justify; color: #A52A2A;"><strong>የአስተዳደር ለውጥ፦</strong> በ20ኛው ክፍለ ዘመን በንጉሠ ነገሥት ኃይለ ሥላሴ ዘመነ መንግሥት ሸዋ በአማራ ግዛቶች ውስጥ አንዱና ዋናው አስተዳደራዊ ማዕከል ሆነ።</p>
-      <p style="text-align: justify; color: #556B2F;"><strong>የኢኮኖሚና መሠረተ ልማት ማዕከል፦</strong> የመጀመሪያዎቹ ዘመናዊ ትምህርት ቤቶች፣ ሆስፒታሎች፣ የምድር ባቡር መስመርና ዘመናዊ መሠረተ ልማቶች በሸዋ ጠቅላይ ግዛት ውስጥ ተስፋፍተዋል።</p>
-      <p style="text-align: justify; color: #800080;"><strong>ታሪካዊ ውርስ፦</strong> ሸዋ የብዙ ብሔረሰቦችና ባህሎች መገናኛ በመሆኑ ለኢትዮጵያ አንድነትና ዘመናዊ አገረ-መንግሥት ምሥረታ ከፍተኛ አስተዋጽኦ ያበረከተ ታሪካዊ ምድር ነው።</p>
+    <p class="history-text-gold"><strong>የዘመናዊት ኢትዮጵያ መሠረት፦</strong> የንጉሥ ሣህለ ሥላሴ የልጅ ልጅ የሆኑት ዳግማዊ አጼ ምኒልክ የሸዋ ንጉሥ በነበሩበት ወቅት የሸዋ ክፍል የሆነችውን አዲስ አበባን በ1879 ዓ.ም እንጦጦ(ቁስቋም) በማድረግ የዘመናዊቷን ኢትዮጵያ ዋና ከተማ አደረጓት።</p>
+      <p class="history-text-teal"><strong>የማዕከላዊነት ሚና፦</strong> ምኒልክ መላ ኢትዮጵያን ከአንድ ማዕከላዊ መንግሥት ሥር ባስተሳሰሩበት ወቅት ሸዋ የኢትዮጵያ የፖለቲካ እና የወታደራዊ መነሻ ማዕከል ሆኖ አገልግሏል።</p>
+      <p class="history-text-crimson"><strong>የአስተዳደር ለውጥ፦</strong> በ20ኛው ክፍለ ዘመን በንጉሠ ነገሥት ኃይለ ሥላሴ ዘመነ መንግሥት ሸዋ በአማራ ግዛቶች ውስጥ አንዱና ዋናው አስተዳደራዊ ማዕከል ሆነ።</p>
+      <p class="history-text-olive"><strong>የኢኮኖሚና መሠረተ ልማት ማዕከል፦</strong> የመጀመሪያዎቹ ዘመናዊ ትምህርት ቤቶች፣ ሆስፒታሎች፣ የምድር ባቡር መስመርና ዘመናዊ መሠረተ ልማቶች በሸዋ ጠቅላይ ግዛት ውስጥ ተስፋፍተዋል።</p>
+      <p class="history-text-purple"><strong>ታሪካዊ ውርስ፦</strong> ሸዋ የብዙ ብሔረሰቦችና ባህሎች መገናኛ በመሆኑ ለኢትዮጵያ አንድነትና ዘመናዊ አገረ-መንግሥት ምሥረታ ከፍተኛ አስተዋጽኦ ያበረከተ ታሪካዊ ምድር ነው።</p>
     </span>
 
     <span class="read-more-btn" onclick="toggleMore(this)">Readmore</span>
@@ -1673,15 +1691,15 @@ textarea{ margin-bottom:1rem; resize:vertical; }
   <br>
 
   <div class="section">
-    <h2 style="color: #4B0082;">መናገሻ አውራጃ - አዲስ አበባ</h2>
-    <p style="text-align: justify; color: #1a1a2e;">የዘመናዊቷ ኢትዮጵያ ዋና ከተማ የሆነችው አዲስ አበባ የተቆረቆረችው በእቴጌ ጣይቱ ብጡል መሪነትና በባላቸው በንጉሥ (በኋላ አጼ) ምኒልክ አዋጅነት በ1878/1879 ዓ.ም (እ.ኤ.አ 1886) ነው።</p>
+    <h2 class="history-title-purple">መናገሻ አውራጃ - አዲስ አበባ</h2>
+    <p class="history-text-dark">የዘመናዊቷ ኢትዮጵያ ዋና ከተማ የሆነችው አዲስ አበባ የተቆረቆረችው በእቴጌ ጣይቱ ብጡል መሪነትና በባላቸው በንጉሥ (በኋላ አጼ) ምኒልክ አዋጅነት በ1878/1879 ዓ.ም (እ.ኤ.አ 1886) ነው።</p>
 
     
-      <p style="text-align: justify; color: #4B0082;"><strong>የከተማዋ አመሠራረት ታሪክ ሂደት፦</strong></p>
-      <p style="text-align: justify; color: #B8860B;"><strong>1. የመጀመሪያው ማዕከል (እንጦጦ)፦</strong> ዳግማዊ አጼ ምኒልክ በ1871 ዓ.ም (እ.ኤ.አ 1879) አካባቢ የሸዋን ማዕከል ከእንግሊዞችና ፈረንሳዮች መኖሪያ ከነበረችው አንኮበር ወደ እንጦጦ ተራራ አዛወሩ። በእንጦጦ ላይም ቤተ መንግሥትና የቁስቋም ማርያም ቤተክርስቲያንን አነጹ።</p>
+      <p class="history-text-purple"><strong>የከተማዋ አመሠራረት ታሪክ ሂደት፦</strong></p>
+      <p class="history-text-gold"><strong>1. የመጀመሪያው ማዕከል (እንጦጦ)፦</strong> ዳግማዊ አጼ ምኒልክ በ1871 ዓ.ም (እ.ኤ.አ 1879) አካባቢ የሸዋን ማዕከል ከእንግሊዞችና ፈረንሳዮች መኖሪያ ከነበረችው አንኮበር ወደ እንጦጦ ተራራ አዛወሩ። በእንጦጦ ላይም ቤተ መንግሥትና የቁስቋም ማርያም ቤተክርስቲያንን አነጹ።</p>
     <span class="more-text">  
-    <p style="text-align: justify; color: #006400;"><strong>2. ወደ ፍልውሃ መውረድ፦</strong> እቴጌ ጣይቱ ብጡል ከእንጦጦ ቁስቋም ቅዝቃዜ ይልቅ ከሥር የሚገኘውን የፍልውሃ አካባቢ ውበትና ሙቀት በመውደዳቸው በ1879 ዓ.ም እዚያ ቦታ ላይ ቤት እንዲሠራላቸው አደረጉ።</p>
-      <p style="text-align: justify; color: #00008B;"><strong>3. "አዲስ አበባ" ስያሜ፦</strong> እቴጌ ጣይቱ በቦታው ላይ ያዩትን አዲስ አበባ መሠረት በማድረግ አካባቢውን "አዲስ አበባ" ብለው ሰየሙት። በኋላም ንጉሥ ምኒልክ የባለቤታቸውን ቤት ወደ ትልቅ ቤተ መንግሥት በማስፋፋት አዲስ አበባን የሸዋና የጠቅላላዋ ኢትዮጵያ ዋና ከተማ አደረጓት።</p>
+    <p class="history-text-green"><strong>2. ወደ ፍልውሃ መውረድ፦</strong> እቴጌ ጣይቱ ብጡል ከእንጦጦ ቁስቋም ቅዝቃዜ ይልቅ ከሥር የሚገኘውን የፍልውሃ አካባቢ ውበትና ሙቀት በመውደዳቸው በ1879 ዓ.ም እዚያ ቦታ ላይ ቤት እንዲሠራላቸው አደረጉ።</p>
+      <p class="history-text-blue"><strong>3. "አዲስ አበባ" ስያሜ፦</strong> እቴጌ ጣይቱ በቦታው ላይ ያዩትን አዲስ አበባ መሠረት በማድረግ አካባቢውን "አዲስ አበባ" ብለው ሰየሙት። በኋላም ንጉሥ ምኒልክ የባለቤታቸውን ቤት ወደ ትልቅ ቤተ መንግሥት በማስፋፋት አዲስ አበባን የሸዋና የጠቅላላዋ ኢትዮጵያ ዋና ከተማ አደረጓት።</p>
     </span>
 
     <span class="read-more-btn" onclick="toggleMore(this)">ቀጣዩን ለማንበብ እዚህ ይጫኑ</span>
@@ -1690,13 +1708,13 @@ textarea{ margin-bottom:1rem; resize:vertical; }
   <br>
 
   <div class="section">
-    <h2 style="color: #B8860B;">የሸዋ ልዩ የሚያደርገው ፖለቲካዊና ኢኮኖሚያዊ ሚና</h2>
-    <p style="text-align: justify; color: #1a1a2e;"><strong>የፖለቲካ ማዕከልነት፦</strong> የንጉሠ ነገሥቱ ቤተ መንግሥት፣ የፓርላማው ስብሰባ፣ ሚኒስቴር መሥሪያ ቤቶችና የውጭ ሀገራት ኤምባሲዎች በሙሉ የሚገኙት በሸዋ ጠቅላይ ግዛት ወሰን ውስጥ (አዲስ አበባ) በመሆኑ የሀገሪቱ የፖለቲካ ውሳኔ ማዕከል ነበረ።</p>
+    <h2 class="history-title-gold">የሸዋ ልዩ የሚያደርገው ፖለቲካዊና ኢኮኖሚያዊ ሚና</h2>
+    <p class="history-text-dark"><strong>የፖለቲካ ማዕከልነት፦</strong> የንጉሠ ነገሥቱ ቤተ መንግሥት፣ የፓርላማው ስብሰባ፣ ሚኒስቴር መሥሪያ ቤቶችና የውጭ ሀገራት ኤምባሲዎች በሙሉ የሚገኙት በሸዋ ጠቅላይ ግዛት ወሰን ውስጥ (አዲስ አበባ) በመሆኑ የሀገሪቱ የፖለቲካ ውሳኔ ማዕከል ነበረ።</p>
 
     <span class="more-text">
-      <p style="text-align: justify; color: #006400;"><strong>የኢኮኖሚና መሠረተ ልማት ማዕከል፦</strong> ከጂቡቲ አዲስ አበባ የሚዘልቀው የባቡር መስመር፣ የመጀመሪያዎቹ አስፋልት መንገዶች፣ የቆቃ የውሃ ኃይል ማመንጫ ግድብ፣ እንዲሁም የመጀመሪያዎቹ የጨርቃጨርቅና የሥጋ ፋብሪካዎች (በአዳማ፣ ሞጆ፣ አቃቂና ቃሊቲ) የተገነቡት በዚሁ ግዛት ውስጥ ነበር።</p>
-      <p style="text-align: justify; color: #6A0DAD;"><strong>የትምህርትና የባህል ማዕከል፦</strong> የቀዳማዊ ኃይለ ሥላሴ ዩኒቨርሲቲ (የአሁኑ አዲስ አበባ ዩኒቨርሲቲ)፣ ታዋቂ ሁለተኛ ደረጃ ትምህርት ቤቶችና የጦር አካዳሚዎች (እንደ ሐረር አካዳሚ በፊት የነበረውና የሆለታ ወታደራዊ ማሰልጠኛ) በዚሁ ጠቅላይ ግዛት ይገኛሉ።</p>
-      <p style="text-align: justify; color: #2F4F4F;">በ1970ዎቹ መጨረሻ በደርግ ዘመን የአስተዳደር መዋቅር ለውጥ ተደርጎ ሸዋ ወደ አራት አውራጃዎች (ሰሜን ሸዋ፣ ደቡብ ሸዋ፣ ምስራቅ ሸዋ፣ እና ምዕራብ ሸዋ) ተከፈለ። በ1983 ዓ.ም አዲስ የፌዴራል አስተዳደር መዋቅር ሲተገበር የሸዋ ጠቅላይ ግዛት አወቃቀር ቀርቶ የቀድሞ አውራጃዎቹ በአሁኑ በኦሮሚያ፣ በአማራ፣ በደቡብ ኢትዮጵያና በአዲስ አበባ አስተዳደር ክልሎች ሥር እንዲተዳደሩ ተደረገ።</p>
+      <p class="history-text-green"><strong>የኢኮኖሚና መሠረተ ልማት ማዕከል፦</strong> ከጂቡቲ አዲስ አበባ የሚዘልቀው የባቡር መስመር፣ የመጀመሪያዎቹ አስፋልት መንገዶች፣ የቆቃ የውሃ ኃይል ማመንጫ ግድብ፣ እንዲሁም የመጀመሪያዎቹ የጨርቃጨርቅና የሥጋ ፋብሪካዎች (በአዳማ፣ ሞጆ፣ አቃቂና ቃሊቲ) የተገነቡት በዚሁ ግዛት ውስጥ ነበር።</p>
+      <p class="history-text-violet"><strong>የትምህርትና የባህል ማዕከል፦</strong> የቀዳማዊ ኃይለ ሥላሴ ዩኒቨርሲቲ (የአሁኑ አዲስ አበባ ዩኒቨርሲቲ)፣ ታዋቂ ሁለተኛ ደረጃ ትምህርት ቤቶችና የጦር አካዳሚዎች (እንደ ሐረር አካዳሚ በፊት የነበረውና የሆለታ ወታደራዊ ማሰልጠኛ) በዚሁ ጠቅላይ ግዛት ይገኛሉ።</p>
+      <p class="history-text-teal">በ1970ዎቹ መጨረሻ በደርግ ዘመን የአስተዳደር መዋቅር ለውጥ ተደርጎ ሸዋ ወደ አራት አውራጃዎች (ሰሜን ሸዋ፣ ደቡብ ሸዋ፣ ምስራቅ ሸዋ፣ እና ምዕራብ ሸዋ) ተከፈለ። በ1983 ዓ.ም አዲስ የፌዴራል አስተዳደር መዋቅር ሲተገበር የሸዋ ጠቅላይ ግዛት አወቃቀር ቀርቶ የቀድሞ አውራጃዎቹ በአሁኑ በኦሮሚያ፣ በአማራ፣ በደቡብ ኢትዮጵያና በአዲስ አበባ አስተዳደር ክልሎች ሥር እንዲተዳደሩ ተደረገ።</p>
     </span>
 
     <span class="read-more-btn" onclick="toggleMore(this)">ቀታዩን ለማንበብ እዚህ ይጫኑ</span>
@@ -1834,7 +1852,8 @@ function toggleMore(btn) {
         <div class="fb-scale-wrap">
           <iframe
             src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fprofile.php%3Fid%3D61590337590474&tabs=timeline&width=500&height=920&small_header=true&adapt_container_width=false&hide_cover=false&show_facepile=false&appId"
-            width="500" height="920" style="border:none;overflow:hidden;"
+            title="የሸዋ ጠቅላይ ግዛት ፌስቡክ ገጽ"
+            width="500" height="920" class="fb-iframe"
             scrolling="no" frameborder="0" allowfullscreen="true"
             allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share">
           </iframe>
@@ -1933,19 +1952,19 @@ function toggleMore(btn) {
         <button type="button" id="spTabLogin" class="sp-tab active">ግባ</button>
       </div>
 
-      <form id="spLoginForm" class="ns-admin-form" style="max-width:420px;">
+      <form id="spLoginForm" class="ns-admin-form auth-form">
         <input type="email" id="spLoginEmail" placeholder="ኢሜይል" required>
         <input type="password" id="spLoginPassword" placeholder="የይለፍ ቃል" required>
         <button type="submit" class="btn btn-primary">ግባ</button>
         <p id="spLoginStatus" class="form-status"></p>
       </form>
 
-      <form id="spSignupForm" class="ns-admin-form" style="max-width:420px; display:none;">
+      <form id="spSignupForm" class="ns-admin-form auth-form is-hidden">
         <input type="text" id="spSignupName" placeholder="ሙሉ ስም" required>
         <input type="email" id="spSignupEmail" placeholder="ኢሜይል" required>
         <input type="text" id="spSignupPhone" placeholder="ስልክ ቁጥር">
         <input type="password" id="spSignupPassword" placeholder="የይለፍ ቃል" required>
-        <label style="display:block; font-size:.85rem; color:var(--ink-soft); margin-top:.3rem;">የግል ፎቶ (አማራጭ)</label>
+        <label class="form-label">የግል ፎቶ (አማራጭ)</label>
         <input type="file" id="spSignupPhoto" accept="image/*">
         <button type="submit" class="btn btn-primary">መለያ ክፈት</button>
         <p id="spSignupStatus" class="form-status"></p>
@@ -1953,11 +1972,11 @@ function toggleMore(btn) {
     </div>
 
     <div id="spLoggedIn" class="is-hidden">
-      <img id="spWelcomePhoto" src="" alt="" style="display:none; width:60px; height:60px; border-radius:50%; object-fit:cover; vertical-align:middle; margin-right:.6rem;">
-      <p style="display:inline-block;">እንኳን ደህና መጡ፣ <strong id="spWelcomeName"></strong>!</p>
+      <img id="spWelcomePhoto" class="is-hidden welcome-photo" src="" alt="">
+      <p class="inline-block">እንኳን ደህና መጡ፣ <strong id="spWelcomeName"></strong>!</p>
       <button type="button" id="spLogoutBtn" class="btn">ውጣ</button>
 
-      <div class="sp-tabs" style="margin-top:1rem;">
+      <div class="sp-tabs mt-1">
         <button type="button" id="spTabCourses" class="sp-tab active">📚 ኮርሶች</button>
         <button type="button" id="spTabResults" class="sp-tab">📊 ውጤት እና እድገት</button>
         <button type="button" id="spTabCerts" class="sp-tab">🏆 ሰርተፍኬቶች</button>
@@ -1966,7 +1985,7 @@ function toggleMore(btn) {
       <div id="spResultsView" class="is-hidden">
         <h3>📊 የፈተና ውጤቶች</h3>
         <div class="ib-list" id="spResultsList"></div>
-        <h3 style="margin-top:1.5rem;">📈 የኮርስ እድገት</h3>
+        <h3 class="mt-15">📈 የኮርስ እድገት</h3>
         <div class="ib-list" id="spProgressList"></div>
       </div>
 
@@ -1976,38 +1995,38 @@ function toggleMore(btn) {
       </div>
 
       <div id="certModalOverlay" class="news-modal-overlay">
-        <div class="news-modal" style="max-width:800px;">
+        <div class="news-modal wide-modal">
           <button type="button" id="certModalCloseBtn" class="news-modal-close">✕</button>
-          <div id="certModalBody" style="padding:2.5rem;"></div>
+          <div id="certModalBody" class="cert-modal-body"></div>
         </div>
       </div>
 
       <div id="spCourseListView">
-        <h3 style="margin-top:1.5rem;">📚 ያሉ ኮርሶች</h3>
+        <h3 class="mt-15">📚 ያሉ ኮርሶች</h3>
         <div class="ib-list" id="spCoursesList"></div>
       </div>
 
       <div id="spCourseDetailView" class="is-hidden">
-        <button type="button" id="spBackToCourses" class="btn" style="margin-bottom:1rem;">← ወደ ኮርስ ዝርዝር</button>
+        <button type="button" id="spBackToCourses" class="btn mb-1">← ወደ ኮርስ ዝርዝር</button>
         <h3 id="spCourseTitle"></h3>
-        <p id="spCourseDesc" style="color:var(--ink-soft);"></p>
+        <p id="spCourseDesc" class="muted-text"></p>
 
         <div id="spLessonsSection">
           <h4>🎬 ቪዲዮ ትምህርቶች</h4>
           <div id="spLessonsList" class="ib-list"></div>
-          <div id="spVideoPlayer" class="is-hidden" style="margin-top:1rem;"></div>
+          <div id="spVideoPlayer" class="is-hidden mt-1"></div>
         </div>
 
-        <div id="spQuizzesSection" style="margin-top:1.5rem;">
+        <div id="spQuizzesSection" class="mt-15">
           <h4>📝 ፈተናዎች</h4>
           <div id="spQuizzesList" class="ib-list"></div>
         </div>
 
-        <div id="spQuizTakeView" class="is-hidden" style="margin-top:1rem;">
+        <div id="spQuizTakeView" class="is-hidden mt-1">
           <h4 id="spQuizTitle"></h4>
           <form id="spQuizForm"></form>
-          <button type="button" id="spQuizSubmitBtn" class="btn btn-primary" style="margin-top:1rem;">ፈተናውን አስገባ</button>
-          <p id="spQuizResult" style="margin-top:1rem; font-weight:700;"></p>
+          <button type="button" id="spQuizSubmitBtn" class="btn btn-primary mt-1">ፈተናውን አስገባ</button>
+          <p id="spQuizResult" class="font-bold-mt-1"></p>
         </div>
       </div>
     </div>
@@ -2293,6 +2312,7 @@ function toggleMore(btn) {
 
     <form id="photoAddForm" class="gallery-add-form">
       <input type="text" id="pAddTitle" placeholder="የፎቶ ርዕስ" required>
+      <label for="pAddFile">ፎቶ ይምረጡ</label>
       <input type="file" id="pAddFile" accept="image/*" required>
       <button type="submit" class="btn btn-primary">➕ ፎቶ ጨምር</button>
     </form>
@@ -2372,7 +2392,7 @@ function toggleMore(btn) {
         <input type="password" id="officeGatePassword" placeholder="የይለፍ ቃል" autocomplete="off" required>
         <button type="submit" class="btn btn-primary">ግባ</button>
       </form>
-      <p class="office-gate-error" id="officeGateError" style="display:none;">የተሳሳተ የተጠቃሚ ስም ወይም የይለፍ ቃል፣ እንደገና ይሞክሩ።</p>
+      <p class="office-gate-error is-hidden" id="officeGateError">የተሳሳተ የተጠቃሚ ስም ወይም የይለፍ ቃል፣ እንደገና ይሞክሩ።</p>
     </div>
 
     <div class="office-dashboard is-hidden" id="officeDashboard">
@@ -2426,7 +2446,7 @@ function toggleMore(btn) {
             <option value="ተሰውቷል">ተሰውቷል/ታለች</option>
             <option value="ሁኔታው አልታወቀም">አድራሻው/ዋ አልታወቀም</option>
           </select>
-          <textarea id="mBio" placeholder="የአባሉ የህይወት ታሪክ ሁኔታ (አጭር መግለጫ)" style="grid-column: 1 / -1; min-height:70px; padding:.55rem .7rem; border:1.5px solid rgba(43,36,26,.15); border-radius:8px; font-size:.85rem; font-family:var(--font-body); resize:vertical;"></textarea>
+          <textarea id="mBio" class="textarea-bio" placeholder="የአባሉ የህይወት ታሪክ ሁኔታ (አጭር መግለጫ)"></textarea>
           <button type="submit" class="btn btn-primary">➕ አባል ጨምር</button>
         </form>
 
@@ -2462,7 +2482,7 @@ function toggleMore(btn) {
             <label><input type="radio" name="ibType" value="pdf"> 📄 PDF</label>
           </div>
           <textarea id="ibText" placeholder="የመረጃው ይዘት እዚህ ይጻፉ..." rows="4"></textarea>
-          <div id="ibPdfField" style="display:none;">
+          <div id="ibPdfField" class="is-hidden">
             <input type="file" id="ibPdfFile" accept="application/pdf">
           </div>
           <button type="submit" class="btn btn-primary">➕ ለጥፍ</button>
@@ -2530,7 +2550,7 @@ function toggleMore(btn) {
       </div>
 
       <div id="radioPanel" class="member-db-panel is-hidden">
-        <button type="button" id="radioPanelCloseBtn" style="display:none;"></button>
+        <button type="button" id="radioPanelCloseBtn" class="is-hidden"></button>
         <form id="radioForm" class="ib-form">
           <input type="text" id="radioTitle" placeholder="ርዕስ" required>
           <input type="file" id="radioFile" accept="audio/*" required>
@@ -2563,7 +2583,7 @@ function toggleMore(btn) {
           </select>
           <input type="text" id="eTitle" placeholder="ርዕስ" required>
           <input type="text" id="eUrl" placeholder="YouTube URL (ለቪዲዮ ብቻ)">
-          <textarea id="eBody" placeholder="ጽሁፍ/ማብራሪያ (ለጽሁፍ ወይም መግለጫ)" style="grid-column: 1 / -1; min-height:70px;"></textarea>
+          <textarea id="eBody" class="textarea-full" placeholder="ጽሁፍ/ማብራሪያ (ለጽሁፍ ወይም መግለጫ)"></textarea>
           <input type="file" id="eFile" accept="image/*,application/pdf">
           <button type="submit" class="btn btn-primary">➕ ይዘት ጨምር</button>
         </form>
@@ -2582,7 +2602,7 @@ function toggleMore(btn) {
             <option value="internalStats">📊 ውስጣዊ ስታትስቲክስ</option>
           </select>
           <input type="text" id="iTitle" placeholder="ርዕስ" required>
-          <textarea id="iBody" placeholder="ዝርዝር መግለጫ" style="grid-column: 1 / -1; min-height:70px;"></textarea>
+          <textarea id="iBody" class="textarea-full" placeholder="ዝርዝር መግለጫ"></textarea>
           <input type="file" id="iFile" accept="application/pdf,image/*,.xlsx,.xls,.doc,.docx">
           <button type="submit" class="btn btn-primary">➕ ይዘት ጨምር</button>
         </form>
@@ -2596,15 +2616,15 @@ function toggleMore(btn) {
         <form id="courseForm" class="ib-form">
           <input type="text" id="cTitle" placeholder="የኮርስ ርዕስ" required>
           <input type="text" id="cInstructor" placeholder="አስተማሪ ስም">
-          <textarea id="cDescription" placeholder="የኮርስ መግለጫ" style="grid-column: 1 / -1; min-height:60px;"></textarea>
-          <label style="display:block; font-size:.85rem; color:var(--ink-soft);">የኮርስ/ድርጅት ሎጎ (ለሰርተፍኬት)</label>
+          <textarea id="cDescription" class="textarea-course" placeholder="የኮርስ መግለጫ"></textarea>
+          <label class="form-label">የኮርስ/ድርጅት ሎጎ (ለሰርተፍኬት)</label>
           <input type="file" id="cLogo" accept="image/*">
-          <label style="display:block; font-size:.85rem; color:var(--ink-soft);">የድርጅት ማህተም ምስል</label>
+          <label class="form-label">የድርጅት ማህተም ምስል</label>
           <input type="file" id="cStamp" accept="image/*">
         
-         <label style="display:block; font-size:.85rem; color:var(--ink-soft);">የትምህርትና ስልጠና ኃላፊ ስም</label>
+         <label class="form-label">የትምህርትና ስልጠና ኃላፊ ስም</label>
           <input type="text" id="cSig2Name" placeholder="ለምሳሌ፦ አበበ ከበደ">
-          <label style="display:block; font-size:.85rem; color:var(--ink-soft);">የትምህርትና ስልጠና ኃላፊ ፊርማ ምስል</label>
+          <label class="form-label">የትምህርትና ስልጠና ኃላፊ ፊርማ ምስል</label>
           <input type="file" id="cSignature2" accept="image/*">
           <button type="submit" class="btn btn-primary">➕ ኮርስ ፍጠር</button>
         </form>
@@ -2612,16 +2632,16 @@ function toggleMore(btn) {
 
        
 
-        <div style="margin-top:1.5rem; padding-top:1.5rem; border-top:2px dashed rgba(227,30,36,.3);">
-          <h4 style="color:#E31E24;">🎓 አዲስ ተማሪ መዝግብ</h4>
+        <div class="panel-section">
+          <h4 class="panel-heading">🎓 አዲስ ተማሪ መዝግብ</h4>
           <form id="createStudentForm" class="ib-form">
             <input type="text" id="csName" placeholder="ሙሉ ስም" required>
             <input type="email" id="csEmail" placeholder="ኢሜይል" required>
             <input type="text" id="csPhone" placeholder="ስልክ ቁጥር">
            <input type="password" id="csPassword" placeholder="የይለፍ ቃል" required>
-            <label style="display:block; font-size:.85rem; color:var(--ink-soft);">የተማሪ ፎቶ (አማራጭ)</label>
+            <label class="form-label">የተማሪ ፎቶ (አማራጭ)</label>
             <input type="file" id="csPhoto" accept="image/*">
-            <label style="display:block; font-size:.85rem; color:var(--ink-soft);">የሚመዘገብበት ኮርስ</label>
+            <label class="form-label">የሚመዘገብበት ኮርስ</label>
             <select id="csCourse" required>
               <option value="">-- ኮርስ ይምረጡ --</option>
             </select>
@@ -2630,8 +2650,8 @@ function toggleMore(btn) {
           <p id="csStatus" class="form-status"></p>
         </div>
 
-        <div id="lessonSubPanel" style="display:none; margin-top:1.5rem; padding-top:1.5rem; border-top:2px dashed rgba(227,30,36,.3);">
-          <h4 style="color:#E31E24;">🎬 "<span id="lessonCourseTitle"></span>" ቪዲዮ ትምህርቶች</h4>
+        <div id="lessonSubPanel" class="is-hidden panel-section">
+          <h4 class="panel-heading">🎬 "<span id="lessonCourseTitle"></span>" ቪዲዮ ትምህርቶች</h4>
           <form id="lessonForm" class="ib-form">
             <select id="lType">
               <option value="video_url">🎬 የYouTube ቪዲዮ URL</option>
@@ -2641,25 +2661,25 @@ function toggleMore(btn) {
             </select>
             <input type="text" id="lTitle" placeholder="የትምህርት ርዕስ" required>
             <input type="text" id="lVideoUrl" placeholder="YouTube URL">
-            <input type="file" id="lFile" style="display:none;">
+            <input type="file" id="lFile" class="is-hidden">
             <button type="submit" class="btn btn-primary">➕ ትምህርት ጨምር</button>
           </form>
           <div class="ib-list" id="lessonsAdminList"></div>
-                    <button type="button" id="lessonSubPanelCloseBtn" class="btn" style="margin-top:.5rem;">ወደ ኮርስ ዝርዝር ተመለስ</button>
+                    <button type="button" id="lessonSubPanelCloseBtn" class="btn panel-button">ወደ ኮርስ ዝርዝር ተመለስ</button>
         </div>
 
-        <div id="quizSubPanel" style="display:none; margin-top:1.5rem; padding-top:1.5rem; border-top:2px dashed rgba(227,30,36,.3);">
-          <h4 style="color:#E31E24;">📝 "<span id="quizCourseTitle"></span>" ፈተናዎች</h4>
+        <div id="quizSubPanel" class="is-hidden panel-section">
+          <h4 class="panel-heading">📝 "<span id="quizCourseTitle"></span>" ፈተናዎች</h4>
           <form id="quizCreateForm" class="ib-form">
             <input type="text" id="qTitle" placeholder="የፈተና ርዕስ" required>
             <button type="submit" class="btn btn-primary">➕ ፈተና ፍጠር</button>
           </form>
           <div class="ib-list" id="quizzesAdminList"></div>
 
-          <div id="questionSubPanel" style="display:none; margin-top:1rem; padding-top:1rem; border-top:1px dashed rgba(227,30,36,.2);">
-            <h4 style="color:#E31E24;">❓ "<span id="questionQuizTitle"></span>" ጥያቄዎች</h4>
+          <div id="questionSubPanel" class="is-hidden question-section">
+            <h4 class="panel-heading">❓ "<span id="questionQuizTitle"></span>" ጥያቄዎች</h4>
             <form id="questionForm" class="ib-form">
-              <textarea id="qnQuestion" placeholder="ጥያቄ" required style="grid-column: 1 / -1;"></textarea>
+              <textarea id="qnQuestion" class="textarea-full" placeholder="ጥያቄ" required></textarea>
               <input type="text" id="qnA" placeholder="አማራጭ A" required>
               <input type="text" id="qnB" placeholder="አማራጭ B" required>
               <input type="text" id="qnC" placeholder="አማራጭ C">
@@ -2673,14 +2693,14 @@ function toggleMore(btn) {
               <button type="submit" class="btn btn-primary">➕ ጥያቄ ጨምር</button>
             </form>
             <div class="ib-list" id="questionsAdminList"></div>
-            <button type="button" id="questionSubPanelCloseBtn" class="btn" style="margin-top:.5rem;">ወደ ፈተና ዝርዝር ተመለስ</button>
+            <button type="button" id="questionSubPanelCloseBtn" class="btn panel-button">ወደ ፈተና ዝርዝር ተመለስ</button>
           </div>
         </div>
 
-       <div id="certSubPanel" style="display:none; margin-top:1.5rem; padding-top:1.5rem; border-top:2px dashed rgba(227,30,36,.3);">
-          <h4 style="color:#E31E24;">🏆 "<span id="certCourseTitle"></span>" ሰርተፍኬት ስጥ</h4>
+       <div id="certSubPanel" class="is-hidden panel-section">
+         <h4 class="panel-heading">🏆 "<span id="certCourseTitle"></span>" ሰርተፍኬት ስጥ</h4>
           <div class="ib-list" id="eligibleStudentsList"></div>
-          <button type="button" id="certSubPanelCloseBtn" class="btn" style="margin-top:.5rem;">ወደ ኮርስ ዝርዝር ተመለስ</button>
+          <button type="button" id="certSubPanelCloseBtn" class="btn panel-button">ወደ ኮርስ ዝርዝር ተመለስ</button>
         </div>
       </div>
     <div id="adminsPanel" class="member-db-panel is-hidden">
