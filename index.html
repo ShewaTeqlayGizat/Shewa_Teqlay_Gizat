@@ -1368,8 +1368,18 @@ textarea{ margin-bottom:1rem; resize:vertical; }
   body.printing-cert * { visibility:hidden !important; }
   body.printing-cert #certModalOverlay, body.printing-cert #certModalOverlay * { visibility:visible !important; }
   body.printing-cert #certModalOverlay { position:fixed !important; inset:0 !important; display:block !important; background:#fff !important; margin:0 !important; overflow:visible !important; }
-  body.printing-cert .news-modal-close, body.printing-cert #certModalBody button { display:none !important; }
-  @page { size: A4; margin: 10mm; }
+  body.printing-cert .news-modal-close,
+  body.printing-cert #certModalBody > div:not(.cert-frame),
+  body.printing-cert #certModalBody button { display:none !important; }
+  body.printing-cert #certModalBody { margin:0 !important; padding:0 !important; }
+  body.printing-cert .cert-frame {
+    width:210mm !important;
+    height:297mm !important;
+    min-height:0 !important;
+    margin:0 !important;
+    overflow:hidden !important;
+  }
+  @page { size: A4 portrait; margin: 0; }
 }
 </style>
 </head>
@@ -4964,48 +4974,50 @@ function openMemberPhotoLightbox(url){
     });
   }
 
-  if (lessonForm) const lTypeSelect = document.getElementById("lType");
-  const lVideoUrlInput = document.getElementById("lVideoUrl");
-  const lFileInput = document.getElementById("lFile");
+  if (lessonForm) {
+    const lTypeSelect = document.getElementById("lType");
+    const lVideoUrlInput = document.getElementById("lVideoUrl");
+    const lFileInput = document.getElementById("lFile");
 
-  function updateLessonFormFields(){
-    const type = lTypeSelect.value;
-    if (type === "video_url") {
-      lVideoUrlInput.style.display = "";
-      lFileInput.style.display = "none";
-      lFileInput.accept = "";
-    } else {
-      lVideoUrlInput.style.display = "none";
-      lFileInput.style.display = "";
-      if (type === "video") lFileInput.accept = "video/*";
-      else if (type === "pdf") lFileInput.accept = "application/pdf";
-      else if (type === "audio") lFileInput.accept = "audio/*";
+    function updateLessonFormFields(){
+      const type = lTypeSelect.value;
+      if (type === "video_url") {
+        lVideoUrlInput.style.display = "";
+        lFileInput.style.display = "none";
+        lFileInput.accept = "";
+      } else {
+        lVideoUrlInput.style.display = "none";
+        lFileInput.style.display = "";
+        if (type === "video") lFileInput.accept = "video/*";
+        else if (type === "pdf") lFileInput.accept = "application/pdf";
+        else if (type === "audio") lFileInput.accept = "audio/*";
+      }
     }
-  }
-  lTypeSelect.addEventListener("change", updateLessonFormFields);
-  updateLessonFormFields();
+    lTypeSelect.addEventListener("change", updateLessonFormFields);
+    updateLessonFormFields();
 
-  lessonForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const lesson_type = lTypeSelect.value;
-    const title = document.getElementById("lTitle").value.trim();
-    const video_url = lVideoUrlInput.value.trim();
-    const file = lFileInput.files[0];
-    if (!title) return;
-    if (lesson_type === "video_url" && !video_url) { alert("YouTube URL ያስፈልጋል"); return; }
-    if (lesson_type !== "video_url" && !file) { alert("ፋይል መምረጥ አለብዎት"); return; }
-    try {
-      const fd = new FormData();
-      fd.append("title", title);
-      fd.append("lesson_type", lesson_type);
-      if (video_url) fd.append("video_url", video_url);
-      if (file) fd.append("file", file);
-      await apiSend("/api/courses/" + currentCourseId + "/lessons", "POST", fd, true);
-      lessonForm.reset();
-      updateLessonFormFields();
-      renderLessons();
-    } catch(e){ alert("ትምህርት መጨመር አልተቻለም፦ " + e.message); }
-  });
+    lessonForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const lesson_type = lTypeSelect.value;
+      const title = document.getElementById("lTitle").value.trim();
+      const video_url = lVideoUrlInput.value.trim();
+      const file = lFileInput.files[0];
+      if (!title) return;
+      if (lesson_type === "video_url" && !video_url) { alert("YouTube URL ያስፈልጋል"); return; }
+      if (lesson_type !== "video_url" && !file) { alert("ፋይል መምረጥ አለብዎት"); return; }
+      try {
+        const fd = new FormData();
+        fd.append("title", title);
+        fd.append("lesson_type", lesson_type);
+        if (video_url) fd.append("video_url", video_url);
+        if (file) fd.append("file", file);
+        await apiSend("/api/courses/" + currentCourseId + "/lessons", "POST", fd, true);
+        lessonForm.reset();
+        updateLessonFormFields();
+        renderLessons();
+      } catch(e){ alert("ትምህርት መጨመር አልተቻለም፦ " + e.message); }
+    });
+  }
 
   if (lessonSubCloseBtn) lessonSubCloseBtn.addEventListener("click", () => { lessonSubPanel.style.display = "none"; });
 
