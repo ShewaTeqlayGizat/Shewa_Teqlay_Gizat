@@ -1357,11 +1357,15 @@ textarea{ margin-bottom:1rem; resize:vertical; }
 .cert-design .cert-sig .sig-title{ font-size:.8rem; color:#666; margin-top:.3rem; }
 .cert-design .cert-code{ font-size:.7rem; color:#999; margin-top:1.2rem; }
 .cert-design{ border:none; padding:0; background:none; }
-.cert-frame{ border:16px solid; border-image: linear-gradient(180deg, #078930 0 33%, #FCDD09 33% 66%, #DA121A 66% 100%) 1; padding:2rem 4rem 2.5rem; background:#fffdf8; position:relative; font-family:'Noto Serif Ethiopic', serif; width:210mm; min-height:277mm; box-sizing:border-box; margin:0 auto; text-align:center; display:flex; flex-direction:column; justify-content:flex-start; overflow:visible; }
+.cert-frame{ border:16px solid; border-image: linear-gradient(180deg, #078930 0 33%, #FCDD09 33% 66%, #DA121A 66% 100%) 1; padding:2rem 4rem 2.5rem; background:#fffdf8; position:relative; font-family:'Noto Serif Ethiopic', serif; width:210mm; min-height:277mm; box-sizing:border-box; margin:0 auto; text-align:center; display:flex; flex-direction:column; justify-content:flex-start; overflow:visible; background-image:linear-gradient(#078930,#078930),linear-gradient(#078930,#078930),linear-gradient(#078930,#078930),linear-gradient(#078930,#078930),linear-gradient(#078930,#078930),linear-gradient(#078930,#078930),linear-gradient(#078930,#078930),linear-gradient(#078930,#078930); background-position:top left,top left,top right,top right,bottom left,bottom left,bottom right,bottom right; background-size:42px 4px,4px 42px,42px 4px,4px 42px,42px 4px,4px 42px,42px 4px,4px 42px; background-repeat:no-repeat; }
 .cert-frame h1{ color:#E31E24; font-weight:700; text-align:center; }
+.cert-frame h1 .cert-english,
+.cert-frame .cert-english{ color:#E78FB3; }
 .cert-logo{ width:70px; height:70px; border-radius:50%; object-fit:contain; margin:-1rem auto .5rem; display:block; border:2px solid #B7A272; background:#fff; padding:4px; box-sizing:border-box; }
-.cert-frame .cert-photo{ width:52px; height:52px; border-radius:50%; object-fit:cover; border:2px solid #B7A272; margin:.25rem auto .4rem; display:block; background:#fff; }
+.cert-frame .cert-photo{ width:62px; height:62px; border-radius:50%; object-fit:cover; border:2px solid #B7A272; margin:.15rem auto .35rem; display:block; background:#fff; }
 .cert-frame .cert-name{ color:#0057B8; font-weight:800; font-size:1.35rem; margin:.4rem 0; border-bottom:2px solid #B7A272; display:inline-block; padding-bottom:.2rem; }
+.cert-recipient{ margin:.35rem 0 .7rem; white-space:nowrap; }
+.cert-recipient .cert-name{ margin:0 .25rem; }
 .cert-sig-img{ height:45px; object-fit:contain; display:block; margin:0 auto; background:#fff; }
 .cert-stamp-img{ width:90px; height:90px; object-fit:contain; border-radius:50%; background:#fff; }
 .cert-stamp{ width:75px; height:75px; margin:-1rem auto .8rem; border:3px double #078930; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#078930; font-weight:700; font-size:.6rem; text-align:center; transform:rotate(-12deg); opacity:.85; }
@@ -1394,7 +1398,7 @@ textarea{ margin-bottom:1rem; resize:vertical; }
     overflow:visible !important;
   }
   body.printing-cert .cert-logo { width:60px !important; height:60px !important; margin:-.5rem auto .3rem !important; }
-  body.printing-cert .cert-frame .cert-photo { width:44px !important; height:44px !important; margin:.15rem auto .25rem !important; }
+  body.printing-cert .cert-frame .cert-photo { width:54px !important; height:54px !important; margin:.1rem auto .2rem !important; }
   body.printing-cert .cert-frame .cert-name { color:#0057B8 !important; font-weight:800 !important; }
   body.printing-cert .cert-stamp-img { width:70px !important; height:70px !important; }
   body.printing-cert .cert-stamp { width:65px !important; height:65px !important; margin:-.5rem auto .5rem !important; }
@@ -5559,27 +5563,26 @@ function openMemberPhotoLightbox(url){
             body.innerHTML = `
         <div class="cert-frame">
           ${cert.logo_url ? `<img src="${cert.logo_url}" class="cert-logo">` : ""}
-          <h1>የስልጠና ስኬት ምስክር ማስረጃ <span style="font-size:1rem; color:#666; display:block; font-weight:400;">CERTIFICATE OF COMPLETION</span></h1>
+          <h1>የስልጠና ስኬት ምስክር ወረቀት <span class="cert-english" style="font-size:1rem; display:block; font-weight:400;">CERTIFICATE OF COMPLETION</span></h1>
           ${studentPhoto ? `<img src="${studentPhoto}" class="cert-photo">` : ""}
-          <p style="margin-top:1rem;">ይህ የምስክር ወረቀት የሚሰጠው ለ፦ <span style="color:#666; font-size:.85rem;">THIS CERTIFIES THAT</span></p>
-          <div class="cert-name">${escapeHtml(cert.full_name)}</div>
-          <p class="cert-course">"${escapeHtml(cert.course_title)}" የተሰኘውን ኮርስ በተሳካ ሁኔታ ስላጠናቀቀ/ስላጠናቀቀች<br><span style="color:#666; font-size:.85rem;">HAS SUCCESSFULLY COMPLETED THE COURSE "${escapeHtml(cert.course_title).toUpperCase()}"</span></p>
+          <p class="cert-recipient">ለ / To: <span class="cert-name">${escapeHtml(cert.full_name)}</span></p>
+          <p class="cert-course">"${escapeHtml(cert.course_title)}" የተሰኘውን ኮርስ በተሳካ ሁኔታ ስላጠናቀቀ/ስላጠናቀቀች<br><span class="cert-english">HAS SUCCESSFULLY COMPLETED THE COURSE "${escapeHtml(cert.course_title).toUpperCase()}"</span></p>
           <div class="cert-praise">🌟 ጎበዝ! የላቀ ጥረትና ትጋት አሳይተዋል። ይህ የስልጠና ስኬት የወደፊት ብሩህ ተስፋዎ ማሳያ ነው። እንኳን ደስ አለዎት!<br><span>CONGRATULATIONS ON THIS REMARKABLE ACHIEVEMENT!</span></div>
-          <p class="cert-date">የተሰጠበት ቀን / DATE ISSUED፦ ${formatDate(cert.issued_at)}</p>
+          <p class="cert-date">የተሰጠበት ቀን / <span class="cert-english">DATE ISSUED</span>፦ ${formatDate(cert.issued_at)}</p>
           <div class="cert-footer">
             ${cert.signature2_url || cert.signature2_name ? `
             <div class="cert-sig">
               ${cert.signature2_url ? `<img src="${cert.signature2_url}" class="cert-sig-img" onerror="this.style.display='none';">` : ""}
               ${cert.signature2_name ? `<div class="sig-name" style="font-size:1rem;">${escapeHtml(cert.signature2_name)}</div>` : ""}
-              <div class="sig-title">የትምህርትና ስልጠና ኃላፊ<br><span style="font-size:.7rem;">HEAD OF TRAINING</span></div>
+              <div class="sig-title">የትምህርትና ስልጠና ኃላፊ<br><span class="cert-english" style="font-size:.7rem;">HEAD OF TRAINING</span></div>
             </div>` : ""}
             <div class="cert-sig">
               <div class="sig-name">✓</div>
-              <div class="sig-title">የተረጋገጠ<br><span style="font-size:.7rem;">VERIFIED</span></div>
+              <div class="sig-title">የተረጋገጠ<br><span class="cert-english" style="font-size:.7rem;">VERIFIED</span></div>
             </div>
           </div>
           ${cert.stamp_url ? `<img src="${cert.stamp_url}" class="cert-stamp cert-stamp-img">` : `<div class="cert-stamp">ኦፊሴላዊ<br>ማህተም</div>`}
-          <div class="cert-code">የማረጋገጫ ኮድ / VERIFICATION CODE፦ ${cert.certificate_code}</div>       </div>
+          <div class="cert-code">የማረጋገጫ ኮድ / <span class="cert-english">VERIFICATION CODE</span>፦ ${cert.certificate_code}</div>       </div>
         <div style="text-align:center; margin-top:1rem;">
           <button type="button" class="btn btn-primary" onclick="printCertificate()">🖨️ አትም / አውርድ</button>
         </div>`;
