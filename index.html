@@ -1912,7 +1912,7 @@ textarea{ margin-bottom:1rem; resize:vertical; }
       </div>
 
       <form id="spLoginForm" class="ns-admin-form auth-form">
-        <input type="email" id="spLoginEmail" placeholder="ኢሜይል" required>
+        <input type="text" id="spLoginEmail" placeholder="ሙሉ ስም" required>
         <input type="password" id="spLoginPassword" placeholder="የይለፍ ቃል" required>
         <button type="submit" class="btn btn-primary">ግባ</button>
         <p id="spLoginStatus" class="form-status"></p>
@@ -4882,14 +4882,14 @@ function openMemberPhotoLightbox(url){
 
   loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const email = document.getElementById("spLoginEmail").value.trim();
+    const full_name = document.getElementById("spLoginEmail").value.trim();
     const password = document.getElementById("spLoginPassword").value;
     const status = document.getElementById("spLoginStatus");
     status.textContent = "እየገባ ነው...";
     try {
       const res = await fetch(API_BASE + "/api/students/login", {
         method: "POST", headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ full_name, password })
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Login failed");
