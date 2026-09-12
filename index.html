@@ -2616,6 +2616,22 @@ textarea{ margin-bottom:1rem; resize:vertical; }
           <p id="csStatus" class="form-status"></p>
         </div>
 
+        <div class="panel-section" style="margin-top:1.5rem;">
+          <h4 class="panel-heading">📋 የተማሪዎች ዝርዝር</h4>
+          <select id="rosterCourseSelect">
+            <option value="">-- ኮርስ ይምረጡ --</option>
+          </select>
+          <div class="sp-tabs" style="margin-top:.8rem;">
+            <button type="button" class="sp-tab active roster-tab" data-status="all">ሁሉም</button>
+            <button type="button" class="sp-tab roster-tab" data-status="active">በመማር ላይ</button>
+            <button type="button" class="sp-tab roster-tab" data-status="completed">ያጠናቀቁ</button>
+            <button type="button" class="sp-tab roster-tab" data-status="repeating">ደጋሚዎች</button>
+            <button type="button" class="sp-tab roster-tab" data-status="dropped">ያቋረጡ</button>
+            <button type="button" class="sp-tab roster-tab" data-status="suspended">የታገዱ</button>
+          </div>
+          <div id="rosterList" class="ib-list" style="margin-top:1rem;"></div>
+        </div>
+
         <div id="lessonSubPanel" class="is-hidden panel-section">
           <h4 class="panel-heading">🎬 "<span id="lessonCourseTitle"></span>" ቪዲዮ ትምህርቶች</h4>
           <form id="lessonForm" class="ib-form">
