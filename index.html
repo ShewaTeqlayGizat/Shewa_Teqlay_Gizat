@@ -5369,7 +5369,6 @@ function openMemberPhotoLightbox(url){
   async function openCourse(courseId){
     let course;
     try {
-      await studentPost("/api/courses/" + courseId + "/enroll", {});
       course = await studentGet("/api/courses/" + courseId);
     } catch(e){ alert("መክፈት አልተቻለም፦ " + e.message); return; }
 
