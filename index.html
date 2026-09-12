@@ -5715,6 +5715,16 @@ function openMemberPhotoLightbox(url){
       });
     });
 
+    rosterList.querySelectorAll(".roster-result-select").forEach(sel => {
+      sel.addEventListener("change", async () => {
+        const courseId = courseSelect.value;
+        try {
+          await apiSend("/api/courses/" + courseId + "/roster/" + sel.dataset.id, "PUT", { result: sel.value });
+          loadRoster();
+        } catch(e){ alert("ማዘመን አልተቻለም፦ " + e.message); }
+      });
+    });
+
     rosterList.querySelectorAll(".roster-edit-btn").forEach(btn => {
       btn.addEventListener("click", async () => {
         const s = currentRoster.find(x => String(x.id) === btn.dataset.id);
