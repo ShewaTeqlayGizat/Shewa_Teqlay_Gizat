@@ -5343,14 +5343,23 @@ function openMemberPhotoLightbox(url){
     let courses = [];
     try { courses = await studentGet("/api/courses"); }
     catch(e){ coursesList.innerHTML = "<p class='loading-text'>መጫን አልተቻለም።</p>"; return; }
-    coursesList.innerHTML = courses.map(c => `
+    let myEnrolled = [];
+    try { myEnrolled = await studentGet("/api/courses/my/enrolled"); } catch(e){}
+    const enrolledIds = new Set(myEnrolled.map(c => String(c.id)));
+
+    coursesList.innerHTML = courses.map(c => {
+      const isEnrolled = enrolledIds.has(String(c.id));
+      return `
       <div class="ib-post">
         <div class="ib-post-head"><h4>${escapeHtml(c.title)}</h4></div>
         <p>${escapeHtml(c.instructor || "")} ${c.description ? "· " + escapeHtml(c.description.slice(0,80)) : ""}</p>
         <div class="ib-post-footer">
-          <button type="button" class="btn btn-primary sp-open-course" data-id="${c.id}">ክፈት</button>
+          ${isEnrolled
+            ? `<button type="button" class="btn btn-primary sp-open-course" data-id="${c.id}">ክፈት</button>`
+            : `<span style="color:#999; font-size:.85rem;">🔒 ገና አልተመዘገቡበትም — አስተዳደሩን ያነጋግሩ</span>`}
         </div>
-      </div>`).join("") || "<p class='loading-text'>ገና ምንም ኮርስ የለም።</p>";
+      </div>`;
+    }).join("") || "<p class='loading-text'>ገና ምንም ኮርስ የለም።</p>";
 
     coursesList.querySelectorAll(".sp-open-course").forEach(btn => {
       btn.addEventListener("click", () => openCourse(btn.dataset.id));
