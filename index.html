@@ -5683,7 +5683,7 @@ function openMemberPhotoLightbox(url){
           ${s.photo_url ? `<img src="${s.photo_url}" style="width:36px; height:36px; border-radius:50%; object-fit:cover; margin-right:.5rem; vertical-align:middle;">` : ""}
           <h4 style="display:inline;">${escapeHtml(s.full_name)}</h4>
         </div>
-        <p>${escapeHtml(s.gender || "-")} · ${s.age || "-"} ዓመት · ${escapeHtml(s.category || "-")} · ${escapeHtml(s.email)}</p>
+        <p>${escapeHtml(s.gender || "-")} · ${s.age || "-"} ዓመት · ${escapeHtml(s.category || "-")} · ${escapeHtml(s.institution || "-")} · ${escapeHtml(s.email)}</p>
         <p>እድገት፦ ${s.completed_lessons}/${s.total_lessons} ትምህርቶች (${pct}%)</p>
         <div class="ib-post-footer">
           <span class="ib-post-badge">${statusLabels[s.status || "active"]}</span>
@@ -5693,6 +5693,12 @@ function openMemberPhotoLightbox(url){
             <option value="repeating" ${s.status==="repeating"?"selected":""}>ይደግማል</option>
             <option value="dropped" ${s.status==="dropped"?"selected":""}>አቋርጧል</option>
             <option value="suspended" ${s.status==="suspended"?"selected":""}>ታግዷል</option>
+          </select>
+          <select class="roster-result-select" data-id="${s.id}">
+            <option value="" ${!s.result?"selected":""}>-- ውጤት --</option>
+            <option value="passed" ${s.result==="passed"?"selected":""}>✅ አልፏል</option>
+            <option value="failed" ${s.result==="failed"?"selected":""}>❌ አላለፈም</option>
+            <option value="repeat" ${s.result==="repeat"?"selected":""}>🔁 ይድገም</option>
           </select>
           <button type="button" class="member-db-del roster-edit-btn" data-id="${s.id}">አርም</button>
         </div>
