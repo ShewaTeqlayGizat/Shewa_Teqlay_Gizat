@@ -5292,6 +5292,7 @@ function openMemberPhotoLightbox(url){
         if (gender) fd.append("gender", gender);
         if (age) fd.append("age", age);
         if (category) fd.append("category", category);
+        if (institution) fd.append("institution", institution);
         if (photoFile) fd.append("photo", photoFile);
         const res = await fetch(API_BASE + "/api/students/admin-create", {
           method: "POST",
