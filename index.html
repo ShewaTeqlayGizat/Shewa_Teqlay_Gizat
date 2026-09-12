@@ -5691,6 +5691,7 @@ function openMemberPhotoLightbox(url){
             <option value="dropped" ${s.status==="dropped"?"selected":""}>አቋርጧል</option>
             <option value="suspended" ${s.status==="suspended"?"selected":""}>ታግዷል</option>
           </select>
+          <button type="button" class="member-db-del roster-edit-btn" data-id="${s.id}">አርም</button>
         </div>
       </div>`;
     }).join("") || "<p class='loading-text'>ምንም ተማሪ አልተገኘም።</p>";
@@ -5702,6 +5703,28 @@ function openMemberPhotoLightbox(url){
           await apiSend("/api/courses/" + courseId + "/roster/" + sel.dataset.id, "PUT", { status: sel.value });
           loadRoster();
         } catch(e){ alert("ማዘመን አልተቻለም፦ " + e.message); }
+      });
+    });
+
+    rosterList.querySelectorAll(".roster-edit-btn").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const s = currentRoster.find(x => String(x.id) === btn.dataset.id);
+        if (!s) return;
+        const newName = prompt("ሙሉ ስም:", s.full_name);
+        if (newName === null) return;
+        const newAge = prompt("ዕድሜ:", s.age || "");
+        const newCategory = prompt("መደብ:", s.category || "");
+        try {
+          const token = getAdminToken();
+          const res = await fetch(API_BASE + "/api/students/" + s.id + "/admin-edit", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
+            body: JSON.stringify({ full_name: newName.trim(), age: newAge, category: newCategory })
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || "Failed");
+          loadRoster();
+        } catch(e){ alert("ማርም አልተቻለም፦ " + e.message); }
       });
     });
   }
