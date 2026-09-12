@@ -5636,6 +5636,87 @@ function openMemberPhotoLightbox(url){
     document.body.classList.add("printing-cert");
     window.print();
     setTimeout(() => document.body.classList.remove("printing-cert"), 500);  };})();
+    // ---------------- Student Roster (per course, with status) ----------------
+(function studentRosterController(){
+  const courseSelect = document.getElementById("rosterCourseSelect");
+  const rosterList = document.getElementById("rosterList");
+  const tabs = document.querySelectorAll(".roster-tab");
+  if (!courseSelect || !rosterList) return;
+
+  const statusLabels = {
+    active: "🟢 በመማር ላይ", completed: "✅ አጠናቅቋል",
+    repeating: "🔁 ይደግማል", dropped: "⛔ አቋርጧል", suspended: "🚫 ታግዷል"
+  };
+
+  let currentRoster = [];
+  let activeFilter = "all";
+
+  async function loadCoursesIntoRosterSelect(){
+    try {
+      const courses = await apiGet("/api/courses");
+      courseSelect.innerHTML = `<option value="">-- ኮርስ ይምረጡ --</option>` +
+        courses.map(c => `<option value="${c.id}">${escapeHtml(c.title)}</option>`).join("");
+    } catch(e){ console.error("Failed to load courses:", e); }
+  }
+  loadCoursesIntoRosterSelect();
+
+  async function loadRoster(){
+    const courseId = courseSelect.value;
+    if (!courseId) { rosterList.innerHTML = "<p class='loading-text'>እባክዎ ኮርስ ይምረጡ።</p>"; return; }
+    rosterList.innerHTML = "<p class='loading-text'>እየተጫነ ነው...</p>";
+    try {
+      currentRoster = await apiGet("/api/courses/" + courseId + "/roster");
+      renderRoster();
+    } catch(e){ rosterList.innerHTML = "<p class='loading-text'>መጫን አልተቻለም (ዋና ማናጀር ብቻ ማየት ይችላል)።</p>"; }
+  }
+
+  function renderRoster(){
+    const filtered = activeFilter === "all" ? currentRoster : currentRoster.filter(s => (s.status || "active") === activeFilter);
+    rosterList.innerHTML = filtered.map(s => {
+      const pct = s.total_lessons > 0 ? Math.round(s.completed_lessons / s.total_lessons * 100) : 0;
+      return `
+      <div class="ib-post">
+        <div class="ib-post-head">
+          ${s.photo_url ? `<img src="${s.photo_url}" style="width:36px; height:36px; border-radius:50%; object-fit:cover; margin-right:.5rem; vertical-align:middle;">` : ""}
+          <h4 style="display:inline;">${escapeHtml(s.full_name)}</h4>
+        </div>
+        <p>${escapeHtml(s.gender || "-")} · ${s.age || "-"} ዓመት · ${escapeHtml(s.category || "-")} · ${escapeHtml(s.email)}</p>
+        <p>እድገት፦ ${s.completed_lessons}/${s.total_lessons} ትምህርቶች (${pct}%)</p>
+        <div class="ib-post-footer">
+          <span class="ib-post-badge">${statusLabels[s.status || "active"]}</span>
+          <select class="roster-status-select" data-id="${s.id}">
+            <option value="active" ${s.status==="active"?"selected":""}>በመማር ላይ</option>
+            <option value="completed" ${s.status==="completed"?"selected":""}>አጠናቅቋል</option>
+            <option value="repeating" ${s.status==="repeating"?"selected":""}>ይደግማል</option>
+            <option value="dropped" ${s.status==="dropped"?"selected":""}>አቋርጧል</option>
+            <option value="suspended" ${s.status==="suspended"?"selected":""}>ታግዷል</option>
+          </select>
+        </div>
+      </div>`;
+    }).join("") || "<p class='loading-text'>ምንም ተማሪ አልተገኘም።</p>";
+
+    rosterList.querySelectorAll(".roster-status-select").forEach(sel => {
+      sel.addEventListener("change", async () => {
+        const courseId = courseSelect.value;
+        try {
+          await apiSend("/api/courses/" + courseId + "/roster/" + sel.dataset.id, "PUT", { status: sel.value });
+          loadRoster();
+        } catch(e){ alert("ማዘመን አልተቻለም፦ " + e.message); }
+      });
+    });
+  }
+
+  courseSelect.addEventListener("change", loadRoster);
+
+  tabs.forEach(tab => {
+    tab.addEventListener("click", () => {
+      tabs.forEach(t => t.classList.remove("active"));
+      tab.classList.add("active");
+      activeFilter = tab.dataset.status;
+      renderRoster();
+    });
+  });
+})();
 </script>
 </body>
 </html>
