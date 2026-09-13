@@ -3751,6 +3751,10 @@ renderChannelVideos();
     if (internalCard && window.toggleInternalPanel) {
       internalCard.addEventListener("click", () => window.toggleInternalPanel());
     }
+    const financeCard = cardsGrid.querySelector('[data-card-id="financemgmt"]');
+    if (financeCard && window.toggleFinancePanel) {
+      financeCard.addEventListener("click", () => window.toggleFinancePanel());
+    }
     const vidCard = cardsGrid.querySelector('[data-card-id="videomgmt"]');
     if (vidCard && window.toggleVideoPanel) {
       vidCard.addEventListener("click", () => window.toggleVideoPanel());
