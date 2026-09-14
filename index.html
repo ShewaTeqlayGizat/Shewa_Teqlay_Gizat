@@ -3787,7 +3787,7 @@ renderChannelVideos();
       </div>`;
     }).join("") || "";
 
-    if (!fullAccess && !registrar && !bootcampAdmin) {
+    if (!fullAccess && !registrar && !bootcampAdmin && !financeAdmin) {
       cardsGrid.insertAdjacentHTML("beforeend", `
         <div class="office-card" style="cursor:default;">
           <div class="office-card-icon">💬</div>
