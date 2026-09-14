@@ -2850,6 +2850,7 @@ function getAdminRole(){ return sessionStorage.getItem(AUTH_ROLE_KEY) || ""; }
 function setAdminRole(r){ sessionStorage.setItem(AUTH_ROLE_KEY, r); }
 function isFullAdmin(){ return isAdminLoggedIn() && getAdminRole() === "admin"; }function isRegistrar(){ return isAdminLoggedIn() && getAdminRole() === "registrar"; }
 function isBootcampAdmin(){ return isAdminLoggedIn() && getAdminRole() === "bootcamp_admin"; }
+function isFinanceAdmin(){ return isAdminLoggedIn() && getAdminRole() === "finance_admin"; }
 
 async function apiGet(path){
   const headers = {};
