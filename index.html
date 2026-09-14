@@ -3766,7 +3766,8 @@ renderChannelVideos();
     {id:"adminsmgmt", icon:"🔑", title:"የAdmin መለያዎች", desc:"አዲስ ማናጀር ወይም Moderator መለያ መፍጠር፣ ማየትና ማጥፋት። (ለመክፈት ይንኩ)", fullOnly:true},
    {id:"coursesmgmt", icon:"🎓", title:"Bootcamp ኮርስ አስተዳደር", desc:"ኮርሶች መፍጠር፣ ቪዲዮ ትምህርቶች መጨመር፣ ማርም ወይም ማጥፋት። (ለመክፈት ይንኩ)", fullOnly:true, bootcampOk:true},
     {id:"internalmgmt", icon:"🗄️", title:"ውስጣዊ መዝገብ አስተዳደር", desc:"የገንዘብ ሪፖርት፣ የስብሰባ ቃለ ጉባኤ፣ ውስጣዊ ሰነድ እና ስታትስቲክስ መጨመር፣ ማርም ወይም ማጥፋት። (ለመክፈት ይንኩ)", fullOnly:true},
-    {id:"financemgmt", icon:"💰", title:"የፋይናንስ እና ግዢ አስተዳደር", desc:"ገቢ/ወጪ መዝገብ፣ ደረሰኝ፣ ተከፋይ አስተዳደር (ደብል ኢንትሪ ስርዓት)። (ለመክፈት ይንኩ)", fullOnly:true, financeOk:true}
+    {id:"financemgmt", icon:"💰", title:"የፋይናንስ እና ግዢ አስተዳደር", desc:"ገቢ/ወጪ መዝገብ፣ ደረሰኝ፣ ተከፋይ አስተዳደር (ደብል ኢንትሪ ስርዓት)። (ለመክፈት ይንኩ)", fullOnly:true, financeOk:true},
+    {id:"meetingsmgmt", icon:"🎥", title:"የስብሰባ አስተዳደር", desc:"Google Meet / Zoom ስብሰባ መርሃግብር ማዘጋጀት እና ማጋራት። (ለመክፈት ይንኩ)", fullOnly:true}
   ];
 
   function renderDashboard(){
@@ -3824,9 +3825,13 @@ renderChannelVideos();
     if (internalCard && window.toggleInternalPanel) {
       internalCard.addEventListener("click", () => window.toggleInternalPanel());
     }
-    const financeCard = cardsGrid.querySelector('[data-card-id="financemgmt"]');
+   const financeCard = cardsGrid.querySelector('[data-card-id="financemgmt"]');
     if (financeCard && window.toggleFinancePanel) {
       financeCard.addEventListener("click", () => window.toggleFinancePanel());
+    }
+    const meetingsCard = cardsGrid.querySelector('[data-card-id="meetingsmgmt"]');
+    if (meetingsCard && window.toggleMeetingsPanel) {
+      meetingsCard.addEventListener("click", () => window.toggleMeetingsPanel());
     }
     const vidCard = cardsGrid.querySelector('[data-card-id="videomgmt"]');
     if (vidCard && window.toggleVideoPanel) {
