@@ -6008,6 +6008,30 @@ function openMemberPhotoLightbox(url){
     if (!isOpen) { panel.classList.remove("is-hidden"); panel.scrollIntoView({behavior:"smooth", block:"start"}); showTab("entry"); }
   };
 })();
+
+// ---------------- Office Moderator: enforce read-only everywhere except Internal Records ----------------
+(function officeReadOnlyEnforcer(){
+  if (!isOfficeAdmin()) return;
+
+  function hideWriteControls(){
+    document.querySelectorAll(".member-db-panel").forEach(panel => {
+      if (panel.id === "internalPanel") return; // full access here
+      panel.querySelectorAll("form").forEach(f => f.style.display = "none");
+      panel.querySelectorAll("button").forEach(btn => {
+        const t = btn.textContent || "";
+        if (t.includes("አጥፋ") || t.includes("አርም") || t.includes("ጨምር") || t.includes("ፍጠር")) {
+          btn.style.display = "none";
+        }
+      });
+    });
+  }
+
+  const observer = new MutationObserver(hideWriteControls);
+  document.querySelectorAll(".member-db-panel").forEach(p => {
+    observer.observe(p, { childList: true, subtree: true });
+  });
+  hideWriteControls();
+})();
 </script>
 </body>
 </html>
