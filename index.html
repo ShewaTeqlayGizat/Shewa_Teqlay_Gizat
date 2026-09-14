@@ -3771,7 +3771,8 @@ renderChannelVideos();
     const fullAccess = isFullAdmin();
    const registrar = isRegistrar();
     const bootcampAdmin = isBootcampAdmin();
-    const visibleCards = officeCards.filter(c => fullAccess || (registrar && c.registrarOk) || (bootcampAdmin && c.bootcampOk) || (!fullAccess && !registrar && !bootcampAdmin && !c.fullOnly));
+    const financeAdmin = isFinanceAdmin();
+    const visibleCards = officeCards.filter(c => fullAccess || (registrar && c.registrarOk) || (bootcampAdmin && c.bootcampOk) || (financeAdmin && c.financeOk) || (!fullAccess && !registrar && !bootcampAdmin && !financeAdmin && !c.fullOnly));
     cardsGrid.innerHTML = visibleCards.map(c => {
       let title = c.title, desc = c.desc;
       if (c.id === "coursesmgmt" && bootcampAdmin) {
