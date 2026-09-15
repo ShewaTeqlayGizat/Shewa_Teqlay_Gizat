@@ -2634,6 +2634,27 @@ textarea{ margin-bottom:1rem; resize:vertical; }
           <div class="ib-list" id="finPayeesList"></div>
         </div>
       </div>
+      <div id="meetingsPanel" class="member-db-panel is-hidden">
+        <div class="member-db-head">
+          <h3>የስብሰባ አስተዳደር</h3>
+          <button type="button" id="meetingsPanelCloseBtn" class="so-lock-btn">ዝጋ</button>
+        </div>
+        <form id="meetingForm" class="ib-form">
+          <input type="text" id="mtTitle" placeholder="የስብሰባ ርዕስ" required>
+          <textarea id="mtDescription" placeholder="የስብሰባ ዝርዝር (አጀንዳ)" style="grid-column: 1 / -1; min-height:60px;"></textarea>
+          <select id="mtType">
+            <option value="google_meet">📹 Google Meet</option>
+            <option value="zoom">💻 Zoom</option>
+          </select>
+          <input type="url" id="mtLink" placeholder="የስብሰባ ሊንክ (Google Meet/Zoom URL)" required>
+          <input type="text" id="mtPassword" placeholder="የስብሰባ Password/PIN (አማራጭ)">
+          <input type="date" id="mtDate" required>
+          <input type="time" id="mtTime" required>
+          <input type="text" id="mtOrganizer" placeholder="አዘጋጅ/አመራር ስም">
+          <button type="submit" class="btn btn-primary">➕ ስብሰባ ፍጠር</button>
+        </form>
+        <div class="ib-list" id="meetingsList"></div>
+      </div>
       <div id="coursesPanel" class="member-db-panel is-hidden">
         <div class="member-db-head">
           <h3>የፋይናንስ እና ግዢ አስተዳደር</h3>
