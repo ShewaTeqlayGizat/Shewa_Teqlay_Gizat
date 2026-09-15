@@ -3825,10 +3825,6 @@ renderChannelVideos();
     if (internalCard && window.toggleInternalPanel) {
       internalCard.addEventListener("click", () => window.toggleInternalPanel());
     }
-    const financeCard = cardsGrid.querySelector('[data-card-id="financemgmt"]');
-    if (financeCard && window.toggleFinancePanel) {
-      financeCard.addEventListener("click", () => window.toggleFinancePanel());
-    }
    const financeCard = cardsGrid.querySelector('[data-card-id="financemgmt"]');
     if (financeCard && window.toggleFinancePanel) {
       financeCard.addEventListener("click", () => window.toggleFinancePanel());
@@ -6040,68 +6036,6 @@ function openMemberPhotoLightbox(url){
     observer.observe(p, { childList: true, subtree: true });
   });
   hideWriteControls();
-})();
-// ---------------- Meetings Management (Google Meet / Zoom) ----------------
-(function meetingsAdminController(){
-  const panel = document.getElementById("meetingsPanel");
-  if (!panel) return;
-  const form = document.getElementById("meetingForm");
-  const list = document.getElementById("meetingsList");
-  const closeBtn = document.getElementById("meetingsPanelCloseBtn");
-
-  const typeLabels = { google_meet: "📹 Google Meet", zoom: "💻 Zoom" };
-
-  async function render(){
-    let meetings = [];
-    try { meetings = await apiGet("/api/meetings"); }
-    catch(e){ list.innerHTML = "<p class='loading-text'>መጫን አልተቻለም (ገብተው ይሞክሩ)።</p>"; return; }
-    list.innerHTML = meetings.map(m => `
-      <div class="ib-post">
-        <div class="ib-post-head"><h4>${typeLabels[m.meeting_type]||""} ${escapeHtml(m.title)}</h4></div>
-        <p>${escapeHtml(m.description || "")}</p>
-        <p>📅 ${formatDate(m.scheduled_date)} · 🕐 ${m.scheduled_time}</p>
-        ${m.organizer ? `<p>አዘጋጅ፦ ${escapeHtml(m.organizer)}</p>` : ""}
-        <div class="ib-post-footer">
-          <a href="${m.meeting_link}" target="_blank" rel="noopener" class="btn btn-primary">🔗 ስብሰባ ግቡ</a>
-          ${m.meeting_password ? `<span style="font-size:.85rem; color:#666;">🔑 ${escapeHtml(m.meeting_password)}</span>` : ""}
-          ${isFullAdmin() ? `<button type="button" class="member-db-del meeting-del" data-id="${m.id}">አጥፋ</button>` : ""}
-        </div>
-      </div>`).join("") || "<p class='loading-text'>ገና ምንም ስብሰባ አልተመደበም።</p>";
-
-    list.querySelectorAll(".meeting-del").forEach(btn => {
-      btn.addEventListener("click", async () => {
-        if (!confirm("ይህን ስብሰባ ማጥፋት ይፈልጋሉ?")) return;
-        try { await apiSend("/api/meetings/" + btn.dataset.id, "DELETE"); render(); }
-        catch(e){ alert("ማጥፋት አልተቻለም፦ " + e.message); }
-      });
-    });
-  }
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const title = document.getElementById("mtTitle").value.trim();
-    const description = document.getElementById("mtDescription").value.trim();
-    const meeting_type = document.getElementById("mtType").value;
-    const meeting_link = document.getElementById("mtLink").value.trim();
-    const meeting_password = document.getElementById("mtPassword").value.trim();
-    const scheduled_date = document.getElementById("mtDate").value;
-    const scheduled_time = document.getElementById("mtTime").value;
-    const organizer = document.getElementById("mtOrganizer").value.trim();
-    if (!title || !meeting_link || !scheduled_date || !scheduled_time) return;
-    try {
-      await apiSend("/api/meetings", "POST", { title, description, meeting_type, meeting_link, meeting_password, scheduled_date, scheduled_time, organizer });
-      form.reset();
-      render();
-    } catch(e){ alert("ስብሰባ መፍጠር አልተቻለም፦ " + e.message); }
-  });
-
-  if (closeBtn) closeBtn.addEventListener("click", () => panel.classList.add("is-hidden"));
-
-  window.toggleMeetingsPanel = function(){
-    const isOpen = !panel.classList.contains("is-hidden");
-    document.querySelectorAll(".member-db-panel").forEach(p => p.classList.add("is-hidden"));
-    if (!isOpen) { panel.classList.remove("is-hidden"); panel.scrollIntoView({behavior:"smooth", block:"start"}); render(); }
-  };
 })();
 </script>
 </body>
