@@ -2634,6 +2634,73 @@ textarea{ margin-bottom:1rem; resize:vertical; }
           <div class="ib-list" id="finPayeesList"></div>
         </div>
       </div>
+      <div id="coursesPanel" class="member-db-panel is-hidden">
+        <div class="member-db-head">
+          <h3>የፋይናንስ እና ግዢ አስተዳደር</h3>
+          <button type="button" id="financePanelCloseBtn" class="so-lock-btn">ዝጋ</button>
+        </div>
+
+        <div class="sp-tabs">
+          <button type="button" id="finTabEntry" class="sp-tab active">➕ አዲስ ግብይት</button>
+          <button type="button" id="finTabEntries" class="sp-tab">📋 ግብይቶች ዝርዝር</button>
+          <button type="button" id="finTabBalances" class="sp-tab">📊 የሂሳብ ቀሪ</button>
+          <button type="button" id="finTabPayees" class="sp-tab">👥 ተከፋዮች</button>
+        </div>
+
+        <div id="finEntryView">
+          <form id="finEntryForm" class="ib-form">
+            <input type="date" id="feDate">
+            <input type="text" id="feDescription" placeholder="የግብይት መግለጫ" required>
+            <textarea id="feReason" placeholder="የወጪ/ገቢ ምክንያት" style="grid-column: 1 / -1; min-height:60px;"></textarea>
+            <select id="feDebitAccount" required>
+              <option value="">-- ዴቢት (የሚጨምረው ሂሳብ) --</option>
+            </select>
+            <select id="feCreditAccount" required>
+              <option value="">-- ክሬዲት (የሚቀንሰው ሂሳብ) --</option>
+            </select>
+            <input type="number" id="feAmount" placeholder="መጠን (ብር)" step="0.01" min="0.01" required>
+            <select id="fePaymentMethod">
+              <option value="cash">💵 በካሽ</option>
+              <option value="bank">🏦 በባንክ</option>
+            </select>
+            <input type="text" id="feBankRef" placeholder="የባንክ ቁጥር/ማጣቀሻ (ለባንክ ብቻ)">
+            <select id="fePayee">
+              <option value="">-- ተከፋይ (አማራጭ) --</option>
+            </select>
+            <label style="display:block; font-size:.85rem; color:var(--ink-soft);">ደረሰኝ (ፎቶ/PDF)</label>
+            <input type="file" id="feReceipt" accept="image/*,application/pdf">
+            <label style="display:block; font-size:.85rem; color:var(--ink-soft);">የፈራሚ ፊርማ ምስል</label>
+            <input type="file" id="feSignature" accept="image/*">
+            <button type="submit" class="btn btn-primary">➕ ግብይት መዝግብ</button>
+          </form>
+          <p id="feStatus" class="form-status"></p>
+        </div>
+
+        <div id="finEntriesView" style="display:none;">
+          <div class="ib-list" id="finEntriesList"></div>
+        </div>
+
+        <div id="finBalancesView" style="display:none;">
+          <div class="ib-list" id="finBalancesList"></div>
+        </div>
+
+        <div id="finPayeesView" style="display:none;">
+          <form id="finPayeeForm" class="ib-form">
+            <input type="text" id="fpName" placeholder="ሙሉ ስም" required>
+            <select id="fpType">
+              <option value="employee">ሰራተኛ</option>
+              <option value="vendor">አቅራቢ/ኮንትራክተር</option>
+            </select>
+            <input type="text" id="fpPhone" placeholder="ስልክ ቁጥር">
+            <input type="email" id="fpEmail" placeholder="ኢሜይል (አማራጭ)">
+            <input type="password" id="fpPassword" placeholder="የይለፍ ቃል" required>
+            <input type="text" id="fpBankAccount" placeholder="የባንክ ሂሳብ ቁጥር">
+            <button type="submit" class="btn btn-primary">➕ ተከፋይ መዝግብ</button>
+          </form>
+          <p id="fpStatus" class="form-status"></p>
+          <div class="ib-list" id="finPayeesList"></div>
+        </div>
+      </div>
       <div id="meetingsPanel" class="member-db-panel is-hidden">
         <div class="member-db-head">
           <h3>የስብሰባ አስተዳደር</h3>
