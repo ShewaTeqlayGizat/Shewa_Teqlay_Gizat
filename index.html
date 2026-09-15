@@ -2918,6 +2918,7 @@ function setAdminRole(r){ sessionStorage.setItem(AUTH_ROLE_KEY, r); }
 function isFullAdmin(){ return isAdminLoggedIn() && getAdminRole() === "admin"; }function isRegistrar(){ return isAdminLoggedIn() && getAdminRole() === "registrar"; }
 function isBootcampAdmin(){ return isAdminLoggedIn() && getAdminRole() === "bootcamp_admin"; }
 function isFinanceAdmin(){ return isAdminLoggedIn() && getAdminRole() === "finance_admin"; }
+function isFinanceAdmin(){ return isAdminLoggedIn() && getAdminRole() === "finance_admin"; }
 function isOfficeAdmin(){ return isAdminLoggedIn() && getAdminRole() === "office_admin"; }
 
 async function apiGet(path){
