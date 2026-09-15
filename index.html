@@ -5875,8 +5875,8 @@ function openMemberPhotoLightbox(url){
     try {
       const accounts = await apiGet("/api/finance/accounts");
       const opts = accounts.map(a => `<option value="${a.id}">${a.code} - ${escapeHtml(a.name)}</option>`).join("");
-      document.getElementById("feDebitAccount").innerHTML = `<option value="">-- ዴቢት (የሚጨምረው ሂሳብ) --</option>` + opts;
-      document.getElementById("feCreditAccount").innerHTML = `<option value="">-- ክሬዲት (የሚቀንሰው ሂሳብ) --</option>` + opts;
+      document.getElementById("feDebitAccount").innerHTML = `<option value="">-- ዴቢት (ገንዘብ የሚገባበት/ወጪ የሚመዘገብበት) --</option>` + opts;
+      document.getElementById("feCreditAccount").innerHTML = `<option value="">-- ክሬዲት (ገንዘብ የሚወጣበት/ገቢ የሚመዘገብበት) --</option>` + opts;
     } catch(e){ console.error(e); }
   }
   async function loadPayeesIntoSelect(){
