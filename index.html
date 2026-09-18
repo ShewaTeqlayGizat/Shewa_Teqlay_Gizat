@@ -2655,6 +2655,53 @@ textarea{ margin-bottom:1rem; resize:vertical; }
         </form>
         <div class="ib-list" id="meetingsList"></div>
       </div>
+      <div id="assignmentsPanel" class="member-db-panel is-hidden">
+        <div class="member-db-head">
+          <h3>የስራ ስምሪት እና ሪፖርት</h3>
+          <button type="button" id="assignmentsPanelCloseBtn" class="so-lock-btn">ዝጋ</button>
+        </div>
+
+        <div class="sp-tabs">
+          <button type="button" id="asgTabExecs" class="sp-tab active">👤 ስራ አስፈጻሚዎች</button>
+          <button type="button" id="asgTabAssign" class="sp-tab">➕ ስምሪት ስጥ</button>
+          <button type="button" id="asgTabList" class="sp-tab">📋 ስምሪቶች/ሪፖርቶች</button>
+        </div>
+
+        <div id="asgExecsView">
+          <form id="execForm" class="ib-form">
+            <input type="text" id="exName" placeholder="ሙሉ ስም" required>
+            <input type="text" id="exPosition" placeholder="ሃላፊነት/ደረጃ">
+            <input type="text" id="exPhone" placeholder="ስልክ ቁጥር">
+            <input type="email" id="exEmail" placeholder="ኢሜይል (አማራጭ)">
+            <input type="password" id="exPassword" placeholder="የይለፍ ቃል" required>
+            <button type="submit" class="btn btn-primary">➕ ስራ አስፈጻሚ መዝግብ</button>
+          </form>
+          <p id="execStatus" class="form-status"></p>
+          <div class="ib-list" id="execsList"></div>
+        </div>
+
+        <div id="asgAssignView" style="display:none;">
+          <form id="assignForm" class="ib-form">
+            <select id="asExecutive" required>
+              <option value="">-- ስራ አስፈጻሚ ይምረጡ --</option>
+            </select>
+            <input type="text" id="asTitle" placeholder="የስምሪት ርዕስ" required>
+            <textarea id="asDescription" placeholder="የስምሪት ዝርዝር" style="grid-column: 1 / -1; min-height:60px;"></textarea>
+            <input type="date" id="asDeadline" placeholder="የመጨረሻ ቀን">
+            <button type="submit" class="btn btn-primary">➕ ስምሪት ስጥ</button>
+          </form>
+          <p id="assignStatus" class="form-status"></p>
+        </div>
+
+        <div id="asgListView" style="display:none;">
+          <div class="ib-list" id="assignmentsList"></div>
+        </div>
+
+        <div id="reportDetailView" style="display:none; margin-top:1rem; padding-top:1rem; border-top:2px dashed rgba(227,30,36,.3);">
+          <button type="button" id="reportDetailCloseBtn" class="btn" style="margin-bottom:1rem;">← ወደ ዝርዝር ተመለስ</button>
+          <div id="reportDetailBody"></div>
+        </div>
+      </div>
       <div id="coursesPanel" class="member-db-panel is-hidden">
         <div class="member-db-head">
           <h3 id="coursesPanelTitle">Bootcamp ኮርስ አስተዳደር</h3>
