@@ -3856,6 +3856,10 @@ renderChannelVideos();
     if (meetingsCard && window.toggleMeetingsPanel) {
       meetingsCard.addEventListener("click", () => window.toggleMeetingsPanel());
     }
+    const assignmentsCard = cardsGrid.querySelector('[data-card-id="assignmentsmgmt"]');
+    if (assignmentsCard && window.toggleAssignmentsPanel) {
+      assignmentsCard.addEventListener("click", () => window.toggleAssignmentsPanel());
+    }
     const vidCard = cardsGrid.querySelector('[data-card-id="videomgmt"]');
     if (vidCard && window.toggleVideoPanel) {
       vidCard.addEventListener("click", () => window.toggleVideoPanel());
