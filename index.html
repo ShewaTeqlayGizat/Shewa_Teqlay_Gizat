@@ -2579,6 +2579,8 @@ textarea{ margin-bottom:1rem; resize:vertical; }
           <button type="button" id="finTabEntries" class="sp-tab">📋 ግብይቶች ዝርዝር</button>
           <button type="button" id="finTabBalances" class="sp-tab">📊 የሂሳብ ቀሪ</button>
           <button type="button" id="finTabPayees" class="sp-tab">👥 ተከፋዮች</button>
+          <label style="display:flex; align-items:center; gap:6px; font-size:.85rem;">ከ: <input type="date" id="finExportFrom" style="padding:4px;"></label>
+          <label style="display:flex; align-items:center; gap:6px; font-size:.85rem;">እስከ: <input type="date" id="finExportTo" style="padding:4px;"></label>
           <button type="button" id="finExportExcel" class="sp-tab" style="margin-left:auto;">📥 Excel አውርድ</button>
         </div>
 
@@ -6116,6 +6118,10 @@ function openMemberPhotoLightbox(url){
     let entries = [], balances = [];
     try { entries = await apiGet("/api/finance/entries"); } catch(e){}
     try { balances = await apiGet("/api/finance/balances"); } catch(e){}
+    const fFrom = document.getElementById("finExportFrom").value;
+    const fTo = document.getElementById("finExportTo").value;
+    if (fFrom) entries = entries.filter(en => (en.entry_date||"").slice(0,10) >= fFrom);
+    if (fTo) entries = entries.filter(en => (en.entry_date||"").slice(0,10) <= fTo);
     const wb = new ExcelJS.Workbook();
     const headerFill = { type:"pattern", pattern:"solid", fgColor:{argb:"FF1B5E20"} };
     const headerFont = { bold:true, color:{argb:"FFFFFFFF"}, size:12 };
@@ -6203,6 +6209,10 @@ function openMemberPhotoLightbox(url){
     let entries = [], balances = [];
     try { entries = await apiGet("/api/finance/entries"); } catch(e){}
     try { balances = await apiGet("/api/finance/balances"); } catch(e){}
+    const fFrom = document.getElementById("finExportFrom").value;
+    const fTo = document.getElementById("finExportTo").value;
+    if (fFrom) entries = entries.filter(en => (en.entry_date||"").slice(0,10) >= fFrom);
+    if (fTo) entries = entries.filter(en => (en.entry_date||"").slice(0,10) <= fTo);
     let html = "<h4>ጠቅላላ መዝገብ</h4><table style=\"width:100%;border-collapse:collapse;\" border=\"1\"><tr style=\"background:#1B5E20;color:#fff;\"><th>ቀን</th><th>መግለጫ</th><th>ምክንያት</th><th>የሂሳብ ስም</th><th>ዴቢት</th><th>ክሬዲት</th></tr>";
     entries.forEach(en => {
       const lines = en.lines && en.lines.length ? en.lines : [{account_name:"-",debit:0,credit:0}];
