@@ -3164,6 +3164,43 @@ window.autofillTodayOnDateInputs = function(){
   const today = new Date().toISOString().slice(0, 10);
   document.querySelectorAll('input[type="date"]').forEach(input => { input.value = today; });
 };
+function searchSite(query){
+  const resultsBox = document.getElementById("siteSearchResults");
+  const q = query.trim().toLowerCase();
+  if (!q || q.length < 2) { resultsBox.classList.add("is-hidden"); resultsBox.innerHTML = ""; return; }
+  const candidates = document.querySelectorAll("h1, h2, h3, h4, .ib-post-head h4, .section-title, [id]");
+  const seen = new Set();
+  const matches = [];
+  candidates.forEach(el => {
+    const text = (el.textContent || "").trim();
+    if (text.length > 1 && text.toLowerCase().includes(q) && !seen.has(text)) {
+      seen.add(text);
+      matches.push({ el, text });
+    }
+  });
+  if (!matches.length) {
+    resultsBox.innerHTML = "<div style=\"padding:10px;\">ምንም ውጤት አልተገኘም</div>";
+  } else {
+    resultsBox.innerHTML = matches.slice(0, 15).map((m, i) => `<div class="search-result-item" data-idx="${i}" style="padding:8px 12px; border-bottom:1px solid #eee; cursor:pointer;">${m.text.substring(0,60)}</div>`).join("");
+    resultsBox.querySelectorAll(".search-result-item").forEach((item, i) => {
+      item.addEventListener("click", () => {
+        matches[i].el.scrollIntoView({ behavior:"smooth", block:"center" });
+        resultsBox.classList.add("is-hidden");
+        document.getElementById("siteSearchInput").value = "";
+      });
+    });
+  }
+  resultsBox.classList.remove("is-hidden");
+}
+const siteSearchInputEl = document.getElementById("siteSearchInput");
+if (siteSearchInputEl) {
+  siteSearchInputEl.addEventListener("input", (e) => searchSite(e.target.value));
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest(".site-search")) {
+      document.getElementById("siteSearchResults").classList.add("is-hidden");
+    }
+  });
+}
 function escapeHtml(str) {
   const div = document.createElement("div");
   div.textContent = str;
