@@ -6085,7 +6085,7 @@ function openMemberPhotoLightbox(url){
   async function exportToExcel(){
     let entries = [], balances = [];
     try { entries = await apiGet("/api/finance/entries"); } catch(e){}
-    try { balances = await apiGet("/api/finance/accounts/balances"); } catch(e){}
+    try { balances = await apiGet("/api/finance/balances"); } catch(e){}
     const wb = new ExcelJS.Workbook();
     const headerFill = { type:"pattern", pattern:"solid", fgColor:{argb:"FF1B5E20"} };
     const headerFont = { bold:true, color:{argb:"FFFFFFFF"}, size:12 };
