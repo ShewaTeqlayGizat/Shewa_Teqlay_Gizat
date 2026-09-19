@@ -6344,6 +6344,163 @@ function openMemberPhotoLightbox(url){
     if (!isOpen) { panel.classList.remove("is-hidden"); panel.scrollIntoView({behavior:"smooth", block:"start"}); render(); }
   };
 })();
+// ---------------- Assignments & Executive Reports Management ----------------
+(function assignmentsAdminController(){
+  const panel = document.getElementById("assignmentsPanel");
+  if (!panel) return;
+  const closeBtn = document.getElementById("assignmentsPanelCloseBtn");
+
+  const tabExecs = document.getElementById("asgTabExecs");
+  const tabAssign = document.getElementById("asgTabAssign");
+  const tabList = document.getElementById("asgTabList");
+  const viewExecs = document.getElementById("asgExecsView");
+  const viewAssign = document.getElementById("asgAssignView");
+  const viewList = document.getElementById("asgListView");
+  const viewReportDetail = document.getElementById("reportDetailView");
+
+  function showTab(tab){
+    [tabExecs, tabAssign, tabList].forEach(t => t.classList.remove("active"));
+    [viewExecs, viewAssign, viewList].forEach(v => v.style.display = "none");
+    viewReportDetail.style.display = "none";
+    if (tab === "execs"){ tabExecs.classList.add("active"); viewExecs.style.display = "block"; loadExecs(); }
+    if (tab === "assign"){ tabAssign.classList.add("active"); viewAssign.style.display = "block"; loadExecsIntoSelect(); }
+    if (tab === "list"){ tabList.classList.add("active"); viewList.style.display = "block"; loadAssignments(); }
+  }
+  tabExecs.addEventListener("click", () => showTab("execs"));
+  tabAssign.addEventListener("click", () => showTab("assign"));
+  tabList.addEventListener("click", () => showTab("list"));
+
+  // ---- Executives ----
+  const execForm = document.getElementById("execForm");
+  execForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const status = document.getElementById("execStatus");
+    const full_name = document.getElementById("exName").value.trim();
+    const position = document.getElementById("exPosition").value.trim();
+    const phone = document.getElementById("exPhone").value.trim();
+    const email = document.getElementById("exEmail").value.trim();
+    const password = document.getElementById("exPassword").value;
+    if (!full_name || !password) return;
+    status.textContent = "እየተመዘገበ ነው...";
+    try {
+      await apiSend("/api/executives/admin-create", "POST", { full_name, position, phone, email, password });
+      status.textContent = "ተሳክቷል! ስራ አስፈጻሚ ተመዝግቧል።";
+      execForm.reset();
+      loadExecs();
+    } catch(err){ status.textContent = "ስህተት፦ " + err.message; }
+  });
+
+  async function loadExecs(){
+    const list = document.getElementById("execsList");
+    let execs = [];
+    try { execs = await apiGet("/api/executives"); }
+    catch(e){ list.innerHTML = "<p class='loading-text'>መጫን አልተቻለም።</p>"; return; }
+    list.innerHTML = execs.map(x => `
+      <div class="ib-post">
+        <div class="ib-post-head"><h4>${escapeHtml(x.full_name)}</h4></div>
+        <p>${escapeHtml(x.position||"-")} · ${escapeHtml(x.phone||"-")}</p>
+      </div>`).join("") || "<p class='loading-text'>ገና ምንም ስራ አስፈጻሚ አልተመዘገበም።</p>";
+  }
+
+  async function loadExecsIntoSelect(){
+    try {
+      const execs = await apiGet("/api/executives");
+      document.getElementById("asExecutive").innerHTML = `<option value="">-- ስራ አስፈጻሚ ይምረጡ --</option>` +
+        execs.map(x => `<option value="${x.id}">${escapeHtml(x.full_name)}</option>`).join("");
+    } catch(e){ console.error(e); }
+  }
+
+  // ---- Create Assignment ----
+  const assignForm = document.getElementById("assignForm");
+  assignForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const status = document.getElementById("assignStatus");
+    const executive_id = document.getElementById("asExecutive").value;
+    const title = document.getElementById("asTitle").value.trim();
+    const description = document.getElementById("asDescription").value.trim();
+    const deadline = document.getElementById("asDeadline").value;
+    if (!executive_id || !title) { status.textContent = "እባክዎ ስራ አስፈጻሚ እና ርዕስ ይሙሉ።"; return; }
+    status.textContent = "እየተላከ ነው...";
+    try {
+      await apiSend("/api/assignments", "POST", { executive_id, title, description, deadline });
+      status.textContent = "ተሳክቷል! ስምሪት ተሰጥቷል።";
+      assignForm.reset();
+    } catch(err){ status.textContent = "ስህተት፦ " + err.message; }
+  });
+
+  // ---- List Assignments + Reports ----
+  const statusLabels = { pending: "🟡 በመጠባበቅ ላይ", in_progress: "🔵 በስራ ላይ", reported: "🟢 ሪፖርት ደርሷል", closed: "⚪ ተዘግቷል" };
+
+  async function loadAssignments(){
+    const list = document.getElementById("assignmentsList");
+    let assignments = [];
+    try { assignments = await apiGet("/api/assignments"); }
+    catch(e){ list.innerHTML = "<p class='loading-text'>መጫን አልተቻለም።</p>"; return; }
+    list.innerHTML = assignments.map(a => `
+      <div class="ib-post">
+        <div class="ib-post-head"><h4>${escapeHtml(a.title)}</h4></div>
+        <p>ስራ አስፈጻሚ፦ ${escapeHtml(a.executive_name)}</p>
+        <p>${escapeHtml(a.description || "")}</p>
+        <div class="ib-post-footer">
+          <span class="ib-post-badge">${statusLabels[a.status] || a.status}</span>
+          <span class="ib-post-date">${a.deadline ? "የመጨረሻ ቀን፦ " + formatDate(a.deadline) : ""}</span>
+          ${a.has_report > 0 ? `<button type="button" class="btn btn-primary asg-view-report" data-id="${a.id}">📄 ሪፖርት ይመልከቱ</button>` : ""}
+          <button type="button" class="member-db-del asg-del" data-id="${a.id}">አጥፋ</button>
+        </div>
+      </div>`).join("") || "<p class='loading-text'>ገና ምንም ስምሪት አልተሰጠም።</p>";
+
+    list.querySelectorAll(".asg-del").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        if (!confirm("ይህን ስምሪት ማጥፋት ይፈልጋሉ?")) return;
+        try { await apiSend("/api/assignments/" + btn.dataset.id, "DELETE"); loadAssignments(); }
+        catch(e){ alert("ማጥፋት አልተቻለም፦ " + e.message); }
+      });
+    });
+    list.querySelectorAll(".asg-view-report").forEach(btn => {
+      btn.addEventListener("click", () => viewReport(btn.dataset.id));
+    });
+  }
+
+  async function viewReport(assignmentId){
+    const body = document.getElementById("reportDetailBody");
+    viewList.style.display = "none";
+    viewReportDetail.style.display = "block";
+    body.innerHTML = "<p class='loading-text'>እየተጫነ ነው...</p>";
+    try {
+      const r = await apiGet("/api/assignments/" + assignmentId + "/report");
+      body.innerHTML = `
+        <h4>✅ በስምሪት የተሰሩ ስራዎች (ስኬቶች)</h4><p>${escapeHtml(r.achievements || "-")}</p>
+        <h4>⚠️ ከአቅም በላይ ሆነው ያልተሰሩ ስራዎች</h4><p>${escapeHtml(r.unaccomplished || "-")}</p>
+        <h4>🚧 ያጋጠሙ ችግሮች</h4><p>${escapeHtml(r.challenges || "-")}</p>
+        <h4>🔧 የተወሰዱ መፍትሄዎች</h4><p>${escapeHtml(r.solutions_taken || "-")}</p>
+        <h4>📊 SWOT Analysis</h4>
+        <p><strong>ጥንካሬ (Strengths):</strong> ${escapeHtml(r.swot_strengths || "-")}</p>
+        <p><strong>ድክመት (Weaknesses):</strong> ${escapeHtml(r.swot_weaknesses || "-")}</p>
+        <p><strong>እድል (Opportunities):</strong> ${escapeHtml(r.swot_opportunities || "-")}</p>
+        <p><strong>ስጋት (Threats):</strong> ${escapeHtml(r.swot_threats || "-")}</p>
+        <h4>💡 ለወደፊቱ የመፍትሄ ሃሳቦች</h4><p>${escapeHtml(r.future_recommendations || "-")}</p>
+        <h4>🔍 የተገኙ መረጃዎች</h4><p>${escapeHtml(r.findings || "-")}</p>
+        <h4>📷 አባሪ ፎቶ ማስረጃዎች</h4>
+        <div style="display:flex; gap:.5rem; flex-wrap:wrap;">
+          ${(r.attachments||[]).map(a => `<img src="${a.file_url}" style="width:100px; height:100px; object-fit:cover; border-radius:8px;">`).join("") || "<p>ምንም ፎቶ የለም</p>"}
+        </div>
+        <p class="ib-post-date" style="margin-top:1rem;">የቀረበበት ቀን፦ ${formatDate(r.submitted_at)}</p>`;
+    } catch(e){ body.innerHTML = "<p class='loading-text'>ገና ሪፖርት አልቀረበም ወይም ማምጣት አልተቻለም።</p>"; }
+  }
+
+  document.getElementById("reportDetailCloseBtn").addEventListener("click", () => {
+    viewReportDetail.style.display = "none";
+    viewList.style.display = "block";
+  });
+
+  if (closeBtn) closeBtn.addEventListener("click", () => panel.classList.add("is-hidden"));
+
+  window.toggleAssignmentsPanel = function(){
+    const isOpen = !panel.classList.contains("is-hidden");
+    document.querySelectorAll(".member-db-panel").forEach(p => p.classList.add("is-hidden"));
+    if (!isOpen) { panel.classList.remove("is-hidden"); panel.scrollIntoView({behavior:"smooth", block:"start"}); showTab("execs"); }
+  };
+})();
 </script>
 </body>
 </html>
