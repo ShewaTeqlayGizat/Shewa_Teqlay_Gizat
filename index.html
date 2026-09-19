@@ -143,7 +143,7 @@ p{ margin:0 0 1em; }
 .brand-text small{ color: #F5D066; font-size:.62rem; letter-spacing:.02em; }
 
 .main-nav{
-  flex-wrap:nowrap; overflow-x:auto; white-space:nowrap;
+  flex-wrap:wrap; overflow-x:visible; white-space:normal;
   display:flex; gap:.5rem .5rem;
   order: 3;
   flex:1 1 100%;
@@ -164,7 +164,7 @@ p{ margin:0 0 1em; }
   }
   .brand{ flex:1 1 100%; }
   .main-nav{
-  flex-wrap:nowrap; overflow-x:auto; white-space:nowrap; flex:1 1 100%; max-width:none; justify-content:flex-start; }
+  flex-wrap:wrap; overflow-x:visible; white-space:normal; flex:1 1 100%; max-width:none; justify-content:flex-start; }
   .brand-logo{ width:36px; height:36px; }
 }
 .main-nav a:hover{ color: #F5D066; }
@@ -1318,7 +1318,7 @@ textarea{ margin-bottom:1rem; resize:vertical; }
   .about-grid{ grid-template-columns: 1fr; }
   .nav-toggle{ display:inline-block; }
   .main-nav{
-  flex-wrap:nowrap; overflow-x:auto; white-space:nowrap;
+  flex-wrap:wrap; overflow-x:visible; white-space:normal;
     display:none; position:absolute; top:100%; left:0; right:0; background: var(--cream);
     flex-direction:column; padding:1rem 1.5rem; border-bottom:1px solid rgba(43,36,26,.12);
   }
