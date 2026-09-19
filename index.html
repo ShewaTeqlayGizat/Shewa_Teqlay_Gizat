@@ -1483,6 +1483,7 @@ textarea{ margin-bottom:1rem; resize:vertical; }
   @page { size: A4 portrait; margin: 0; }
 }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
 <body>
 
@@ -2578,6 +2579,7 @@ textarea{ margin-bottom:1rem; resize:vertical; }
           <button type="button" id="finTabEntries" class="sp-tab">📋 ግብይቶች ዝርዝር</button>
           <button type="button" id="finTabBalances" class="sp-tab">📊 የሂሳብ ቀሪ</button>
           <button type="button" id="finTabPayees" class="sp-tab">👥 ተከፋዮች</button>
+          <button type="button" id="finExportExcel" class="sp-tab" style="margin-left:auto;">📥 Excel አውርድ</button>
         </div>
 
         <div id="finEntryView">
@@ -6078,6 +6080,31 @@ function openMemberPhotoLightbox(url){
         <p>${p.payee_type === "employee" ? "ሰራተኛ" : "አቅራቢ/ኮንትራክተር"} · ${escapeHtml(p.phone||"-")} · ${escapeHtml(p.bank_account||"-")}</p>
       </div>`).join("") || "<p class='loading-text'>ገና ምንም ተከፋይ አልተመዘገበም።</p>";
   }
+
+
+  async function exportToExcel(){
+    let entries = [], balances = [];
+    try { entries = await apiGet("/api/finance/entries"); } catch(e){}
+    try { balances = await apiGet("/api/finance/accounts/balances"); } catch(e){}
+    const entriesData = entries.map(en => ({
+      "ቀን": en.entry_date,
+      "መግለጫ": en.description,
+      "ምክንያት": en.reason || "",
+      "መጠን": en.lines ? en.lines.map(l => l.account_name + ": " + l.debit + "/" + l.credit).join(", ") : ""
+    }));
+    const balancesData = balances.map(b => ({
+      "የሂሳብ ኮድ": b.code,
+      "የሂሳብ ስም": b.name,
+      "ጠቅላላ ዴቢት": parseFloat(b.total_debit).toFixed(2),
+      "ጠቅላላ ክሬዲት": parseFloat(b.total_credit).toFixed(2)
+    }));
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(entriesData), "ጠቅላላ መዝገብ");
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(balancesData), "ባላንስ ሺት");
+    XLSX.writeFile(wb, "Finance_Report_" + new Date().toISOString().slice(0,10) + ".xlsx");
+  }
+  const exportBtn = document.getElementById("finExportExcel");
+  if (exportBtn) exportBtn.addEventListener("click", exportToExcel);
 
   if (closeBtn) closeBtn.addEventListener("click", () => panel.classList.add("is-hidden"));
 
