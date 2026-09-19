@@ -1515,7 +1515,6 @@ textarea{ margin-bottom:1rem; resize:vertical; }
       <a href="#home">መነሻ ገጽ</a>
       <a href="#about">ስለ እኛ</a>
       <a href="#news-studio-platform">ዜና ስቱዲዮ</a>
-      <a href="#news-studio-platform">ሕዝብ ግንኙነት</a>
 
       <a href="#youtube-channel">YouTube ቻናል</a>
       <a href="#facebook-wall">ፌስቡክ</a>
@@ -6600,6 +6599,141 @@ function openMemberPhotoLightbox(url){
     document.querySelectorAll(".member-db-panel").forEach(p => p.classList.add("is-hidden"));
     if (!isOpen) { panel.classList.remove("is-hidden"); panel.scrollIntoView({behavior:"smooth", block:"start"}); showTab("execs"); }
   };
+})();
+// ---------------- Executive Portal: Login, Assignments, Reports ----------------
+(function executivePortalController(){
+  const loggedOut = document.getElementById("exLoggedOut");
+  const loggedIn = document.getElementById("exLoggedIn");
+  if (!loggedOut || !loggedIn) return;
+
+  const loginForm = document.getElementById("exLoginForm");
+  const welcomeName = document.getElementById("exWelcomeName");
+  const logoutBtn = document.getElementById("exLogoutBtn");
+  const assignListView = document.getElementById("exAssignListView");
+  const reportFormView = document.getElementById("exReportFormView");
+
+  function getExecToken(){ return localStorage.getItem("execToken") || ""; }
+  function setExecToken(t){ localStorage.setItem("execToken", t); }
+  function clearExecToken(){ localStorage.removeItem("execToken"); localStorage.removeItem("execName"); }
+
+  async function execGet(path){
+    const headers = { "Authorization": "Bearer " + getExecToken() };
+    const res = await fetch(API_BASE + path, { headers });
+    if (!res.ok) throw new Error("Request failed: " + res.status);
+    return res.json();
+  }
+
+  function showLoggedIn(name){
+    loggedOut.style.display = "none";
+    loggedIn.style.display = "block";
+    welcomeName.textContent = name;
+    loadAssignments();
+  }
+  function showLoggedOut(){
+    loggedOut.style.display = "block";
+    loggedIn.style.display = "none";
+  }
+
+  loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const full_name = document.getElementById("exLoginName").value.trim();
+    const password = document.getElementById("exLoginPassword").value;
+    const status = document.getElementById("exLoginStatus");
+    status.textContent = "እየገባ ነው...";
+    try {
+      const res = await fetch(API_BASE + "/api/executives/login", {
+        method: "POST", headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ full_name, password })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Login failed");
+      setExecToken(data.token);
+      localStorage.setItem("execName", data.executive.full_name);
+      showLoggedIn(data.executive.full_name);
+    } catch(err){ status.textContent = "ስህተት፦ " + err.message; }
+  });
+
+  logoutBtn.addEventListener("click", () => { clearExecToken(); showLoggedOut(); });
+
+  const statusLabels = { pending: "🟡 በመጠባበቅ ላይ", in_progress: "🔵 በስራ ላይ", reported: "🟢 ሪፖርት ቀርቧል", closed: "⚪ ተዘግቷል" };
+  let currentAssignmentId = null;
+
+  async function loadAssignments(){
+    const list = document.getElementById("exAssignmentsList");
+    let assignments = [];
+    try { assignments = await execGet("/api/assignments/my"); }
+    catch(e){ list.innerHTML = "<p class='loading-text'>መጫን አልተቻለም።</p>"; return; }
+    list.innerHTML = assignments.map(a => `
+      <div class="ib-post">
+        <div class="ib-post-head"><h4>${escapeHtml(a.title)}</h4></div>
+        <p>${escapeHtml(a.description || "")}</p>
+        <div class="ib-post-footer">
+          <span class="ib-post-badge">${statusLabels[a.status] || a.status}</span>
+          ${a.deadline ? `<span class="ib-post-date">የመጨረሻ ቀን፦ ${formatDate(a.deadline)}</span>` : ""}
+          ${a.has_report > 0
+            ? `<span style="color:green; font-size:.85rem;">✅ ሪፖርት ገብቷል</span>`
+            : `<button type="button" class="btn btn-primary ex-report-btn" data-id="${a.id}" data-title="${escapeHtml(a.title)}">📝 ሪፖርት አድርግ</button>`}
+        </div>
+      </div>`).join("") || "<p class='loading-text'>ገና ምንም ስምሪት አልተሰጠዎትም።</p>";
+
+    list.querySelectorAll(".ex-report-btn").forEach(btn => {
+      btn.addEventListener("click", () => openReportForm(btn.dataset.id, btn.dataset.title));
+    });
+  }
+
+  function openReportForm(assignmentId, title){
+    currentAssignmentId = assignmentId;
+    document.getElementById("exReportAssignTitle").textContent = title;
+    assignListView.style.display = "none";
+    reportFormView.style.display = "block";
+  }
+
+  document.getElementById("exBackToAssignments").addEventListener("click", () => {
+    reportFormView.style.display = "none";
+    assignListView.style.display = "block";
+  });
+
+  const reportForm = document.getElementById("exReportForm");
+  reportForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const status = document.getElementById("erStatus");
+    status.textContent = "እየተላከ ነው...";
+    try {
+      const fd = new FormData();
+      fd.append("achievements", document.getElementById("erAchievements").value.trim());
+      fd.append("unaccomplished", document.getElementById("erUnaccomplished").value.trim());
+      fd.append("challenges", document.getElementById("erChallenges").value.trim());
+      fd.append("solutions_taken", document.getElementById("erSolutions").value.trim());
+      fd.append("swot_strengths", document.getElementById("erSwotStrengths").value.trim());
+      fd.append("swot_weaknesses", document.getElementById("erSwotWeaknesses").value.trim());
+      fd.append("swot_opportunities", document.getElementById("erSwotOpportunities").value.trim());
+      fd.append("swot_threats", document.getElementById("erSwotThreats").value.trim());
+      fd.append("future_recommendations", document.getElementById("erRecommendations").value.trim());
+      fd.append("findings", document.getElementById("erFindings").value.trim());
+      const photos = document.getElementById("erPhotos").files;
+      for (let i = 0; i < photos.length; i++) fd.append("photos", photos[i]);
+
+      const res = await fetch(API_BASE + "/api/assignments/" + currentAssignmentId + "/report", {
+        method: "POST",
+        headers: { "Authorization": "Bearer " + getExecToken() },
+        body: fd
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed");
+      status.textContent = "ተሳክቷል! ሪፖርትዎ ገብቷል።";
+      reportForm.reset();
+      setTimeout(() => {
+        reportFormView.style.display = "none";
+        assignListView.style.display = "block";
+        loadAssignments();
+      }, 1500);
+    } catch(err){ status.textContent = "ስህተት፦ " + err.message; }
+  });
+
+  // On page load, check if already logged in
+  if (getExecToken() && localStorage.getItem("execName")) {
+    showLoggedIn(localStorage.getItem("execName"));
+  }
 })();
 </script>
 </body>
