@@ -143,7 +143,8 @@ p{ margin:0 0 1em; }
 .brand-text small{ color: #F5D066; font-size:.62rem; letter-spacing:.02em; }
 
 .main-nav{
-  display:flex; flex-wrap:wrap; gap:.6rem .7rem;
+  flex-wrap:nowrap; overflow-x:auto; white-space:nowrap;
+  display:flex; gap:.5rem .5rem;
   order: 2;
   margin-left: auto;
   flex:1 1 auto;
@@ -151,6 +152,7 @@ p{ margin:0 0 1em; }
   justify-content: flex-end;
 }
 .main-nav a{
+  border-right:1px solid rgba(255,255,255,.25); padding-right:.7rem; margin-right:.1rem;
   font-size:.95rem; font-weight:600; color: #EAF2FF;
   position:relative; padding:.15rem 0;
 }
@@ -162,7 +164,8 @@ p{ margin:0 0 1em; }
     flex-wrap:wrap;
   }
   .brand{ flex:1 1 100%; }
-  .main-nav{ flex:1 1 100%; max-width:none; justify-content:flex-start; }
+  .main-nav{
+  flex-wrap:nowrap; overflow-x:auto; white-space:nowrap; flex:1 1 100%; max-width:none; justify-content:flex-start; }
   .brand-logo{ width:36px; height:36px; }
 }
 .main-nav a:hover{ color: #F5D066; }
@@ -1316,11 +1319,13 @@ textarea{ margin-bottom:1rem; resize:vertical; }
   .about-grid{ grid-template-columns: 1fr; }
   .nav-toggle{ display:inline-block; }
   .main-nav{
+  flex-wrap:nowrap; overflow-x:auto; white-space:nowrap;
     display:none; position:absolute; top:100%; left:0; right:0; background: var(--cream);
     flex-direction:column; padding:1rem 1.5rem; border-bottom:1px solid rgba(43,36,26,.12);
   }
   .main-nav.open{ display:flex; }
-  .main-nav a{ color: var(--ink-soft); }
+  .main-nav a{
+  border-right:1px solid rgba(255,255,255,.25); padding-right:.7rem; margin-right:.1rem; color: var(--ink-soft); }
   .main-nav a:hover{ color: var(--green); }
   .nav-dropdown-menu{
     display:none; position:static; box-shadow:none; border:none; margin-top:.3rem;
@@ -1553,6 +1558,10 @@ textarea{ margin-bottom:1rem; resize:vertical; }
       <a href="#special-office" class="nav-highlight-box">🔒 ልዩ ጽሕፈት ቤት</a>
       <a href="#contact">አግኙን</a>
     </nav>
+      <div class="site-search" style="display:flex; align-items:center; gap:.3rem; order:3; flex:0 0 auto;">
+        <input type="text" id="siteSearchInput" placeholder="🔍 ፈልግ..." style="padding:.35rem .6rem; border-radius:20px; border:none; font-size:.85rem; width:140px;">
+        <div id="siteSearchResults" class="is-hidden" style="position:absolute; top:100%; right:1rem; background:#fff; color:#333; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,.3); max-width:320px; max-height:400px; overflow-y:auto; z-index:9999; margin-top:.5rem;"></div>
+      </div>
   </div>
 </header>
 
@@ -1988,6 +1997,69 @@ textarea{ margin-bottom:1rem; resize:vertical; }
           <button type="button" id="spQuizSubmitBtn" class="btn btn-primary mt-1">ፈተናውን አስገባ</button>
           <p id="spQuizResult" class="font-bold-mt-1"></p>
         </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ===== Executive Portal: Assignments & Reports ===== -->
+<section id="exec-portal" class="section section-student-portal alt-bg">
+  <div class="section-inner">
+    <span class="eyebrow">ልዩ ጽሕፈት ቤት</span>
+    <h2>📝 ስራ አስፈጻሚ መግቢያ</h2>
+    <p class="section-lead">የስራ ስምሪት ተልእኮ ለመቀበል፣ የተከናወነ ስራ ሪፖርት ለማድረግ እዚህ ይግቡ።</p>
+
+    <div id="exLoggedOut">
+      <form id="exLoginForm" class="ns-admin-form" style="max-width:420px;">
+        <input type="text" id="exLoginName" placeholder="ሙሉ ስም" required>
+        <input type="password" id="exLoginPassword" placeholder="የይለፍ ቃል" required>
+        <button type="submit" class="btn btn-primary">ግባ</button>
+        <p id="exLoginStatus" class="form-status"></p>
+      </form>
+    </div>
+
+    <div id="exLoggedIn" style="display:none;">
+      <p>እንኳን ደህና መጡ፣ <strong id="exWelcomeName"></strong>!</p>
+      <button type="button" id="exLogoutBtn" class="btn">ውጣ</button>
+
+      <div id="exAssignListView" style="margin-top:1.5rem;">
+        <h3>📋 የተሰጡኝ ስምሪቶች</h3>
+        <div class="ib-list" id="exAssignmentsList"></div>
+      </div>
+
+      <div id="exReportFormView" style="display:none; margin-top:1.5rem;">
+        <button type="button" id="exBackToAssignments" class="btn" style="margin-bottom:1rem;">← ወደ ስምሪቶች ተመለስ</button>
+        <h3 id="exReportAssignTitle"></h3>
+        <form id="exReportForm" class="ib-form">
+          <label class="form-label" style="grid-column: 1 / -1;">✅ በስምሪት የተሰሩ ስራዎች (ስኬቶች)</label>
+          <textarea id="erAchievements" style="grid-column: 1 / -1; min-height:60px;"></textarea>
+
+          <label class="form-label" style="grid-column: 1 / -1;">⚠️ ከአቅም በላይ ሆነው ያልተሰሩ ስራዎች</label>
+          <textarea id="erUnaccomplished" style="grid-column: 1 / -1; min-height:60px;"></textarea>
+
+          <label class="form-label" style="grid-column: 1 / -1;">🚧 ያጋጠሙ ችግሮች</label>
+          <textarea id="erChallenges" style="grid-column: 1 / -1; min-height:60px;"></textarea>
+
+          <label class="form-label" style="grid-column: 1 / -1;">🔧 የተወሰዱ መፍትሄዎች</label>
+          <textarea id="erSolutions" style="grid-column: 1 / -1; min-height:60px;"></textarea>
+
+          <label class="form-label" style="grid-column: 1 / -1;">📊 SWOT Analysis</label>
+          <textarea id="erSwotStrengths" placeholder="ጥንካሬ (Strengths)" style="min-height:50px;"></textarea>
+          <textarea id="erSwotWeaknesses" placeholder="ድክመት (Weaknesses)" style="min-height:50px;"></textarea>
+          <textarea id="erSwotOpportunities" placeholder="እድል (Opportunities)" style="min-height:50px;"></textarea>
+          <textarea id="erSwotThreats" placeholder="ስጋት (Threats)" style="min-height:50px;"></textarea>
+
+          <label class="form-label" style="grid-column: 1 / -1;">💡 ለወደፊቱ የመፍትሄ ሃሳቦች</label>
+          <textarea id="erRecommendations" style="grid-column: 1 / -1; min-height:60px;"></textarea>
+
+          <label class="form-label" style="grid-column: 1 / -1;">🔍 የተገኙ መረጃዎች</label>
+          <textarea id="erFindings" style="grid-column: 1 / -1; min-height:60px;"></textarea>
+
+          <label class="form-label" style="grid-column: 1 / -1;">📷 አባሪ የፎቶ ማስረጃዎች (እስከ 10)</label>
+          <input type="file" id="erPhotos" accept="image/*" multiple style="grid-column: 1 / -1;">
+
+          <button type="submit" class="btn btn-primary" style="grid-column: 1 / -1;">✅ ሪፖርት አስገባ</button>
+        </form>
+        <p id="erStatus" class="form-status"></p>
       </div>
     </div>
   </div>
