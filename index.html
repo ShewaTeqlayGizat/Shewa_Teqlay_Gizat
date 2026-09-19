@@ -2637,6 +2637,18 @@ textarea{ margin-bottom:1rem; resize:vertical; }
           <div class="ib-list" id="finPayeesList"></div>
         </div>
       </div>
+      <div id="finPreviewModal" class="is-hidden" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,.6); z-index:9999; display:none; align-items:center; justify-content:center;">
+        <div style="background:#fff; width:90%; max-width:900px; max-height:85vh; overflow-y:auto; border-radius:10px; padding:20px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <h3 style="margin:0;">📊 የፋይናንስ ሪፖርት ቅድመ እይታ</h3>
+            <button type="button" id="finPreviewCloseBtn" class="so-lock-btn">ዝጋ</button>
+          </div>
+          <div id="finPreviewContent"></div>
+          <div style="margin-top:15px; text-align:right;">
+            <button type="button" id="finPreviewDownloadBtn" class="btn btn-primary">📥 Excel አውርድ</button>
+          </div>
+        </div>
+      </div>
       <div id="meetingsPanel" class="member-db-panel is-hidden">
         <div class="member-db-head">
           <h3>የስብሰባ አስተዳደር</h3>
@@ -6187,8 +6199,37 @@ function openMemberPhotoLightbox(url){
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
     URL.revokeObjectURL(url);
   }
+  async function showPreview(){
+    let entries = [], balances = [];
+    try { entries = await apiGet("/api/finance/entries"); } catch(e){}
+    try { balances = await apiGet("/api/finance/balances"); } catch(e){}
+    let html = "<h4>ጠቅላላ መዝገብ</h4><table style=\"width:100%;border-collapse:collapse;\" border=\"1\"><tr style=\"background:#1B5E20;color:#fff;\"><th>ቀን</th><th>መግለጫ</th><th>ምክንያት</th><th>የሂሳብ ስም</th><th>ዴቢት</th><th>ክሬዲት</th></tr>";
+    entries.forEach(en => {
+      const lines = en.lines && en.lines.length ? en.lines : [{account_name:"-",debit:0,credit:0}];
+      lines.forEach((l,idx) => {
+        html += "<tr><td>"+(idx===0?(en.entry_date||"").toString().slice(0,10):"")+"</td><td>"+(idx===0?escapeHtml(en.description||""):"")+"</td><td>"+(idx===0?escapeHtml(en.reason||""):"")+"</td><td>"+escapeHtml(l.account_name||"")+"</td><td>"+(parseFloat(l.debit)||0)+"</td><td>"+(parseFloat(l.credit)||0)+"</td></tr>";
+      });
+    });
+    html += "</table><h4 style=\"margin-top:20px;\">ባላንስ ሺት</h4><table style=\"width:100%;border-collapse:collapse;\" border=\"1\"><tr style=\"background:#1B5E20;color:#fff;\"><th>ኮድ</th><th>ስም</th><th>ዴቢት</th><th>ክሬዲት</th></tr>";
+    balances.forEach(b => {
+      html += "<tr><td>"+escapeHtml(b.code||"")+"</td><td>"+escapeHtml(b.name||"")+"</td><td>"+(parseFloat(b.total_debit)||0).toFixed(2)+"</td><td>"+(parseFloat(b.total_credit)||0).toFixed(2)+"</td></tr>";
+    });
+    html += "</table>";
+    document.getElementById("finPreviewContent").innerHTML = html;
+    const modal = document.getElementById("finPreviewModal");
+    modal.classList.remove("is-hidden");
+    modal.style.display = "flex";
+  }
   const exportBtn = document.getElementById("finExportExcel");
-  if (exportBtn) exportBtn.addEventListener("click", exportToExcel);
+  if (exportBtn) exportBtn.addEventListener("click", showPreview);
+  const previewCloseBtn = document.getElementById("finPreviewCloseBtn");
+  if (previewCloseBtn) previewCloseBtn.addEventListener("click", () => {
+    const modal = document.getElementById("finPreviewModal");
+    modal.classList.add("is-hidden");
+    modal.style.display = "none";
+  });
+  const previewDownloadBtn = document.getElementById("finPreviewDownloadBtn");
+  if (previewDownloadBtn) previewDownloadBtn.addEventListener("click", exportToExcel);
 
   if (closeBtn) closeBtn.addEventListener("click", () => panel.classList.add("is-hidden"));
 
