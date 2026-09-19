@@ -2612,6 +2612,7 @@ textarea{ margin-bottom:1rem; resize:vertical; }
         </div>
 
         <div id="finEntriesView" style="display:none;">
+          <input type="text" id="finEntriesSearch" placeholder="🔍 በስም/ቀን/መግለጫ ይፈልጉ..." style="width:100%; padding:10px; margin-bottom:12px; border:1px solid #ccc; border-radius:6px; font-size:1rem;">
           <div class="ib-list" id="finEntriesList"></div>
         </div>
 
@@ -5997,12 +5998,9 @@ function openMemberPhotoLightbox(url){
     } catch(err){ status.textContent = "ስህተት፦ " + err.message; }
   });
 
-  // ---- Entries List ----
-  async function loadEntries(){
+  let allFinanceEntries = [];
+  function renderEntries(entries){
     const list = document.getElementById("finEntriesList");
-    let entries = [];
-    try { entries = await apiGet("/api/finance/entries"); }
-    catch(e){ list.innerHTML = "<p class='loading-text'>መጫን አልተቻለም።</p>"; return; }
     list.innerHTML = entries.map(en => {
       const lines = (en.lines || []).map(l => `${escapeHtml(l.account_name)}: ${l.debit>0?"ዴቢት "+l.debit:"ክሬዲት "+l.credit}`).join(" | ");
       return `
@@ -6017,8 +6015,7 @@ function openMemberPhotoLightbox(url){
           <button type="button" class="member-db-del fin-del" data-id="${en.id}">አጥፋ</button>
         </div>
       </div>`;
-    }).join("") || "<p class='loading-text'>ገና ምንም ግብይት አልተመዘገበም።</p>";
-
+    }).join("") || "<p class='loading-text'>ምንም ውጤት አልተገኘም።</p>";
     list.querySelectorAll(".fin-del").forEach(btn => {
       btn.addEventListener("click", async () => {
         if (!confirm("ይህን ግብይት ማጥፋት ይፈልጋሉ?")) return;
@@ -6026,6 +6023,27 @@ function openMemberPhotoLightbox(url){
         catch(e){ alert("ማጥፋት አልተቻለም፦ " + e.message); }
       });
     });
+  }
+  function filterEntries(query){
+    const q = query.trim().toLowerCase();
+    if (!q) { renderEntries(allFinanceEntries); return; }
+    const filtered = allFinanceEntries.filter(en => {
+      const haystack = [
+        en.description, en.reason, en.payee_name, en.entry_date,
+        ...(en.lines || []).map(l => l.account_name)
+      ].filter(Boolean).join(" ").toLowerCase();
+      return haystack.includes(q);
+    });
+    renderEntries(filtered);
+  }
+  const finSearchInput = document.getElementById("finEntriesSearch");
+  if (finSearchInput) finSearchInput.addEventListener("input", (e) => filterEntries(e.target.value));
+  async function loadEntries(){
+    let entries = [];
+    try { entries = await apiGet("/api/finance/entries"); }
+    catch(e){ document.getElementById("finEntriesList").innerHTML = "<p class='loading-text'>መጫን አልተቻለም።</p>"; return; }
+    allFinanceEntries = entries;
+    renderEntries(entries);
   }
 
   // ---- Balances ----
