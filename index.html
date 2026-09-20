@@ -930,6 +930,11 @@ p{ margin:0 0 1em; }
 .news-card p{ color: var(--ink-soft); font-size:.92rem; margin:0; }
 
 /* ===== New announcement alert ===== */
+.nav-new{
+  background:#ec4899; color:#fff; font-size:.68rem; font-weight:700;
+  padding:1px 7px; border-radius:999px; margin-left:4px; vertical-align:middle;
+  animation:blinkNew 1s step-start infinite;
+}
 .announce-list.has-new{
   border:2px solid #22c55e; border-radius:14px; padding:1rem;
   box-shadow:0 0 12px 3px rgba(34,197,94,.55);
@@ -1538,7 +1543,7 @@ textarea{ margin-bottom:1rem; resize:vertical; }
           <a href="#edu-ppt">PowerPoint Tutorials</a>
         </div>
       </div>
-      <a href="#announcements">ማስታወቂያ</a>
+      <a href="#announcements">ማስታወቂያ <span class="nav-new" style="display:none">አዲስ</span></a>
       <div class="nav-dropdown">
         <a href="#entertainment" class="nav-dropdown-toggle">መዝናኛ <span class="caret">▾</span></a>
         <div class="nav-dropdown-menu">
@@ -3483,6 +3488,7 @@ function renderAnnouncements(){
   const latest = Math.max(0, ...items.map(a => new Date(a.created_at || a.date).getTime() || 0));
   const isNew = latest > 0 && (Date.now() - latest) < 24*60*60*1000;
   list.classList.toggle("has-new", isNew);
+  document.querySelectorAll(".nav-new").forEach(el => el.style.display = isNew ? "inline-block" : "none");
   list.innerHTML = (isNew ? '<div class="new-badge">🔔 አዲስ ማስታወቂያ ነው ይነበብ</div>' : '') + items.map(a => `
     <div class="announce-item">
       <span class="news-date">${formatDate(a.date)}</span>
