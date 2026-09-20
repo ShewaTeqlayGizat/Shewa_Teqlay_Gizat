@@ -2557,6 +2557,7 @@ textarea{ margin-bottom:1rem; resize:vertical; }
             <option value="meetingMinutes">📋 የስብሰባ ቃለ ጉባኤ</option>
             <option value="internalDoc">📁 ውስጣዊ ሰነድ</option>
             <option value="internalStats">📊 ውስጣዊ ስታትስቲክስ</option>
+            <option value="announcement">📢 ማስታወቂያ (በውጭ ገጽ ይታያል)</option>
           </select>
           <input type="text" id="iTitle" placeholder="ርዕስ" required>
           <textarea id="iBody" class="textarea-full" placeholder="ዝርዝር መግለጫ"></textarea>
@@ -4939,7 +4940,7 @@ function openMemberPhotoLightbox(url){
   const closeBtn = document.getElementById("internalPanelCloseBtn");
   if (!form || !list || !panel) return;
 
-  const TYPE_LABELS = { financeReport:"💰 ገንዘብ ሪፖርት", meetingMinutes:"📋 ቃለ ጉባኤ", internalDoc:"📁 ሰነድ", internalStats:"📊 ስታትስቲክስ" };
+  const TYPE_LABELS = { financeReport:"💰 ገንዘብ ሪፖርት", meetingMinutes:"📋 ቃለ ጉባኤ", internalDoc:"📁 ሰነድ", internalStats:"📊 ስታትስቲክስ", announcement:"📢 ማስታወቂያ" };
   let items = [];
 
   async function render(){
@@ -4950,7 +4951,9 @@ function openMemberPhotoLightbox(url){
         apiGet("/api/content?type=internalDoc"),
         apiGet("/api/content?type=internalStats"),
       ]);
-      items = [...a, ...b, ...c, ...d];
+      let ann = [];
+      try { ann = (await apiGet("/api/announcements")).map(x => ({ ...x, type: "announcement" })); } catch(e){}
+      items = [...a, ...b, ...c, ...d, ...ann];
     } catch(e){ list.innerHTML = "<p class='loading-text'>መጫን አልተቻለም።</p>"; return; }
     items.sort((a,b) => new Date(b.date) - new Date(a.date));
     list.innerHTML = items.map(c => `
@@ -4959,27 +4962,27 @@ function openMemberPhotoLightbox(url){
         <p>${escapeHtml((c.body||"").slice(0,80))}</p>
         <div class="ib-post-footer">
           <span class="ib-post-date">${formatDate(c.date)}</span>
-          <button type="button" class="member-db-del internal-edit" data-id="${c.id}">አርም</button>
-          <button type="button" class="member-db-del internal-del" data-id="${c.id}">አጥፋ</button>
+          <button type="button" class="member-db-del internal-edit" data-id="${c.id}" data-type="${c.type}">አርም</button>
+          <button type="button" class="member-db-del internal-del" data-id="${c.id}" data-type="${c.type}">አጥፋ</button>
         </div>
       </div>`).join("") || "<p class='loading-text'>ገና ምንም ይዘት አልተጨመረም።</p>";
 
     list.querySelectorAll(".internal-del").forEach(btn => {
       btn.addEventListener("click", async () => {
-        try { await apiSend("/api/content/" + btn.dataset.id, "DELETE"); render(); }
+        try { await apiSend((btn.dataset.type === "announcement" ? "/api/announcements/" : "/api/content/") + btn.dataset.id, "DELETE"); render(); }
         catch(e){ alert("ማጥፋት አልተቻለም፦ " + e.message); }
       });
     });
 
     list.querySelectorAll(".internal-edit").forEach(btn => {
       btn.addEventListener("click", async () => {
-        const c = items.find(x => String(x.id) === btn.dataset.id);
+        const c = items.find(x => String(x.id) === btn.dataset.id && x.type === btn.dataset.type);
         if (!c) return;
         const newTitle = prompt("ርዕስ:", c.title);
         if (newTitle === null) return;
         const newBody = prompt("ዝርዝር:", c.body || "");
         try {
-          await apiSend("/api/content/" + c.id, "PUT", { title: newTitle.trim(), body: newBody });
+          await apiSend((c.type === "announcement" ? "/api/announcements/" : "/api/content/") + c.id, "PUT", { title: newTitle.trim(), body: newBody });
           render();
         } catch(e){ alert("ማረም አልተቻለም፦ " + e.message); }
       });
@@ -4993,6 +4996,13 @@ function openMemberPhotoLightbox(url){
     const body = document.getElementById("iBody").value.trim();
     const file = document.getElementById("iFile").files[0];
     if (!title) return;
+    if (type === "announcement") {
+      try {
+        await apiSend("/api/announcements", "POST", { title, body, date: new Date().toISOString().slice(0,10) });
+        form.reset(); render();
+      } catch(e){ alert("ማስታወቂያ መለጠፍ አልተቻለም፦ " + e.message); }
+      return;
+    }
     const fd = new FormData();
     fd.append("type", type);
     fd.append("title", title);
