@@ -2851,7 +2851,7 @@ textarea{ margin-bottom:1rem; resize:vertical; }
           <input type="password" id="aNewPassword" placeholder="የይለፍ ቃል" required>
           <select id="aNewRole">
             <option value="admin">ዋና ማናጀር (ሙሉ ስልጣን)</option>
-            <option value="moderator">Moderator (ንባብ + አስተያየት ማጥፋት ብቻ)</option>
+            <option value="moderator">Moderator (ንባብ + አስተያየት ማጥፋት + ውስጣዊ መዝገብ፣ ስብሰባና ስምሪት/ሪፖርት ሙሉ ስልጣን)</option>
             <option value="registrar">Registrar (የአባላት ፎርም መሙላት ብቻ)</option>
             <option value="bootcamp_admin">Bootcamp ሞደሬተር (ሙሉ ስልጣን በ Bootcamp ብቻ)</option>
             <option value="finance_admin">የፋይናንስ ሞደሬተር (ሙሉ ስልጣን በፋይናንስ ብቻ)</option>
@@ -2942,6 +2942,7 @@ function isBootcampAdmin(){ return isAdminLoggedIn() && getAdminRole() === "boot
 function isFinanceAdmin(){ return isAdminLoggedIn() && getAdminRole() === "finance_admin"; }
 function isFinanceAdmin(){ return isAdminLoggedIn() && getAdminRole() === "finance_admin"; }
 function isOfficeAdmin(){ return isAdminLoggedIn() && getAdminRole() === "office_admin"; }
+function isModerator(){ return isAdminLoggedIn() && getAdminRole() === "moderator"; }
 
 async function apiGet(path){
   const headers = {};
@@ -3869,10 +3870,10 @@ renderChannelVideos();
     {id:"trainingmgmt", icon:"🎓", title:"ትምህርትና ስልጠና አስተዳደር", desc:"ስልጠናዎችና ትምህርታዊ ይዘቶች (ቪዲዮ/ፎቶ/ጽሁፍ/PDF) መጨመር፣ ማርም ወይም ማጥፋት። (ለመክፈት ይንኩ)", fullOnly:true},
     {id:"adminsmgmt", icon:"🔑", title:"የAdmin መለያዎች", desc:"አዲስ ማናጀር ወይም Moderator መለያ መፍጠር፣ ማየትና ማጥፋት። (ለመክፈት ይንኩ)", fullOnly:true},
    {id:"coursesmgmt", icon:"🎓", title:"Bootcamp ኮርስ አስተዳደር", desc:"ኮርሶች መፍጠር፣ ቪዲዮ ትምህርቶች መጨመር፣ ማርም ወይም ማጥፋት። (ለመክፈት ይንኩ)", fullOnly:true, bootcampOk:true},
-    {id:"internalmgmt", icon:"🗄️", title:"ውስጣዊ መዝገብ አስተዳደር", desc:"የገንዘብ ሪፖርት፣ የስብሰባ ቃለ ጉባኤ፣ ውስጣዊ ሰነድ እና ስታትስቲክስ መጨመር፣ ማርም ወይም ማጥፋት። (ለመክፈት ይንኩ)", fullOnly:true},
+    {id:"internalmgmt", moderatorOk:true, icon:"🗄️", title:"ውስጣዊ መዝገብ አስተዳደር", desc:"የገንዘብ ሪፖርት፣ የስብሰባ ቃለ ጉባኤ፣ ውስጣዊ ሰነድ እና ስታትስቲክስ መጨመር፣ ማርም ወይም ማጥፋት። (ለመክፈት ይንኩ)", fullOnly:true},
     {id:"financemgmt", icon:"💰", title:"የፋይናንስ እና ግዢ አስተዳደር", desc:"ገቢ/ወጪ መዝገብ፣ ደረሰኝ፣ ተከፋይ አስተዳደር (ደብል ኢንትሪ ስርዓት)። (ለመክፈት ይንኩ)", fullOnly:true, financeOk:true},
-    {id:"meetingsmgmt", icon:"🎥", title:"የስብሰባ አስተዳደር", desc:"Google Meet / Zoom ስብሰባ መርሃግብር ማዘጋጀት እና ማጋራት። (ለመክፈት ይንኩ)", fullOnly:true},
-    {id:"assignmentsmgmt", icon:"📝", title:"የስራ ስምሪት እና ሪፖርት", desc:"ለስራ አስፈጻሚዎች ስምሪት መስጠት እና ሪፖርት መቀበል/መከታተል። (ለመክፈት ይንኩ)", fullOnly:true}
+    {id:"meetingsmgmt", moderatorOk:true, icon:"🎥", title:"የስብሰባ አስተዳደር", desc:"Google Meet / Zoom ስብሰባ መርሃግብር ማዘጋጀት እና ማጋራት። (ለመክፈት ይንኩ)", fullOnly:true},
+    {id:"assignmentsmgmt", moderatorOk:true, icon:"📝", title:"የስራ ስምሪት እና ሪፖርት", desc:"ለስራ አስፈጻሚዎች ስምሪት መስጠት እና ሪፖርት መቀበል/መከታተል። (ለመክፈት ይንኩ)", fullOnly:true}
   ];
 
   function renderDashboard(){
@@ -3881,7 +3882,8 @@ renderChannelVideos();
     const bootcampAdmin = isBootcampAdmin();
     const financeAdmin = isFinanceAdmin();
     const officeAdmin = isOfficeAdmin();
-    const visibleCards = officeCards.filter(c => fullAccess || officeAdmin || (registrar && c.registrarOk) || (bootcampAdmin && c.bootcampOk) || (financeAdmin && c.financeOk) || (!fullAccess && !registrar && !bootcampAdmin && !financeAdmin && !officeAdmin && !c.fullOnly));
+    const moderator = isModerator();
+    const visibleCards = officeCards.filter(c => fullAccess || officeAdmin || (registrar && c.registrarOk) || (bootcampAdmin && c.bootcampOk) || (financeAdmin && c.financeOk) || (moderator && c.moderatorOk) || (!fullAccess && !registrar && !bootcampAdmin && !financeAdmin && !officeAdmin && !c.fullOnly));
     cardsGrid.innerHTML = visibleCards.map(c => {
       let title = c.title, desc = c.desc;
       if (c.id === "coursesmgmt" && bootcampAdmin) {
@@ -6323,7 +6325,7 @@ function openMemberPhotoLightbox(url){
         <div class="ib-post-footer">
           <a href="${m.meeting_link}" target="_blank" rel="noopener" class="btn btn-primary">🔗 ስብሰባ ግቡ</a>
           ${m.meeting_password ? `<span style="font-size:.85rem; color:#666;">🔑 ${escapeHtml(m.meeting_password)}</span>` : ""}
-          ${isFullAdmin() ? `<button type="button" class="member-db-del meeting-del" data-id="${m.id}">አጥፋ</button>` : ""}
+          ${(isFullAdmin() || isModerator()) ? `<button type="button" class="member-db-del meeting-del" data-id="${m.id}">አጥፋ</button>` : ""}
         </div>
       </div>`).join("") || "<p class='loading-text'>ገና ምንም ስብሰባ አልተመደበም።</p>";
 
