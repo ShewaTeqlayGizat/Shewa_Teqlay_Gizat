@@ -2851,7 +2851,7 @@ textarea{ margin-bottom:1rem; resize:vertical; }
           <input type="password" id="aNewPassword" placeholder="የይለፍ ቃል" required>
           <select id="aNewRole">
             <option value="admin">ዋና ማናጀር (ሙሉ ስልጣን)</option>
-            <option value="moderator">Moderator (ንባብ + አስተያየት ማጥፋት + ውስጣዊ መዝገብ፣ ስብሰባና ስምሪት/ሪፖርት ሙሉ ስልጣን)</option>
+            <option value="moderator">Moderator (ንባብ + አስተያየት ማጥፋት + ውስጣዊ መዝገብ፣ ስብሰባና ስምሪት/ሪፖርት ሙሉ ስልጣን፤ በቀሪው ንባብ ብቻ)</option>
             <option value="registrar">Registrar (የአባላት ፎርም መሙላት ብቻ)</option>
             <option value="bootcamp_admin">Bootcamp ሞደሬተር (ሙሉ ስልጣን በ Bootcamp ብቻ)</option>
             <option value="finance_admin">የፋይናንስ ሞደሬተር (ሙሉ ስልጣን በፋይናንስ ብቻ)</option>
@@ -3883,7 +3883,7 @@ renderChannelVideos();
     const financeAdmin = isFinanceAdmin();
     const officeAdmin = isOfficeAdmin();
     const moderator = isModerator();
-    const visibleCards = officeCards.filter(c => fullAccess || officeAdmin || (registrar && c.registrarOk) || (bootcampAdmin && c.bootcampOk) || (financeAdmin && c.financeOk) || (moderator && c.moderatorOk) || (!fullAccess && !registrar && !bootcampAdmin && !financeAdmin && !officeAdmin && !c.fullOnly));
+    const visibleCards = officeCards.filter(c => fullAccess || officeAdmin || (registrar && c.registrarOk) || (bootcampAdmin && c.bootcampOk) || (financeAdmin && c.financeOk) || moderator || (!fullAccess && !registrar && !bootcampAdmin && !financeAdmin && !officeAdmin && !c.fullOnly));
     cardsGrid.innerHTML = visibleCards.map(c => {
       let title = c.title, desc = c.desc;
       if (c.id === "coursesmgmt" && bootcampAdmin) {
@@ -6006,8 +6006,10 @@ function openMemberPhotoLightbox(url){
         payees.map(p => `<option value="${p.id}">${escapeHtml(p.full_name)} (${p.payee_type==='employee'?'ሰራተኛ':'አቅራቢ'})</option>`).join("");
     } catch(e){ console.error(e); }
   }
-  loadAccountsIntoSelects();
-  loadPayeesIntoSelect();
+  if (!isModerator() && !isOfficeAdmin()) {
+    loadAccountsIntoSelects();
+    loadPayeesIntoSelect();
+  }
 
   // ---- Record Entry ----
   const finEntryForm = document.getElementById("finEntryForm");
@@ -6281,11 +6283,12 @@ function openMemberPhotoLightbox(url){
 
 // ---------------- Office Moderator: enforce read-only everywhere except Internal Records ----------------
 (function officeReadOnlyEnforcer(){
-  if (!isOfficeAdmin()) return;
+  if (!isOfficeAdmin() && !isModerator()) return;
+  const FULL_PANELS = isModerator() ? ["internalPanel","meetingsPanel","assignmentsPanel"] : ["internalPanel"];
 
   function hideWriteControls(){
     document.querySelectorAll(".member-db-panel").forEach(panel => {
-      if (panel.id === "internalPanel") return; // full access here
+      if (FULL_PANELS.includes(panel.id)) return; // full access here
       panel.querySelectorAll("form").forEach(f => f.style.display = "none");
       panel.querySelectorAll("button").forEach(btn => {
         const t = btn.textContent || "";
