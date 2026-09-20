@@ -2524,8 +2524,6 @@ textarea{ margin-bottom:1rem; resize:vertical; }
           <select id="eTypeSelect">
             <option value="eduVideo">ትምህርታዊ ቪዲዮ</option>
             <option value="eduPhoto">ትምህርታዊ ፎቶ</option>
-            <option value="eduText">ትምህርታዊ ጽሁፍ</option>
-            <option value="eduPdf">ትምህርታዊ PDF</option>
           </select>
           <input type="text" id="eTitle" placeholder="ርዕስ" required>
           <input type="text" id="eUrl" placeholder="YouTube URL (ለቪዲዮ ብቻ)">
@@ -3308,7 +3306,7 @@ renderEduPpt();
 
 // ---------------- Topic Boards (History, Military, Political, Leadership, InfoTech) ----------------
 function renderTopicBoards(){
-  const topics = ["history", "military", "political", "leadership-science", "infotech"];
+  const topics = ["history", "infotech"];
   topics.forEach(key => {
     const data = (DATA.topicBoards && DATA.topicBoards[key]) || { articles: [], info: [] };
     const articlesGrid = document.getElementById(`tb-${key}-articles`);
@@ -4633,7 +4631,7 @@ async function loadFromAPI(){
     }));
 
     // Topic boards: article + info items, keyed by topic_key.
-    const topics = ["history", "military", "political", "leadership-science", "infotech"];
+    const topics = ["history", "infotech"];
     try {
       const [articlesAll, infoAll] = await Promise.all([
         apiGet("/api/content?type=topicBoardArticle"),
