@@ -3897,14 +3897,6 @@ renderChannelVideos();
       </div>`;
     }).join("") || "";
 
-    if (!fullAccess && !registrar && !bootcampAdmin && !financeAdmin && !officeAdmin) {
-      cardsGrid.insertAdjacentHTML("beforeend", `
-        <div class="office-card" style="cursor:default;">
-          <div class="office-card-icon">💬</div>
-          <h4>የአስተያየት ማጣሪያ (Moderation)</h4>
-          <p>ገጹ ላይ ወዳለው "አስተያየቶች" ክፍል ይሂዱ — ያልተገባ አስተያየት ከጎኑ ባለው "አጥፋ" ቁልፍ ማጥፋት ይችላሉ። ይህ መለያ ንባብ እና አስተያየት ማጥፋት ብቻ ይችላል፣ ይዘት መጨመር/ማርትዕ አይችልም።</p>
-        </div>`);
-    }
 
     const memberCard = cardsGrid.querySelector('[data-card-id="members"]');
     if (memberCard && window.initMemberDb) {
