@@ -594,6 +594,19 @@ p{ margin:0 0 1em; }
 .fb-scale-wrap{ width:100%; height:920px; }
 .fb-scale-wrap iframe{ transform:none; width:100%; height:920px; }
 .fb-wall-fallback{ padding:.8rem 1.2rem 1.2rem; text-align:center; color: var(--ink-soft); font-size:.85rem; background: var(--cream-alt); }
+/* News (left) + Facebook card (right, same height as main news) */
+.news-fb-row{ display:grid; grid-template-columns:minmax(0,1fr) 105mm; column-gap:1.8rem; row-gap:1.8rem; margin-top:1.8rem; align-items:start; }
+.news-fb-row > .news-studio{ display:contents; }
+.news-fb-row .news-featured{ grid-column:1; grid-row:1; }
+.news-fb-row .news-sidebar{ grid-column:1; grid-row:2; }
+.news-fb-row .fb-wall-card{ grid-column:2; grid-row:1; align-self:stretch; width:auto; margin:0; contain:size; display:flex; flex-direction:column; }
+.news-fb-row .fb-wall-body{ flex:1; min-height:0; overflow-y:auto; }
+@media (max-width:900px){
+  .news-fb-row{ grid-template-columns:1fr; }
+  .news-fb-row .news-featured, .news-fb-row .news-sidebar, .news-fb-row .fb-wall-card{ grid-column:1; grid-row:auto; }
+  .news-fb-row .fb-wall-card{ contain:none; align-self:auto; }
+  .news-fb-row .fb-wall-body{ overflow-y:visible; }
+}
 
 /* ---- Library ---- */
 .library-grid{
@@ -1816,20 +1829,10 @@ textarea{ margin-bottom:1rem; resize:vertical; }
         <div class="news-ticker-track" id="newsTickerTrack"></div>
       </div>
     </div>
+    <div class="news-fb-row">
     <div class="news-studio" id="newsStudio">
       <p class="loading-text">ዜናዎች እየተጫኑ ነው...</p>
     </div>
-
-    <form id="nsNewsForm" class="ns-admin-form ib-form is-hidden">
-      <h4 class="ns-admin-form-title">📰 አዲስ ዜና ጨምር (Admin)</h4>
-      <input type="text" id="nsNewsTitle" placeholder="የዜናው ርዕስ" required>
-      <textarea id="nsNewsBody" placeholder="የዜናው ይዘት" rows="4" required></textarea>
-      <input type="date" id="nsNewsDate">
-      <input type="file" id="nsNewsFile" accept="image/*,application/pdf">
-      <input type="text" id="nsNewsVideoUrl" placeholder="ወይም YouTube ቪዲዮ URL (ፋይል ካልጫኑ)">
-      <button type="submit" class="btn btn-primary">➕ ዜና ጨምር</button>
-    </form>
-
     <div class="fb-wall-card" id="facebook-wall">
       <div class="fb-wall-header">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5.02 3.66 9.18 8.44 9.94v-7.03H7.9v-2.91h2.54V9.85c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.44 2.91h-2.34V22c4.78-.76 8.44-4.92 8.44-9.94Z"/></svg>
@@ -1854,7 +1857,19 @@ textarea{ margin-bottom:1rem; resize:vertical; }
         </a>
       </div>
     </div>
+  </div>
 
+    <form id="nsNewsForm" class="ns-admin-form ib-form is-hidden">
+      <h4 class="ns-admin-form-title">📰 አዲስ ዜና ጨምር (Admin)</h4>
+      <input type="text" id="nsNewsTitle" placeholder="የዜናው ርዕስ" required>
+      <textarea id="nsNewsBody" placeholder="የዜናው ይዘት" rows="4" required></textarea>
+      <input type="date" id="nsNewsDate">
+      <input type="file" id="nsNewsFile" accept="image/*,application/pdf">
+      <input type="text" id="nsNewsVideoUrl" placeholder="ወይም YouTube ቪዲዮ URL (ፋይል ካልጫኑ)">
+      <button type="submit" class="btn btn-primary">➕ ዜና ጨምር</button>
+    </form>
+
+    
     </div>
 
     <div class="ns-panel" id="nsPanelLive">
