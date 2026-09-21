@@ -2851,7 +2851,7 @@ textarea{ margin-bottom:1rem; resize:vertical; }
           <input type="password" id="aNewPassword" placeholder="የይለፍ ቃል" required>
           <select id="aNewRole">
             <option value="admin">ዋና ማናጀር (ሙሉ ስልጣን)</option>
-            <option value="moderator">Moderator (ንባብ + አስተያየት ማጥፋት + ውስጣዊ መዝገብ፣ ስብሰባና ስምሪት/ሪፖርት ሙሉ ስልጣን፤ በቀሪው ንባብ ብቻ)</option>
+            <option value="moderator">Moderator (ንባብ + አስተያየት ማጥፋት + ውስጣዊ መዝገብ እና ስምሪት/ሪፖርት ሙሉ ስልጣን፤ ስብሰባና ቀሪው ንባብ ብቻ)</option>
             <option value="registrar">Registrar (የአባላት ፎርም መሙላት ብቻ)</option>
             <option value="bootcamp_admin">Bootcamp ሞደሬተር (ሙሉ ስልጣን በ Bootcamp ብቻ)</option>
             <option value="finance_admin">የፋይናንስ ሞደሬተር (ሙሉ ስልጣን በፋይናንስ ብቻ)</option>
@@ -6283,7 +6283,7 @@ function openMemberPhotoLightbox(url){
 // ---------------- Office Moderator: enforce read-only everywhere except Internal Records ----------------
 (function officeReadOnlyEnforcer(){
   if (!isOfficeAdmin() && !isModerator()) return;
-  const FULL_PANELS = isModerator() ? ["internalPanel","meetingsPanel","assignmentsPanel"] : ["internalPanel"];
+  const FULL_PANELS = isModerator() ? ["internalPanel","assignmentsPanel"] : ["internalPanel"];
 
   function hideWriteControls(){
     document.querySelectorAll(".member-db-panel").forEach(panel => {
@@ -6327,7 +6327,7 @@ function openMemberPhotoLightbox(url){
         <div class="ib-post-footer">
           <a href="${m.meeting_link}" target="_blank" rel="noopener" class="btn btn-primary">🔗 ስብሰባ ግቡ</a>
           ${m.meeting_password ? `<span style="font-size:.85rem; color:#666;">🔑 ${escapeHtml(m.meeting_password)}</span>` : ""}
-          ${(isFullAdmin() || isModerator()) ? `<button type="button" class="member-db-del meeting-del" data-id="${m.id}">አጥፋ</button>` : ""}
+          ${isFullAdmin() ? `<button type="button" class="member-db-del meeting-del" data-id="${m.id}">አጥፋ</button>` : ""}
         </div>
       </div>`).join("") || "<p class='loading-text'>ገና ምንም ስብሰባ አልተመደበም።</p>";
 
