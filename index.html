@@ -6018,7 +6018,7 @@ function openMemberPhotoLightbox(url){
         payees.map(p => `<option value="${p.id}">${escapeHtml(p.full_name)} (${p.payee_type==='employee'?'ሰራተኛ':'አቅራቢ'})</option>`).join("");
     } catch(e){ console.error(e); }
   }
-  if (!isModerator() && !isOfficeAdmin()) {
+  if (isFullAdmin() || isFinanceAdmin()) {
     loadAccountsIntoSelects();
     loadPayeesIntoSelect();
   }
