@@ -6511,6 +6511,23 @@ function openMemberPhotoLightbox(url){
     });
   }
 
+  // Turns a textarea's free text into a numbered list — one line, one point.
+  function numberedList(text){
+    const lines = (text || "").split("\n").map(l => l.trim()).filter(Boolean);
+    if (!lines.length) return "<p>-</p>";
+    return "<ol style=\"padding-right:1.2rem; margin:.3rem 0;\">" +
+      lines.map(l => `<li style="margin-bottom:.25rem;">${escapeHtml(l)}</li>`).join("") + "</ol>";
+  }
+  // Turns free text into a bullet list.
+  function bulletList(text){
+    const lines = (text || "").split("\n").map(l => l.trim()).filter(Boolean);
+    if (!lines.length) return "<p>-</p>";
+    return "<ul style=\"padding-right:1.2rem; margin:.3rem 0;\">" +
+      lines.map(l => `<li style="margin-bottom:.25rem;">${escapeHtml(l)}</li>`).join("") + "</ul>";
+  }
+
+  let currentReportForPdf = null;
+
   async function viewReport(assignmentId){
     const body = document.getElementById("reportDetailBody");
     viewList.style.display = "none";
@@ -6518,24 +6535,69 @@ function openMemberPhotoLightbox(url){
     body.innerHTML = "<p class='loading-text'>እየተጫነ ነው...</p>";
     try {
       const r = await apiGet("/api/assignments/" + assignmentId + "/report");
+      currentReportForPdf = r;
       body.innerHTML = `
-        <h4>✅ በስምሪት የተሰሩ ስራዎች (ስኬቶች)</h4><p>${escapeHtml(r.achievements || "-")}</p>
-        <h4>⚠️ ከአቅም በላይ ሆነው ያልተሰሩ ስራዎች</h4><p>${escapeHtml(r.unaccomplished || "-")}</p>
-        <h4>🚧 ያጋጠሙ ችግሮች</h4><p>${escapeHtml(r.challenges || "-")}</p>
-        <h4>🔧 የተወሰዱ መፍትሄዎች</h4><p>${escapeHtml(r.solutions_taken || "-")}</p>
-        <h4>📊 SWOT Analysis</h4>
-        <p><strong>ጥንካሬ (Strengths):</strong> ${escapeHtml(r.swot_strengths || "-")}</p>
-        <p><strong>ድክመት (Weaknesses):</strong> ${escapeHtml(r.swot_weaknesses || "-")}</p>
-        <p><strong>እድል (Opportunities):</strong> ${escapeHtml(r.swot_opportunities || "-")}</p>
-        <p><strong>ስጋት (Threats):</strong> ${escapeHtml(r.swot_threats || "-")}</p>
-        <h4>💡 ለወደፊቱ የመፍትሄ ሃሳቦች</h4><p>${escapeHtml(r.future_recommendations || "-")}</p>
-        <h4>🔍 የተገኙ መረጃዎች</h4><p>${escapeHtml(r.findings || "-")}</p>
-        <h4>📷 አባሪ ፎቶ ማስረጃዎች</h4>
-        <div style="display:flex; gap:.5rem; flex-wrap:wrap;">
-          ${(r.attachments||[]).map(a => `<img src="${a.file_url}" style="width:100px; height:100px; object-fit:cover; border-radius:8px;">`).join("") || "<p>ምንም ፎቶ የለም</p>"}
+        <div id="reportPrintArea" style="border:1px solid #ddd; border-radius:10px; padding:1.2rem;">
+          <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:.5rem; border-bottom:2px solid #333; padding-bottom:.6rem; margin-bottom:1rem;">
+            <div><strong>የፕሮቶኮል ቁጥር፦</strong> ${escapeHtml(r.protocol_number || "-")}</div>
+            <div><strong>ቀን፦</strong> ${formatDate(r.submitted_at)}</div>
+          </div>
+          <h3 style="text-align:center; margin:0 0 1rem;">መደበኛ የሥራ ሪፖርት</h3>
+
+          <h4>✅ በስምሪት የተሰሩ ስራዎች (ስኬቶች)</h4>${numberedList(r.achievements)}
+          <h4>⚠️ ከአቅም በላይ ሆነው ያልተሰሩ ስራዎች</h4>${bulletList(r.unaccomplished)}
+          <h4>🚧 ያጋጠሙ ችግሮች</h4>${bulletList(r.challenges)}
+          <h4>🔧 የተወሰዱ መፍትሄዎች</h4>${numberedList(r.solutions_taken)}
+
+          <h4>📊 SWOT Analysis</h4>
+          <table style="width:100%; border-collapse:collapse; margin:.5rem 0 1rem;">
+            <tr>
+              <td style="border:1px solid #ccc; padding:.6rem; width:50%; vertical-align:top;"><strong>ጥንካሬ (Strengths)</strong>${bulletList(r.swot_strengths)}</td>
+              <td style="border:1px solid #ccc; padding:.6rem; width:50%; vertical-align:top;"><strong>ድክመት (Weaknesses)</strong>${bulletList(r.swot_weaknesses)}</td>
+            </tr>
+            <tr>
+              <td style="border:1px solid #ccc; padding:.6rem; vertical-align:top;"><strong>እድል (Opportunities)</strong>${bulletList(r.swot_opportunities)}</td>
+              <td style="border:1px solid #ccc; padding:.6rem; vertical-align:top;"><strong>ስጋት (Threats)</strong>${bulletList(r.swot_threats)}</td>
+            </tr>
+          </table>
+
+          <h4>💡 ለወደፊቱ የመፍትሄ ሃሳቦች</h4>${numberedList(r.future_recommendations)}
+          <h4>🔍 የተገኙ መረጃዎች</h4>${numberedList(r.findings)}
+
+          <h4>📷 አባሪ ፎቶ ማስረጃዎች</h4>
+          <div style="display:flex; gap:.5rem; flex-wrap:wrap;">
+            ${(r.attachments||[]).map(a => `<img src="${a.file_url}" style="width:100px; height:100px; object-fit:cover; border-radius:8px;">`).join("") || "<p>ምንም ፎቶ የለም</p>"}
+          </div>
+
+          <div style="margin-top:2rem; padding-top:1rem; border-top:1px dashed #999; text-align:left;">
+            <p style="margin:0;"><strong>ፊርማ፦</strong> <span style="font-family:'Brush Script MT', cursive; font-size:1.3rem;">${escapeHtml(r.signature_name || "-")}</span></p>
+          </div>
         </div>
-        <p class="ib-post-date" style="margin-top:1rem;">የቀረበበት ቀን፦ ${formatDate(r.submitted_at)}</p>`;
+        <button type="button" id="reportPdfBtn" class="btn btn-primary" style="margin-top:1rem;">📄 PDF አውርድ</button>`;
+
+      document.getElementById("reportPdfBtn").addEventListener("click", () => downloadReportPdf(r));
     } catch(e){ body.innerHTML = "<p class='loading-text'>ገና ሪፖርት አልቀረበም ወይም ማምጣት አልተቻለም።</p>"; }
+  }
+
+  // Opens a clean print view of just the report; the person picks
+  // "Save as PDF" in the browser's print dialog.
+  function downloadReportPdf(r){
+    const area = document.getElementById("reportPrintArea");
+    if (!area) return;
+    const w = window.open("", "_blank");
+    w.document.write(`
+      <html><head><title>${escapeHtml(r.protocol_number || "ሪፖርት")}</title>
+      <meta charset="utf-8">
+      <style>
+        body{ font-family: Arial, sans-serif; direction: rtl; padding: 2rem; }
+        h3,h4{ margin: .8rem 0 .3rem; }
+        table{ width:100%; }
+        img{ max-width:100px; }
+      </style>
+      </head><body>${area.outerHTML}</body></html>`);
+    w.document.close();
+    w.focus();
+    setTimeout(() => { w.print(); }, 300);
   }
 
   document.getElementById("reportDetailCloseBtn").addEventListener("click", () => {
