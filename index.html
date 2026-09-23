@@ -2041,69 +2041,7 @@ textarea{ margin-bottom:1rem; resize:vertical; }
     </div>
   </div>
 </section>
-<!-- ===== Executive Portal: Assignments & Reports ===== -->
-<section id="exec-portal" class="section section-student-portal alt-bg">
-  <div class="section-inner">
-    <span class="eyebrow">ልዩ ጽሕፈት ቤት</span>
-    <h2>📝 ስራ አስፈጻሚ መግቢያ</h2>
-    <p class="section-lead">የስራ ስምሪት ተልእኮ ለመቀበል፣ የተከናወነ ስራ ሪፖርት ለማድረግ እዚህ ይግቡ።</p>
 
-    <div id="exLoggedOut">
-      <form id="exLoginForm" class="ns-admin-form" style="max-width:420px;">
-        <input type="text" id="exLoginName" placeholder="ሙሉ ስም" required>
-        <input type="password" id="exLoginPassword" placeholder="የይለፍ ቃል" required>
-        <button type="submit" class="btn btn-primary">ግባ</button>
-        <p id="exLoginStatus" class="form-status"></p>
-      </form>
-    </div>
-
-    <div id="exLoggedIn" style="display:none;">
-      <p>እንኳን ደህና መጡ፣ <strong id="exWelcomeName"></strong>!</p>
-      <button type="button" id="exLogoutBtn" class="btn">ውጣ</button>
-
-      <div id="exAssignListView" style="margin-top:1.5rem;">
-        <h3>📋 የተሰጡኝ ስምሪቶች</h3>
-        <div class="ib-list" id="exAssignmentsList"></div>
-      </div>
-
-      <div id="exReportFormView" style="display:none; margin-top:1.5rem;">
-        <button type="button" id="exBackToAssignments" class="btn" style="margin-bottom:1rem;">← ወደ ስምሪቶች ተመለስ</button>
-        <h3 id="exReportAssignTitle"></h3>
-        <form id="exReportForm" class="ib-form">
-          <label class="form-label" style="grid-column: 1 / -1;">✅ በስምሪት የተሰሩ ስራዎች (ስኬቶች)</label>
-          <textarea id="erAchievements" style="grid-column: 1 / -1; min-height:60px;"></textarea>
-
-          <label class="form-label" style="grid-column: 1 / -1;">⚠️ ከአቅም በላይ ሆነው ያልተሰሩ ስራዎች</label>
-          <textarea id="erUnaccomplished" style="grid-column: 1 / -1; min-height:60px;"></textarea>
-
-          <label class="form-label" style="grid-column: 1 / -1;">🚧 ያጋጠሙ ችግሮች</label>
-          <textarea id="erChallenges" style="grid-column: 1 / -1; min-height:60px;"></textarea>
-
-          <label class="form-label" style="grid-column: 1 / -1;">🔧 የተወሰዱ መፍትሄዎች</label>
-          <textarea id="erSolutions" style="grid-column: 1 / -1; min-height:60px;"></textarea>
-
-          <label class="form-label" style="grid-column: 1 / -1;">📊 SWOT Analysis</label>
-          <textarea id="erSwotStrengths" placeholder="ጥንካሬ (Strengths)" style="min-height:50px;"></textarea>
-          <textarea id="erSwotWeaknesses" placeholder="ድክመት (Weaknesses)" style="min-height:50px;"></textarea>
-          <textarea id="erSwotOpportunities" placeholder="እድል (Opportunities)" style="min-height:50px;"></textarea>
-          <textarea id="erSwotThreats" placeholder="ስጋት (Threats)" style="min-height:50px;"></textarea>
-
-          <label class="form-label" style="grid-column: 1 / -1;">💡 ለወደፊቱ የመፍትሄ ሃሳቦች</label>
-          <textarea id="erRecommendations" style="grid-column: 1 / -1; min-height:60px;"></textarea>
-
-          <label class="form-label" style="grid-column: 1 / -1;">🔍 የተገኙ መረጃዎች</label>
-          <textarea id="erFindings" style="grid-column: 1 / -1; min-height:60px;"></textarea>
-
-          <label class="form-label" style="grid-column: 1 / -1;">📷 አባሪ የፎቶ ማስረጃዎች (እስከ 10)</label>
-          <input type="file" id="erPhotos" accept="image/*" multiple style="grid-column: 1 / -1;">
-
-          <button type="submit" class="btn btn-primary" style="grid-column: 1 / -1;">✅ ሪፖርት አስገባ</button>
-        </form>
-        <p id="erStatus" class="form-status"></p>
-      </div>
-    </div>
-  </div>
-</section>
   <section id="edu-media" class="section section-edu-media alt-bg">
   <div class="section-inner">
     <span class="eyebrow">ትምህርትና ስልጠና</span>
@@ -2361,6 +2299,72 @@ textarea{ margin-bottom:1rem; resize:vertical; }
 
     <div class="leadership-top" id="leadershipTop"></div>
     <div class="member-grid" id="memberGrid"></div>
+  </div>
+
+  <div style="margin-top:2rem;">
+<!-- ===== Executive Portal: Assignments & Reports ===== -->
+<section id="exec-portal" class="section section-student-portal alt-bg">
+  <div class="section-inner">
+    <span class="eyebrow">ልዩ ጽሕፈት ቤት</span>
+    <h2>📝 ስራ አስፈጻሚ መግቢያ</h2>
+    <p class="section-lead">የስራ ስምሪት ተልእኮ ለመቀበል፣ የተከናወነ ስራ ሪፖርት ለማድረግ እዚህ ይግቡ።</p>
+
+    <div id="exLoggedOut">
+      <form id="exLoginForm" class="ns-admin-form" style="max-width:420px;">
+        <input type="text" id="exLoginName" placeholder="ሙሉ ስም" required>
+        <input type="password" id="exLoginPassword" placeholder="የይለፍ ቃል" required>
+        <button type="submit" class="btn btn-primary">ግባ</button>
+        <p id="exLoginStatus" class="form-status"></p>
+      </form>
+    </div>
+
+    <div id="exLoggedIn" style="display:none;">
+      <p>እንኳን ደህና መጡ፣ <strong id="exWelcomeName"></strong>!</p>
+      <button type="button" id="exLogoutBtn" class="btn">ውጣ</button>
+
+      <div id="exAssignListView" style="margin-top:1.5rem;">
+        <h3>📋 የተሰጡኝ ስምሪቶች</h3>
+        <div class="ib-list" id="exAssignmentsList"></div>
+      </div>
+
+      <div id="exReportFormView" style="display:none; margin-top:1.5rem;">
+        <button type="button" id="exBackToAssignments" class="btn" style="margin-bottom:1rem;">← ወደ ስምሪቶች ተመለስ</button>
+        <h3 id="exReportAssignTitle"></h3>
+        <form id="exReportForm" class="ib-form">
+          <label class="form-label" style="grid-column: 1 / -1;">✅ በስምሪት የተሰሩ ስራዎች (ስኬቶች)</label>
+          <textarea id="erAchievements" style="grid-column: 1 / -1; min-height:60px;"></textarea>
+
+          <label class="form-label" style="grid-column: 1 / -1;">⚠️ ከአቅም በላይ ሆነው ያልተሰሩ ስራዎች</label>
+          <textarea id="erUnaccomplished" style="grid-column: 1 / -1; min-height:60px;"></textarea>
+
+          <label class="form-label" style="grid-column: 1 / -1;">🚧 ያጋጠሙ ችግሮች</label>
+          <textarea id="erChallenges" style="grid-column: 1 / -1; min-height:60px;"></textarea>
+
+          <label class="form-label" style="grid-column: 1 / -1;">🔧 የተወሰዱ መፍትሄዎች</label>
+          <textarea id="erSolutions" style="grid-column: 1 / -1; min-height:60px;"></textarea>
+
+          <label class="form-label" style="grid-column: 1 / -1;">📊 SWOT Analysis</label>
+          <textarea id="erSwotStrengths" placeholder="ጥንካሬ (Strengths)" style="min-height:50px;"></textarea>
+          <textarea id="erSwotWeaknesses" placeholder="ድክመት (Weaknesses)" style="min-height:50px;"></textarea>
+          <textarea id="erSwotOpportunities" placeholder="እድል (Opportunities)" style="min-height:50px;"></textarea>
+          <textarea id="erSwotThreats" placeholder="ስጋት (Threats)" style="min-height:50px;"></textarea>
+
+          <label class="form-label" style="grid-column: 1 / -1;">💡 ለወደፊቱ የመፍትሄ ሃሳቦች</label>
+          <textarea id="erRecommendations" style="grid-column: 1 / -1; min-height:60px;"></textarea>
+
+          <label class="form-label" style="grid-column: 1 / -1;">🔍 የተገኙ መረጃዎች</label>
+          <textarea id="erFindings" style="grid-column: 1 / -1; min-height:60px;"></textarea>
+
+          <label class="form-label" style="grid-column: 1 / -1;">📷 አባሪ የፎቶ ማስረጃዎች (እስከ 10)</label>
+          <input type="file" id="erPhotos" accept="image/*" multiple style="grid-column: 1 / -1;">
+
+          <button type="submit" class="btn btn-primary" style="grid-column: 1 / -1;">✅ ሪፖርት አስገባ</button>
+        </form>
+        <p id="erStatus" class="form-status"></p>
+      </div>
+    </div>
+  </div>
+</section>
   </div>
 </section>
 
