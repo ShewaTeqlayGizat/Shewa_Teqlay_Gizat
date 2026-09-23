@@ -2358,6 +2358,11 @@ textarea{ margin-bottom:1rem; resize:vertical; }
           <label class="form-label" style="grid-column: 1 / -1;">📷 አባሪ የፎቶ ማስረጃዎች (እስከ 10)</label>
           <input type="file" id="erPhotos" accept="image/*" multiple style="grid-column: 1 / -1;">
 
+          <p style="grid-column: 1 / -1; font-size:.82rem; color:#666; margin:0;">💡 እያንዳንዱን ነጥብ በአዲስ መስመር ይጻፉ፤ ሪፖርቱ በራስ-ሰር በቁጥር/ነጥብ ይደራጃል።</p>
+
+          <label class="form-label" style="grid-column: 1 / -1;">✍️ ፊርማ (ሙሉ ስም ይተይቡ፣ ይህ እንደ ፊርማዎ ይያያዛል)</label>
+          <input type="text" id="erSignature" placeholder="ሙሉ ስም" required style="grid-column: 1 / -1;">
+
           <button type="submit" class="btn btn-primary" style="grid-column: 1 / -1;">✅ ሪፖርት አስገባ</button>
         </form>
         <p id="erStatus" class="form-status"></p>
@@ -6656,6 +6661,9 @@ function openMemberPhotoLightbox(url){
       fd.append("swot_threats", document.getElementById("erSwotThreats").value.trim());
       fd.append("future_recommendations", document.getElementById("erRecommendations").value.trim());
       fd.append("findings", document.getElementById("erFindings").value.trim());
+      const signatureName = document.getElementById("erSignature").value.trim();
+      if (!signatureName) { status.textContent = "እባክዎ ፊርማ (ሙሉ ስም) ያስገቡ።"; return; }
+      fd.append("signature_name", signatureName);
       const photos = document.getElementById("erPhotos").files;
       for (let i = 0; i < photos.length; i++) fd.append("photos", photos[i]);
 
