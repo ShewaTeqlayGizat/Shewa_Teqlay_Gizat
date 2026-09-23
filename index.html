@@ -2363,6 +2363,12 @@ textarea{ margin-bottom:1rem; resize:vertical; }
           <label class="form-label" style="grid-column: 1 / -1;">✍️ ፊርማ (ሙሉ ስም ይተይቡ፣ ይህ እንደ ፊርማዎ ይያያዛል)</label>
           <input type="text" id="erSignature" placeholder="ሙሉ ስም" required style="grid-column: 1 / -1;">
 
+          <label class="form-label" style="grid-column: 1 / -1;">👔 የስምሪት ኃላፊ ስም</label>
+          <input type="text" id="erSupervisorName" placeholder="የስምሪት ኃላፊ ሙሉ ስም" style="grid-column: 1 / -1;">
+
+          <label class="form-label" style="grid-column: 1 / -1;">🖋️ የስምሪት ኃላፊ ፊርማ (የተፈረመ ወረቀት ፎቶ፣ ባዶ ሊቀር ይችላል)</label>
+          <input type="file" id="erSupervisorSignature" accept="image/*" style="grid-column: 1 / -1;">
+
           <button type="submit" class="btn btn-primary" style="grid-column: 1 / -1;">✅ ሪፖርት አስገባ</button>
         </form>
         <p id="erStatus" class="form-status"></p>
@@ -6569,8 +6575,17 @@ function openMemberPhotoLightbox(url){
             ${(r.attachments||[]).map(a => `<img src="${a.file_url}" style="width:100px; height:100px; object-fit:cover; border-radius:8px;">`).join("") || "<p>ምንም ፎቶ የለም</p>"}
           </div>
 
-          <div style="margin-top:2rem; padding-top:1rem; border-top:1px dashed #999; text-align:left;">
-            <p style="margin:0;"><strong>ፊርማ፦</strong> <span style="font-family:'Brush Script MT', cursive; font-size:1.3rem;">${escapeHtml(r.signature_name || "-")}</span></p>
+          <div style="margin-top:2rem; padding-top:1rem; border-top:1px dashed #999; display:flex; justify-content:space-between; flex-wrap:wrap; gap:1.5rem;">
+            <div style="flex:1; min-width:200px;">
+              <p style="margin:0 0 .3rem;"><strong>የስራ አስፈጻሚ ፊርማ፦</strong></p>
+              <p style="margin:0; font-family:'Brush Script MT', cursive; font-size:1.3rem;">${escapeHtml(r.signature_name || "-")}</p>
+            </div>
+            <div style="flex:1; min-width:200px;">
+              <p style="margin:0 0 .3rem;"><strong>የስምሪት ኃላፊ፦</strong> ${escapeHtml(r.supervisor_name || "-")}</p>
+              ${r.supervisor_signature_url
+                ? `<img src="${r.supervisor_signature_url}" alt="ፊርማ" style="max-width:180px; max-height:80px; object-fit:contain;">`
+                : `<div style="border-bottom:1px solid #999; width:180px; height:40px;"></div>`}
+            </div>
           </div>
         </div>
         <button type="button" id="reportPdfBtn" class="btn btn-primary" style="margin-top:1rem;">📄 PDF አውርድ</button>`;
@@ -6589,7 +6604,7 @@ function openMemberPhotoLightbox(url){
       <html><head><title>${escapeHtml(r.protocol_number || "ሪፖርት")}</title>
       <meta charset="utf-8">
       <style>
-        body{ font-family: Arial, sans-serif; direction: rtl; padding: 2rem; }
+        body{ font-family: Arial, sans-serif; direction: ltr; padding: 2rem; }
         h3,h4{ margin: .8rem 0 .3rem; }
         table{ width:100%; }
         img{ max-width:100px; }
@@ -6726,6 +6741,10 @@ function openMemberPhotoLightbox(url){
       const signatureName = document.getElementById("erSignature").value.trim();
       if (!signatureName) { status.textContent = "እባክዎ ፊርማ (ሙሉ ስም) ያስገቡ።"; return; }
       fd.append("signature_name", signatureName);
+      const supervisorName = document.getElementById("erSupervisorName").value.trim();
+      if (supervisorName) fd.append("supervisor_name", supervisorName);
+      const supervisorSigFile = document.getElementById("erSupervisorSignature").files[0];
+      if (supervisorSigFile) fd.append("supervisor_signature", supervisorSigFile);
       const photos = document.getElementById("erPhotos").files;
       for (let i = 0; i < photos.length; i++) fd.append("photos", photos[i]);
 
