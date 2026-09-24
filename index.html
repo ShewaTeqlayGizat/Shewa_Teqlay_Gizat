@@ -6575,17 +6575,21 @@ function openMemberPhotoLightbox(url){
             ${(r.attachments||[]).map(a => `<img src="${a.file_url}" style="width:100px; height:100px; object-fit:cover; border-radius:8px;">`).join("") || "<p>ምንም ፎቶ የለም</p>"}
           </div>
 
-          <div style="margin-top:2rem; padding-top:1rem; border-top:1px dashed #999; display:flex; justify-content:space-between; flex-wrap:wrap; gap:1.5rem;">
-            <div style="flex:1; min-width:200px;">
-              <p style="margin:0 0 .3rem;"><strong>የስራ አስፈጻሚ ፊርማ፦</strong></p>
-              <p style="margin:0; font-family:'Brush Script MT', cursive; font-size:1.3rem;">${escapeHtml(r.signature_name || "-")}</p>
-            </div>
-            <div style="flex:1; min-width:200px;">
-              <p style="margin:0 0 .3rem;"><strong>የስምሪት ኃላፊ፦</strong> ${escapeHtml(r.supervisor_name || "-")}</p>
-              ${r.supervisor_signature_url
-                ? `<img src="${r.supervisor_signature_url}" alt="ፊርማ" style="max-width:180px; max-height:80px; object-fit:contain;">`
-                : `<div style="border-bottom:1px solid #999; width:180px; height:40px;"></div>`}
-            </div>
+          <div style="margin-top:2rem; padding-top:1rem; border-top:1px dashed #999;">
+            <p style="display:flex; align-items:center; gap:.4rem; flex-wrap:wrap; margin:0 0 1rem;">
+              <span>ስም</span>
+              <span style="border-bottom:1px solid #333; min-width:160px; padding:0 .3rem;">${escapeHtml(r.signature_name || "")}</span>
+              <span>ፊርማ</span>
+              <span style="border-bottom:1px solid #333; min-width:160px; padding:0 .3rem; font-family:'Brush Script MT', cursive; font-size:1.2rem;">${escapeHtml(r.signature_name || "")}</span>
+            </p>
+            <p style="display:flex; align-items:center; gap:.4rem; flex-wrap:wrap; margin:0;">
+              <span>ስም</span>
+              <span style="border-bottom:1px solid #333; min-width:160px; padding:0 .3rem;">${escapeHtml(r.supervisor_name || "")}</span>
+              <span>ፊርማ</span>
+              <span style="border-bottom:1px solid #333; min-width:160px; padding:0 .3rem;">
+                ${r.supervisor_signature_url ? `<img src="${r.supervisor_signature_url}" alt="ፊርማ" style="height:34px; object-fit:contain; vertical-align:middle;">` : "&nbsp;"}
+              </span>
+            </p>
           </div>
         </div>
         <button type="button" id="reportPdfBtn" class="btn btn-primary" style="margin-top:1rem;">📄 PDF አውርድ</button>`;
