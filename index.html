@@ -4384,9 +4384,30 @@ renderChannelVideos();
         <div class="ib-post-footer">
           <span class="ib-post-date">${formatDate(it.date)}</span>
           ${it.file_url ? `<a href="${it.file_url}" download target="_blank" rel="noopener" class="ib-post-pdf-link">አውርድ</a>` : ""}
+          <button type="button" class="member-db-del lib-edit" data-id="${it.id}">አርም</button>
           <button type="button" class="member-db-del lib-del" data-id="${it.id}">አጥፋ</button>
         </div>
       </div>`).join("") || "<p class='loading-text'>ገና ምንም ፋይል አልተጨመረም።</p>";
+    list.querySelectorAll(".lib-edit").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const it = items.find(x => String(x.id) === btn.dataset.id);
+        if (!it) return;
+        const newTitle = prompt("ርዕስ:", it.title);
+        if (newTitle === null) return;
+        const newAuthor = prompt("ደራሲ:", it.author || "");
+        if (newAuthor === null) return;
+        const newCategory = prompt("ምድብ:", it.category || "");
+        if (newCategory === null) return;
+        const fd = new FormData();
+        fd.append("title", newTitle.trim());
+        fd.append("author", newAuthor.trim());
+        fd.append("category", newCategory.trim());
+        try {
+          await apiSend("/api/content/" + it.id, "PUT", fd, true);
+          render();
+        } catch(e){ alert("ማርም አልተቻለም፦ " + e.message); }
+      });
+    });
     list.querySelectorAll(".lib-del").forEach(btn => {
       btn.addEventListener("click", async () => {
         try { await apiSend("/api/content/" + btn.dataset.id, "DELETE"); render(); }
@@ -4451,9 +4472,27 @@ renderChannelVideos();
         <p>${escapeHtml(it.category || "")}</p>
         <div class="ib-post-footer">
           <span class="ib-post-date">${formatDate(it.date)}</span>
+          <button type="button" class="member-db-del vid-edit" data-id="${it.id}">አርም</button>
           <button type="button" class="member-db-del vid-del" data-id="${it.id}">አጥፋ</button>
         </div>
       </div>`).join("") || "<p class='loading-text'>ገና ምንም ቪዲዮ አልተጨመረም።</p>";
+    list.querySelectorAll(".vid-edit").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const it = items.find(x => String(x.id) === btn.dataset.id);
+        if (!it) return;
+        const newTitle = prompt("ርዕስ:", it.title);
+        if (newTitle === null) return;
+        const newCategory = prompt("ምድብ:", it.category || "");
+        if (newCategory === null) return;
+        const fd = new FormData();
+        fd.append("title", newTitle.trim());
+        fd.append("category", newCategory.trim());
+        try {
+          await apiSend("/api/content/" + it.id, "PUT", fd, true);
+          render();
+        } catch(e){ alert("ማርም አልተቻለም፦ " + e.message); }
+      });
+    });
     list.querySelectorAll(".vid-del").forEach(btn => {
       btn.addEventListener("click", async () => {
         try { await apiSend("/api/content/" + btn.dataset.id, "DELETE"); render(); }
@@ -4505,9 +4544,24 @@ renderChannelVideos();
         <audio controls src="${r.file_url}" style="width:100%; margin-top:.4rem;"></audio>
         <div class="ib-post-footer">
           <span class="ib-post-date">${formatDate(r.date)}</span>
+          <button type="button" class="member-db-del radio-edit" data-id="${r.id}">አርም</button>
           <button type="button" class="member-db-del radio-del" data-id="${r.id}">አጥፋ</button>
         </div>
       </div>`).join("") || "<p class='loading-text'>ገና ምንም የድምጽ ዜና አልተጨመረም።</p>";
+    list.querySelectorAll(".radio-edit").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const r = items.find(x => String(x.id) === btn.dataset.id);
+        if (!r) return;
+        const newTitle = prompt("ርዕስ:", r.title);
+        if (newTitle === null) return;
+        const fd = new FormData();
+        fd.append("title", newTitle.trim());
+        try {
+          await apiSend("/api/content/" + r.id, "PUT", fd, true);
+          render();
+        } catch(e){ alert("ማርም አልተቻለም፦ " + e.message); }
+      });
+    });
     list.querySelectorAll(".radio-del").forEach(btn => {
       btn.addEventListener("click", async () => {
         try { await apiSend("/api/content/" + btn.dataset.id, "DELETE"); render(); if (window.reloadNewsStudio) window.reloadNewsStudio(); }
