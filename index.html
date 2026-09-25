@@ -6281,7 +6281,41 @@ function openMemberPhotoLightbox(url){
       <div class="ib-post">
         <div class="ib-post-head"><h4>${escapeHtml(p.full_name)}</h4></div>
         <p>${p.payee_type === "employee" ? "ሰራተኛ" : "አቅራቢ/ኮንትራክተር"} · ${escapeHtml(p.phone||"-")} · ${escapeHtml(p.bank_account||"-")}</p>
+        <div class="ib-post-footer">
+          <button type="button" class="member-db-del payee-edit" data-id="${p.id}">አርም</button>
+          <button type="button" class="member-db-del payee-del" data-id="${p.id}">አጥፋ</button>
+        </div>
       </div>`).join("") || "<p class='loading-text'>ገና ምንም ተከፋይ አልተመዘገበም።</p>";
+
+    list.querySelectorAll(".payee-edit").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const p = payees.find(x => String(x.id) === btn.dataset.id);
+        if (!p) return;
+        const full_name = prompt("ሙሉ ስም:", p.full_name);
+        if (full_name === null) return;
+        const payee_type = prompt("አይነት (employee ወይም vendor):", p.payee_type || "employee");
+        if (payee_type === null) return;
+        const phone = prompt("ስልክ:", p.phone || "");
+        if (phone === null) return;
+        const email = prompt("ኢሜይል:", p.email || "");
+        if (email === null) return;
+        const bank_account = prompt("የባንክ ቁጥር:", p.bank_account || "");
+        if (bank_account === null) return;
+        try {
+          await apiSend("/api/payees/" + p.id, "PUT", {
+            full_name: full_name.trim(), payee_type: payee_type.trim(), phone, email, bank_account
+          });
+          loadPayees();
+        } catch(e){ alert("ማርም አልተቻለም፦ " + e.message); }
+      });
+    });
+    list.querySelectorAll(".payee-del").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        if (!confirm("ይህን ተከፋይ ማጥፋት ይፈልጋሉ?")) return;
+        try { await apiSend("/api/payees/" + btn.dataset.id, "DELETE"); loadPayees(); }
+        catch(e){ alert("ማጥፋት አልተቻለም፦ " + e.message); }
+      });
+    });
   }
 
 
@@ -6562,7 +6596,39 @@ function openMemberPhotoLightbox(url){
       <div class="ib-post">
         <div class="ib-post-head"><h4>${escapeHtml(x.full_name)}</h4></div>
         <p>${escapeHtml(x.position||"-")} · ${escapeHtml(x.phone||"-")}</p>
+        <div class="ib-post-footer">
+          <button type="button" class="member-db-del exec-edit" data-id="${x.id}">አርም</button>
+          <button type="button" class="member-db-del exec-del" data-id="${x.id}">አጥፋ</button>
+        </div>
       </div>`).join("") || "<p class='loading-text'>ገና ምንም ስራ አስፈጻሚ አልተመዘገበም።</p>";
+
+    list.querySelectorAll(".exec-edit").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const x = execs.find(v => String(v.id) === btn.dataset.id);
+        if (!x) return;
+        const full_name = prompt("ሙሉ ስም:", x.full_name);
+        if (full_name === null) return;
+        const position = prompt("ሃላፊነት:", x.position || "");
+        if (position === null) return;
+        const phone = prompt("ስልክ:", x.phone || "");
+        if (phone === null) return;
+        const email = prompt("ኢሜይል:", x.email || "");
+        if (email === null) return;
+        try {
+          await apiSend("/api/executives/" + x.id, "PUT", {
+            full_name: full_name.trim(), position, phone, email
+          });
+          loadExecs();
+        } catch(e){ alert("ማርም አልተቻለም፦ " + e.message); }
+      });
+    });
+    list.querySelectorAll(".exec-del").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        if (!confirm("ይህን ስራ አስፈጻሚ ማጥፋት ይፈልጋሉ?")) return;
+        try { await apiSend("/api/executives/" + btn.dataset.id, "DELETE"); loadExecs(); }
+        catch(e){ alert("ማጥፋት አልተቻለም፦ " + e.message); }
+      });
+    });
   }
 
   async function loadExecsIntoSelect(){
