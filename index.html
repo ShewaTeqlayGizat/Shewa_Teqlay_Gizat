@@ -5308,10 +5308,25 @@ function openMemberPhotoLightbox(url){
       <div class="ib-post">
         <div class="ib-post-head"><h4>${escapeHtml(l.title)}</h4></div>
         <div class="ib-post-footer">
+          <button type="button" class="member-db-del lesson-edit" data-id="${l.id}">አርም</button>
           <button type="button" class="member-db-del lesson-del" data-id="${l.id}">አጥፋ</button>
         </div>
       </div>`).join("") || "<p class='loading-text'>ገና ምንም ትምህርት አልተጨመረም።</p>";
 
+    lessonsList.querySelectorAll(".lesson-edit").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const l = lessons.find(x => String(x.id) === btn.dataset.id);
+        if (!l) return;
+        const newTitle = prompt("ርዕስ:", l.title);
+        if (newTitle === null) return;
+        const fd = new FormData();
+        fd.append("title", newTitle.trim());
+        try {
+          await apiSend("/api/courses/lessons/" + l.id, "PUT", fd, true);
+          renderLessons();
+        } catch(e){ alert("ማርም አልተቻለም፦ " + e.message); }
+      });
+    });
     lessonsList.querySelectorAll(".lesson-del").forEach(btn => {
       btn.addEventListener("click", async () => {
         try { await apiSend("/api/courses/lessons/" + btn.dataset.id, "DELETE"); renderLessons(); }
@@ -5396,10 +5411,23 @@ function openMemberPhotoLightbox(url){
         <div class="ib-post-head"><h4>${escapeHtml(q.title)}</h4></div>
         <div class="ib-post-footer">
           <button type="button" class="member-db-del quiz-questions" data-id="${q.id}" data-title="${escapeHtml(q.title)}">❓ ጥያቄዎች</button>
+          <button type="button" class="member-db-del quiz-edit" data-id="${q.id}">አርም</button>
           <button type="button" class="member-db-del quiz-del" data-id="${q.id}">አጥፋ</button>
         </div>
       </div>`).join("") || "<p class='loading-text'>ገና ምንም ፈተና አልተጨመረም።</p>";
 
+    quizzesList.querySelectorAll(".quiz-edit").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const q = quizzes.find(x => String(x.id) === btn.dataset.id);
+        if (!q) return;
+        const newTitle = prompt("ርዕስ:", q.title);
+        if (newTitle === null) return;
+        try {
+          await apiSend("/api/quizzes/" + q.id, "PUT", { title: newTitle.trim() });
+          renderQuizzes();
+        } catch(e){ alert("ማርም አልተቻለም፦ " + e.message); }
+      });
+    });
     quizzesList.querySelectorAll(".quiz-del").forEach(btn => {
       btn.addEventListener("click", async () => {
         try { await apiSend("/api/quizzes/" + btn.dataset.id, "DELETE"); renderQuizzes(); }
@@ -5440,10 +5468,35 @@ function openMemberPhotoLightbox(url){
         <p>A) ${escapeHtml(q.option_a||"")} · B) ${escapeHtml(q.option_b||"")} ${q.option_c ? "· C) " + escapeHtml(q.option_c) : ""} ${q.option_d ? "· D) " + escapeHtml(q.option_d) : ""}</p>
         <p style="color:green;">✓ ትክክለኛ መልስ: ${q.correct_option}</p>
         <div class="ib-post-footer">
+          <button type="button" class="member-db-del question-edit" data-id="${q.id}">አርም</button>
           <button type="button" class="member-db-del question-del" data-id="${q.id}">አጥፋ</button>
         </div>
       </div>`).join("") || "<p class='loading-text'>ገና ምንም ጥያቄ አልተጨመረም።</p>";
 
+    questionsList.querySelectorAll(".question-edit").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const q = questions.find(x => String(x.id) === btn.dataset.id);
+        if (!q) return;
+        const question = prompt("ጥያቄ:", q.question);
+        if (question === null) return;
+        const option_a = prompt("A)", q.option_a || "");
+        if (option_a === null) return;
+        const option_b = prompt("B)", q.option_b || "");
+        if (option_b === null) return;
+        const option_c = prompt("C) (አማራጭ)", q.option_c || "");
+        if (option_c === null) return;
+        const option_d = prompt("D) (አማራጭ)", q.option_d || "");
+        if (option_d === null) return;
+        const correct_option = prompt("ትክክለኛ መልስ (A/B/C/D):", q.correct_option || "");
+        if (correct_option === null) return;
+        try {
+          await apiSend("/api/quizzes/questions/" + q.id, "PUT", {
+            question: question.trim(), option_a, option_b, option_c, option_d, correct_option: correct_option.trim()
+          });
+          renderQuestions();
+        } catch(e){ alert("ማርም አልተቻለም፦ " + e.message); }
+      });
+    });
     questionsList.querySelectorAll(".question-del").forEach(btn => {
       btn.addEventListener("click", async () => {
         try { await apiSend("/api/quizzes/questions/" + btn.dataset.id, "DELETE"); renderQuestions(); }
