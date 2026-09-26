@@ -2828,6 +2828,10 @@ textarea{ margin-bottom:1rem; resize:vertical; }
             <button type="button" class="sp-tab roster-tab" data-status="dropped">ያቋረጡ</button>
             <button type="button" class="sp-tab roster-tab" data-status="suspended">የታገዱ</button>
           </div>
+          <div style="display:flex; gap:.6rem; align-items:center; margin-top:.8rem; flex-wrap:wrap;">
+            <input type="text" id="rosterSearch" placeholder="በስም ወይም በኢሜይል ፈልግ..." style="flex:1; min-width:180px;">
+            <button type="button" id="rosterExportExcel" class="btn">📥 Excel አውርድ</button>
+          </div>
           <div id="rosterList" class="ib-list" style="margin-top:1rem;"></div>
         </div>
 
@@ -6040,6 +6044,14 @@ function openMemberPhotoLightbox(url){
 
   let currentRoster = [];
   let activeFilter = "all";
+  let rosterSearchTerm = "";
+  const rosterSearchInput = document.getElementById("rosterSearch");
+  if (rosterSearchInput) {
+    rosterSearchInput.addEventListener("input", () => {
+      rosterSearchTerm = rosterSearchInput.value.trim().toLowerCase();
+      renderRoster();
+    });
+  }
 
   async function loadCoursesIntoRosterSelect(){
     try {
@@ -6061,7 +6073,13 @@ function openMemberPhotoLightbox(url){
   }
 
   function renderRoster(){
-    const filtered = activeFilter === "all" ? currentRoster : currentRoster.filter(s => (s.status || "active") === activeFilter);
+    let filtered = activeFilter === "all" ? currentRoster : currentRoster.filter(s => (s.status || "active") === activeFilter);
+    if (rosterSearchTerm) {
+      filtered = filtered.filter(s =>
+        (s.full_name || "").toLowerCase().includes(rosterSearchTerm) ||
+        (s.email || "").toLowerCase().includes(rosterSearchTerm)
+      );
+    }
     rosterList.innerHTML = filtered.map(s => {
       const pct = s.total_lessons > 0 ? Math.round(s.completed_lessons / s.total_lessons * 100) : 0;
       return `
@@ -6072,6 +6090,9 @@ function openMemberPhotoLightbox(url){
         </div>
         <p>${escapeHtml(s.gender || "-")} · ${s.age || "-"} ዓመት · ${escapeHtml(s.category || "-")} · ${escapeHtml(s.institution || "-")} · ${escapeHtml(s.email)}</p>
         <p>እድገት፦ ${s.completed_lessons}/${s.total_lessons} ትምህርቶች (${pct}%)</p>
+        <p>${s.certificate_code
+            ? `🏆 ሰርተፍኬት ወስዷል · <a href="#" onclick="window.open(location.origin + location.pathname + '#verify=' + '${s.certificate_code}'); return false;" style="color:#1B5E20;">ኮድ፦ ${s.certificate_code}</a> (${formatDate(s.certificate_issued_at)})`
+            : "🚫 ሰርተፍኬት አልወሰደም"}</p>
         <div class="ib-post-footer">
           <span class="ib-post-badge">${statusLabels[s.status || "active"]}</span>
           <select class="roster-status-select" data-id="${s.id}">
@@ -6134,6 +6155,50 @@ function openMemberPhotoLightbox(url){
       });
     });
   }
+
+  async function exportRosterToExcel(){
+    const courseTitle = courseSelect.options[courseSelect.selectedIndex] ? courseSelect.options[courseSelect.selectedIndex].text : "ኮርስ";
+    const wb = new ExcelJS.Workbook();
+    const ws = wb.addWorksheet("የተማሪ ምዝገባ");
+    const headers = ["ተ.ቁ","ሙሉ ስም","ጾታ","ዕድሜ","መደብ","ተቋም","ኢሜይል","ሁኔታ","ውጤት","እድገት (%)","ሰርተፍኬት","የማረጋገጫ ኮድ","የተሰጠበት ቀን"];
+    ws.addRow(headers);
+    const hRow = ws.getRow(1);
+    hRow.eachCell(c => {
+      c.fill = { type:"pattern", pattern:"solid", fgColor:{argb:"FF1B5E20"} };
+      c.font = { bold:true, color:{argb:"FFFFFFFF"}, size:12 };
+      c.alignment = { horizontal:"center", vertical:"middle", wrapText:true };
+    });
+    hRow.height = 24;
+    currentRoster.forEach((s, i) => {
+      const pct = s.total_lessons > 0 ? Math.round(s.completed_lessons / s.total_lessons * 100) : 0;
+      const row = ws.addRow([
+        i + 1, s.full_name || "", s.gender || "", s.age || "", s.category || "", s.institution || "",
+        s.email || "", statusLabels[s.status || "active"] || "", s.result || "", pct,
+        s.certificate_code ? "አለው" : "የለውም", s.certificate_code || "", s.certificate_issued_at ? formatDate(s.certificate_issued_at) : ""
+      ]);
+      const fill = (i % 2 === 1) ? { type:"pattern", pattern:"solid", fgColor:{argb:"FFE8F5E9"} } : { type:"pattern", pattern:"solid", fgColor:{argb:"FFFFFFFF"} };
+      row.eachCell(c => { c.fill = fill; c.alignment = { horizontal:"left", vertical:"middle", wrapText:true }; });
+    });
+    ws.columns.forEach(col => {
+      let maxLen = 10;
+      col.eachCell({ includeEmpty:true }, cell => {
+        const len = (cell.value ? String(cell.value).length : 0);
+        if (len > maxLen) maxLen = len;
+      });
+      col.width = Math.min(maxLen + 3, 40);
+    });
+    ws.views = [{ state:"frozen", ySplit:1 }];
+    ws.autoFilter = { from:{row:1,column:1}, to:{row:1,column:headers.length} };
+    const buf = await wb.xlsx.writeBuffer();
+    const blob = new Blob([buf], { type:"application/octet-stream" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = "የተማሪ_ምዝገባ_" + courseTitle.replace(/[^\w\u1200-\u137F]+/g, "_") + "_" + new Date().toISOString().slice(0,10) + ".xlsx";
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+  const rosterExportBtn = document.getElementById("rosterExportExcel");
+  if (rosterExportBtn) rosterExportBtn.addEventListener("click", exportRosterToExcel);
 
   courseSelect.addEventListener("change", loadRoster);
 
