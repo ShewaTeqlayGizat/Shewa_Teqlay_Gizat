@@ -1383,6 +1383,10 @@ textarea{ margin-bottom:1rem; resize:vertical; }
   .hero{ min-height:56vh; padding: 4.5rem 0 3rem; }
   .hero::before{ background-position: center 30%; }
 }
+@media (max-width: 640px) and (orientation: portrait){
+  .hero{ min-height:44vh; padding: 3.5rem 0 2.5rem; }
+  .hero::before{ background-size: contain; background-repeat: no-repeat; background-position: center top; }
+}
 
 @media (prefers-reduced-motion: reduce){
   html{ scroll-behavior:auto; }
