@@ -2909,6 +2909,7 @@ textarea{ margin-bottom:1rem; resize:vertical; }
           <select id="aNewRole">
             <option value="admin">ዋና ማናጀር (ሙሉ ስልጣን)</option>
             <option value="moderator">Moderator (ንባብ + አስተያየት ማጥፋት + ውስጣዊ መዝገብ፣ ስብሰባና ስምሪት/ሪፖርት ሙሉ ስልጣን፤ በቀሪው ንባብ ብቻ)</option>
+            <option value="news_admin">የዜና ሞደሬተር (ሙሉ ስልጣን በዜና አስተዳደር ብቻ)</option>
             <option value="registrar">Registrar (የአባላት ፎርም መሙላት ብቻ)</option>
             <option value="bootcamp_admin">Bootcamp ሞደሬተር (ሙሉ ስልጣን በ Bootcamp ብቻ)</option>
             <option value="finance_admin">የፋይናንስ ሞደሬተር (ሙሉ ስልጣን በፋይናንስ ብቻ)</option>
@@ -2999,6 +3000,7 @@ function isFinanceAdmin(){ return isAdminLoggedIn() && getAdminRole() === "finan
 function isFinanceAdmin(){ return isAdminLoggedIn() && getAdminRole() === "finance_admin"; }
 function isOfficeAdmin(){ return isAdminLoggedIn() && getAdminRole() === "office_admin"; }
 function isModerator(){ return isAdminLoggedIn() && getAdminRole() === "moderator"; }
+function isNewsAdmin(){ return isAdminLoggedIn() && getAdminRole() === "news_admin"; }
 
 async function apiGet(path){
   const headers = {};
@@ -3919,7 +3921,7 @@ renderChannelVideos();
   const officeCards = [
     {id:"members", icon:"🗄️", title:"የአባላት ዳታቤዝ", desc:"የተሟላ የአባላት ዝርዝር፣ አድራሻና የአባልነት ሁኔታ መዝገብ። (ለመክፈት ይንኩ)", fullOnly:true, registrarOk:true},
     {id:"infoboard", icon:"📌", title:"የውስጥ መረጃ መለጠፊያ ቦርድ", desc:"የውስጥ ማስታወቂያዎችና ሰነዶች በጽሑፍ ወይም በPDF የሚለጠፉበት ቦርድ። (ለመክፈት ይንኩ)", fullOnly:true},
-  {id:"newsmgmt", icon:"📰", title:"ዜና አስተዳደር", desc:"ዜናዎችና የድምጽ ዜናዎች (audio) መጨመር፣ ማርም ወይም ማጥፋት። (ለመክፈት ይንኩ)", fullOnly:true},
+  {id:"newsmgmt", newsAdminOk:true, icon:"📰", title:"ዜና አስተዳደር", desc:"ዜናዎችና የድምጽ ዜናዎች (audio) መጨመር፣ ማርም ወይም ማጥፋት። (ለመክፈት ይንኩ)", fullOnly:true},
     {id:"librarymgmt", icon:"📚", title:"Library / PDF አስተዳደር", desc:"አዲስ መጽሐፍ ወይም PDF ሰነድ መጨመር ወይም ማጥፋት። (ለመክፈት ይንኩ)", fullOnly:true},
     {id:"videomgmt", icon:"🎬", title:"ቪዲዮ አስተዳደር", desc:"አዲስ የመዝናኛ/ባህል/ቀጥታ ስርጭት ቪዲዮ (YouTube) መጨመር ወይም ማጥፋት። (ለመክፈት ይንኩ)", fullOnly:true},
     
@@ -3939,7 +3941,8 @@ renderChannelVideos();
     const financeAdmin = isFinanceAdmin();
     const officeAdmin = isOfficeAdmin();
     const moderator = isModerator();
-    const visibleCards = officeCards.filter(c => fullAccess || officeAdmin || (registrar && c.registrarOk) || (bootcampAdmin && c.bootcampOk) || (financeAdmin && c.financeOk) || moderator || (!fullAccess && !registrar && !bootcampAdmin && !financeAdmin && !officeAdmin && !c.fullOnly));
+    const newsAdmin = isNewsAdmin();
+    const visibleCards = officeCards.filter(c => fullAccess || officeAdmin || (registrar && c.registrarOk) || (bootcampAdmin && c.bootcampOk) || (financeAdmin && c.financeOk) || (newsAdmin && c.newsAdminOk) || moderator || (!fullAccess && !registrar && !bootcampAdmin && !financeAdmin && !officeAdmin && !newsAdmin && !c.fullOnly));
     cardsGrid.innerHTML = visibleCards.map(c => {
       let title = c.title, desc = c.desc;
       if (c.id === "coursesmgmt" && bootcampAdmin) {
@@ -6576,8 +6579,10 @@ function openMemberPhotoLightbox(url){
 
 // ---------------- Office Moderator: enforce read-only everywhere except Internal Records ----------------
 (function officeReadOnlyEnforcer(){
-  if (!isOfficeAdmin() && !isModerator()) return;
-  const FULL_PANELS = isModerator() ? ["internalPanel","meetingsPanel","assignmentsPanel"] : ["internalPanel"];
+  if (!isOfficeAdmin() && !isModerator() && !isNewsAdmin()) return;
+  const FULL_PANELS = isModerator() ? ["internalPanel","meetingsPanel","assignmentsPanel"]
+    : isNewsAdmin() ? ["newsPanel","radioPanel"]
+    : ["internalPanel"];
 
   function hideWriteControls(){
     document.querySelectorAll(".member-db-panel").forEach(panel => {
