@@ -1576,6 +1576,7 @@ textarea{ margin-bottom:1rem; resize:vertical; }
           <a href="#edu-media">ትምህርታዊ ምስልና ቪዲዮ መመልከቻ</a>
           <a href="#edu-ppt">PowerPoint Tutorials</a>
           <a href="#student-portal">Bootcamp የሰልጣኞች መግቢያ</a>
+          <a href="#instructor-portal">👨‍🏫 የመምህራን መግቢያ</a>
         </div>
       </div>
       <a href="#announcements">ማስታወቂያ <span class="nav-new" style="display:none">አዲስ</span></a>
@@ -2389,6 +2390,111 @@ textarea{ margin-bottom:1rem; resize:vertical; }
   </div>
 </section>
 
+
+<!-- ===== Instructor Portal ===== -->
+<section id="instructor-portal" class="section section-student-portal alt-bg">
+  <div class="section-inner">
+    <span class="eyebrow">ቡትካምፕ</span>
+    <h2>👨‍🏫 የመምህራን መግቢያ</h2>
+    <p class="section-lead">ትምህርት፣ ፈተና እና ውጤት ለማስተዳደር እና ሰርተፍኬት ለመስጠት እዚህ ይግቡ።</p>
+
+    <div id="inLoggedOut">
+      <form id="inLoginForm" class="ns-admin-form" style="max-width:420px;">
+        <input type="text" id="inLoginName" placeholder="ሙሉ ስም" required>
+        <input type="password" id="inLoginPassword" placeholder="የይለፍ ቃል" required>
+        <button type="submit" class="btn btn-primary">ግባ</button>
+        <p id="inLoginStatus" class="form-status"></p>
+      </form>
+    </div>
+
+    <div id="inLoggedIn" style="display:none;">
+      <p>እንኳን ደህና መጡ፣ <strong id="inWelcomeName"></strong>!</p>
+      <button type="button" id="inLogoutBtn" class="btn">ውጣ</button>
+
+      <div id="inCourseListView" style="margin-top:1.5rem;">
+        <h3>📚 ትምህርቶቼ</h3>
+        <div class="ib-list" id="inCoursesList"></div>
+      </div>
+
+      <div id="inCourseDetailView" style="display:none; margin-top:1.5rem;">
+        <button type="button" id="inBackToCourses" class="btn" style="margin-bottom:1rem;">← ወደ ኮርሶቼ ተመለስ</button>
+        <h3 id="inCourseTitle"></h3>
+
+        <div class="sp-tabs" style="margin-top:1rem;">
+          <button type="button" id="inTabLessons" class="sp-tab active">🎬 ትምህርቶች</button>
+          <button type="button" id="inTabQuizzes" class="sp-tab">❓ ፈተናዎች</button>
+          <button type="button" id="inTabRoster" class="sp-tab">📋 ተማሪዎችና ውጤት</button>
+          <button type="button" id="inTabCerts" class="sp-tab">🏆 ሰርተፍኬት</button>
+        </div>
+
+        <!-- Lessons tab -->
+        <div id="inLessonsView">
+          <form id="inLessonForm" class="ib-form" style="margin-top:1rem;">
+            <input type="text" id="inLTitle" placeholder="የትምህርት ርዕስ" required>
+            <select id="inLType">
+              <option value="video_url">የYouTube ቪዲዮ ሊንክ</option>
+              <option value="video">የቪዲዮ ፋይል</option>
+              <option value="pdf">PDF ፋይል</option>
+              <option value="audio">የድምጽ ፋይል</option>
+            </select>
+            <input type="text" id="inLVideoUrl" placeholder="የቪዲዮ ሊንክ (ለYouTube ብቻ)">
+            <input type="file" id="inLFile" accept="video/*,application/pdf,audio/*">
+            <input type="number" id="inLPosition" placeholder="ቅደም ተከተል (ቁጥር)">
+            <button type="submit" class="btn btn-primary">➕ ትምህርት ጨምር</button>
+          </form>
+          <p id="inLStatus" class="form-status"></p>
+          <div class="ib-list" id="inLessonsList" style="margin-top:1rem;"></div>
+        </div>
+
+        <!-- Quizzes tab -->
+        <div id="inQuizzesView" style="display:none;">
+          <form id="inQuizForm" class="ib-form" style="margin-top:1rem;">
+            <input type="text" id="inQTitle" placeholder="የፈተና ርዕስ" required>
+            <button type="submit" class="btn btn-primary">➕ ፈተና ፍጠር</button>
+          </form>
+          <p id="inQStatus" class="form-status"></p>
+          <div class="ib-list" id="inQuizzesList" style="margin-top:1rem;"></div>
+
+          <div id="inQuestionsSubView" style="display:none; margin-top:1.5rem;">
+            <button type="button" id="inBackToQuizzes" class="btn" style="margin-bottom:1rem;">← ወደ ፈተናዎች ተመለስ</button>
+            <h4 id="inQuizTitleHeading"></h4>
+            <form id="inQuestionForm" class="ib-form">
+              <textarea id="inQnText" placeholder="ጥያቄ" required style="grid-column: 1 / -1; min-height:50px;"></textarea>
+              <input type="text" id="inOptA" placeholder="አማራጭ A">
+              <input type="text" id="inOptB" placeholder="አማራጭ B">
+              <input type="text" id="inOptC" placeholder="አማራጭ C (አማራጭ)">
+              <input type="text" id="inOptD" placeholder="አማራጭ D (አማራጭ)">
+              <select id="inCorrectOpt" required>
+                <option value="">-- ትክክለኛ መልስ --</option>
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+                <option value="D">D</option>
+              </select>
+              <button type="submit" class="btn btn-primary">➕ ጥያቄ ጨምር</button>
+            </form>
+            <p id="inQnStatus" class="form-status"></p>
+            <div class="ib-list" id="inQuestionsList" style="margin-top:1rem;"></div>
+          </div>
+        </div>
+
+        <!-- Roster / results tab -->
+        <div id="inRosterView" style="display:none;">
+          <input type="text" id="inRosterSearch" placeholder="በስም ወይም በኢሜይል ፈልግ..." style="margin-top:1rem;">
+          <div class="ib-list" id="inRosterList" style="margin-top:1rem;"></div>
+        </div>
+
+        <!-- Certificates tab -->
+        <div id="inCertsView" style="display:none;">
+          <h4 style="margin-top:1rem;">🎓 ለማግኘት ብቁ የሆኑ ተማሪዎች</h4>
+          <div class="ib-list" id="inEligibleList"></div>
+          <h4 style="margin-top:1.5rem;">🏆 የተሰጡ ሰርተፍኬቶች</h4>
+          <div class="ib-list" id="inIssuedCertsList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- ===== Special Office (password gated) ===== -->
 <section id="special-office" class="section section-special-office">
