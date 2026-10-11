@@ -7177,6 +7177,186 @@ function openMemberPhotoLightbox(url){
     showLoggedIn(localStorage.getItem("execName"));
   }
 })();
+// ---------------- Instructor Portal ----------------
+(function instructorPortalController(){
+  const loggedOut = document.getElementById("inLoggedOut");
+  const loggedIn = document.getElementById("inLoggedIn");
+  if (!loggedOut || !loggedIn) return;
+
+  const loginForm = document.getElementById("inLoginForm");
+  const welcomeName = document.getElementById("inWelcomeName");
+  const logoutBtn = document.getElementById("inLogoutBtn");
+  const courseListView = document.getElementById("inCourseListView");
+  const courseDetailView = document.getElementById("inCourseDetailView");
+
+  function getInToken(){ return localStorage.getItem("inToken") || ""; }
+  function setInToken(t){ localStorage.setItem("inToken", t); }
+  function clearInToken(){ localStorage.removeItem("inToken"); localStorage.removeItem("inName"); }
+
+  async function inGet(path){
+    const res = await fetch(API_BASE + path, { headers: { "Authorization": "Bearer " + getInToken() } });
+    if (!res.ok) { const d = await res.json().catch(()=>({})); throw new Error(d.error || ("Request failed: " + res.status)); }
+    return res.json();
+  }
+  async function inSend(path, method, body, isFormData){
+    const headers = { "Authorization": "Bearer " + getInToken() };
+    let payload = body;
+    if (!isFormData) { headers["Content-Type"] = "application/json"; payload = JSON.stringify(body || {}); }
+    const res = await fetch(API_BASE + path, { method, headers, body: payload });
+    const data = await res.json().catch(()=>({}));
+    if (!res.ok) throw new Error(data.error || "Request failed");
+    return data;
+  }
+
+  function showLoggedIn(name){
+    loggedOut.style.display = "none";
+    loggedIn.style.display = "block";
+    welcomeName.textContent = name;
+    loadMyCourses();
+  }
+  function showLoggedOut(){
+    loggedOut.style.display = "block";
+    loggedIn.style.display = "none";
+  }
+
+  loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const full_name = document.getElementById("inLoginName").value.trim();
+    const password = document.getElementById("inLoginPassword").value;
+    const status = document.getElementById("inLoginStatus");
+    status.textContent = "እየገባ ነው...";
+    try {
+      const res = await fetch(API_BASE + "/api/instructors/login", {
+        method: "POST", headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ full_name, password })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Login failed");
+      setInToken(data.token);
+      localStorage.setItem("inName", data.instructor.full_name);
+      showLoggedIn(data.instructor.full_name);
+    } catch(err){ status.textContent = "ስህተት፦ " + err.message; }
+  });
+
+  logoutBtn.addEventListener("click", () => { clearInToken(); showLoggedOut(); });
+
+  let currentCourseId = null;
+  let activeTab = "lessons";
+
+  async function loadMyCourses(){
+    const list = document.getElementById("inCoursesList");
+    let courses = [];
+    try { courses = await inGet("/api/instructors/my-courses"); }
+    catch(e){ list.innerHTML = "<p class='loading-text'>መጫን አልተቻለም።</p>"; return; }
+    list.innerHTML = courses.map(c => `
+      <div class="ib-post">
+        <div class="ib-post-head"><h4>${escapeHtml(c.title)}</h4></div>
+        <p>${escapeHtml(c.description || "")}</p>
+        <div class="ib-post-footer">
+          <button type="button" class="btn btn-primary in-open-course" data-id="${c.id}" data-title="${escapeHtml(c.title)}">ክፈት</button>
+        </div>
+      </div>`).join("") || "<p class='loading-text'>ገና ምንም ኮርስ አልተመደበልዎትም።</p>";
+    list.querySelectorAll(".in-open-course").forEach(btn => {
+      btn.addEventListener("click", () => openCourse(btn.dataset.id, btn.dataset.title));
+    });
+  }
+
+  function openCourse(courseId, title){
+    currentCourseId = courseId;
+    document.getElementById("inCourseTitle").textContent = title;
+    courseListView.style.display = "none";
+    courseDetailView.style.display = "block";
+    showTab("lessons");
+  }
+  document.getElementById("inBackToCourses").addEventListener("click", () => {
+    courseDetailView.style.display = "none";
+    courseListView.style.display = "block";
+  });
+
+  const tabBtns = {
+    lessons: document.getElementById("inTabLessons"),
+    quizzes: document.getElementById("inTabQuizzes"),
+    roster: document.getElementById("inTabRoster"),
+    certs: document.getElementById("inTabCerts"),
+  };
+  const tabViews = {
+    lessons: document.getElementById("inLessonsView"),
+    quizzes: document.getElementById("inQuizzesView"),
+    roster: document.getElementById("inRosterView"),
+    certs: document.getElementById("inCertsView"),
+  };
+  function showTab(tab){
+    activeTab = tab;
+    Object.keys(tabBtns).forEach(k => tabBtns[k].classList.toggle("active", k === tab));
+    Object.keys(tabViews).forEach(k => tabViews[k].style.display = (k === tab ? "block" : "none"));
+    if (tab === "lessons") renderLessons();
+    if (tab === "quizzes") { document.getElementById("inQuestionsSubView").style.display = "none"; document.getElementById("inQuizzesList").parentElement.style.display=""; renderQuizzes(); }
+    if (tab === "roster") renderRoster();
+    if (tab === "certs") renderCerts();
+  }
+  Object.keys(tabBtns).forEach(k => tabBtns[k].addEventListener("click", () => showTab(k)));
+
+  // ---- Lessons ----
+  async function renderLessons(){
+    const list = document.getElementById("inLessonsList");
+    let course;
+    try { course = await inGet("/api/courses/" + currentCourseId); }
+    catch(e){ list.innerHTML = "<p class='loading-text'>መጫን አልተቻለም።</p>"; return; }
+    const lessons = course.lessons || [];
+    list.innerHTML = lessons.map(l => `
+      <div class="ib-post">
+        <div class="ib-post-head"><h4>${escapeHtml(l.title)}</h4></div>
+        <div class="ib-post-footer">
+          <button type="button" class="member-db-del in-lesson-edit" data-id="${l.id}">አርም</button>
+          <button type="button" class="member-db-del in-lesson-del" data-id="${l.id}">አጥፋ</button>
+        </div>
+      </div>`).join("") || "<p class='loading-text'>ገና ምንም ትምህርት አልተጨመረም።</p>";
+
+    list.querySelectorAll(".in-lesson-edit").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const l = lessons.find(x => String(x.id) === btn.dataset.id);
+        if (!l) return;
+        const newTitle = prompt("ርዕስ:", l.title);
+        if (newTitle === null) return;
+        const fd = new FormData();
+        fd.append("title", newTitle.trim());
+        try { await inSend("/api/courses/lessons/" + l.id, "PUT", fd, true); renderLessons(); }
+        catch(e){ alert("ማርም አልተቻለም፦ " + e.message); }
+      });
+    });
+    list.querySelectorAll(".in-lesson-del").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        if (!confirm("ይህን ትምህርት ማጥፋት ይፈልጋሉ?")) return;
+        try { await inSend("/api/courses/lessons/" + btn.dataset.id, "DELETE"); renderLessons(); }
+        catch(e){ alert("ማጥፋት አልተቻለም፦ " + e.message); }
+      });
+    });
+  }
+
+  document.getElementById("inLessonForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const status = document.getElementById("inLStatus");
+    const fd = new FormData();
+    fd.append("title", document.getElementById("inLTitle").value.trim());
+    fd.append("lesson_type", document.getElementById("inLType").value);
+    fd.append("video_url", document.getElementById("inLVideoUrl").value.trim());
+    fd.append("position", document.getElementById("inLPosition").value || "0");
+    const file = document.getElementById("inLFile").files[0];
+    if (file) fd.append("file", file);
+    status.textContent = "እየተጨመረ ነው...";
+    try {
+      await inSend("/api/courses/" + currentCourseId + "/lessons", "POST", fd, true);
+      status.textContent = "ተሳክቷል!";
+      e.target.reset();
+      renderLessons();
+    } catch(err){ status.textContent = "ስህተት፦ " + err.message; }
+  });
+
+  // On page load, check if already logged in
+  if (getInToken() && localStorage.getItem("inName")) {
+    showLoggedIn(localStorage.getItem("inName"));
+  }
+})();
 </script>
 </body>
 </html>
