@@ -7352,6 +7352,237 @@ function openMemberPhotoLightbox(url){
     } catch(err){ status.textContent = "ስህተት፦ " + err.message; }
   });
 
+  // ---- Quizzes ----
+  let currentQuizzes = [];
+  let currentQuizId = null;
+
+  async function renderQuizzes(){
+    const list = document.getElementById("inQuizzesList");
+    try { currentQuizzes = await inGet("/api/quizzes?course_id=" + currentCourseId); }
+    catch(e){ list.innerHTML = "<p class='loading-text'>መጫን አልተቻለም።</p>"; return; }
+    list.innerHTML = currentQuizzes.map(q => `
+      <div class="ib-post">
+        <div class="ib-post-head"><h4>${escapeHtml(q.title)}</h4></div>
+        <div class="ib-post-footer">
+          <button type="button" class="btn btn-primary in-quiz-open" data-id="${q.id}" data-title="${escapeHtml(q.title)}">❓ ጥያቄዎች</button>
+          <button type="button" class="member-db-del in-quiz-edit" data-id="${q.id}">አርም</button>
+          <button type="button" class="member-db-del in-quiz-del" data-id="${q.id}">አጥፋ</button>
+        </div>
+      </div>`).join("") || "<p class='loading-text'>ገና ምንም ፈተና አልተጨመረም።</p>";
+
+    list.querySelectorAll(".in-quiz-open").forEach(btn => {
+      btn.addEventListener("click", () => openQuestions(btn.dataset.id, btn.dataset.title));
+    });
+    list.querySelectorAll(".in-quiz-edit").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const q = currentQuizzes.find(x => String(x.id) === btn.dataset.id);
+        if (!q) return;
+        const newTitle = prompt("ርዕስ:", q.title);
+        if (newTitle === null) return;
+        try { await inSend("/api/quizzes/" + q.id, "PUT", { title: newTitle.trim() }); renderQuizzes(); }
+        catch(e){ alert("ማርም አልተቻለም፦ " + e.message); }
+      });
+    });
+    list.querySelectorAll(".in-quiz-del").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        if (!confirm("ይህን ፈተና ማጥፋት ይፈልጋሉ?")) return;
+        try { await inSend("/api/quizzes/" + btn.dataset.id, "DELETE"); renderQuizzes(); }
+        catch(e){ alert("ማጥፋት አልተቻለም፦ " + e.message); }
+      });
+    });
+  }
+
+  document.getElementById("inQuizForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const status = document.getElementById("inQStatus");
+    const title = document.getElementById("inQTitle").value.trim();
+    status.textContent = "እየተፈጠረ ነው...";
+    try {
+      await inSend("/api/quizzes", "POST", { course_id: currentCourseId, title });
+      status.textContent = "ተሳክቷል!";
+      e.target.reset();
+      renderQuizzes();
+    } catch(err){ status.textContent = "ስህተት፦ " + err.message; }
+  });
+
+  let currentQuestions = [];
+
+  function openQuestions(quizId, title){
+    currentQuizId = quizId;
+    document.getElementById("inQuizTitleHeading").textContent = title;
+    document.getElementById("inQuizzesList").parentElement.style.display = "none";
+    document.getElementById("inQuestionsSubView").style.display = "block";
+    renderQuestions();
+  }
+  document.getElementById("inBackToQuizzes").addEventListener("click", () => {
+    document.getElementById("inQuestionsSubView").style.display = "none";
+    document.getElementById("inQuizzesList").parentElement.style.display = "";
+  });
+
+  async function renderQuestions(){
+    const list = document.getElementById("inQuestionsList");
+    let quiz;
+    try { quiz = await inGet("/api/quizzes/" + currentQuizId + "/admin"); }
+    catch(e){ list.innerHTML = "<p class='loading-text'>መጫን አልተቻለም።</p>"; return; }
+    currentQuestions = quiz.questions || [];
+    list.innerHTML = currentQuestions.map(q => `
+      <div class="ib-post">
+        <div class="ib-post-head"><h4>${escapeHtml(q.question)}</h4></div>
+        <p>A) ${escapeHtml(q.option_a||"")} · B) ${escapeHtml(q.option_b||"")} ${q.option_c ? "· C) " + escapeHtml(q.option_c) : ""} ${q.option_d ? "· D) " + escapeHtml(q.option_d) : ""}</p>
+        <p style="color:green;">✓ ትክክለኛ መልስ: ${q.correct_option}</p>
+        <div class="ib-post-footer">
+          <button type="button" class="member-db-del in-question-edit" data-id="${q.id}">አርም</button>
+          <button type="button" class="member-db-del in-question-del" data-id="${q.id}">አጥፋ</button>
+        </div>
+      </div>`).join("") || "<p class='loading-text'>ገና ምንም ጥያቄ አልተጨመረም።</p>";
+
+    list.querySelectorAll(".in-question-edit").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const q = currentQuestions.find(x => String(x.id) === btn.dataset.id);
+        if (!q) return;
+        const question = prompt("ጥያቄ:", q.question);
+        if (question === null) return;
+        const option_a = prompt("A)", q.option_a || "");
+        if (option_a === null) return;
+        const option_b = prompt("B)", q.option_b || "");
+        if (option_b === null) return;
+        const option_c = prompt("C) (አማራጭ)", q.option_c || "");
+        if (option_c === null) return;
+        const option_d = prompt("D) (አማራጭ)", q.option_d || "");
+        if (option_d === null) return;
+        const correct_option = prompt("ትክክለኛ መልስ (A/B/C/D):", q.correct_option || "");
+        if (correct_option === null) return;
+        try {
+          await inSend("/api/quizzes/questions/" + q.id, "PUT", {
+            question: question.trim(), option_a, option_b, option_c, option_d, correct_option: correct_option.trim()
+          });
+          renderQuestions();
+        } catch(e){ alert("ማርም አልተቻለም፦ " + e.message); }
+      });
+    });
+    list.querySelectorAll(".in-question-del").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        if (!confirm("ይህን ጥያቄ ማጥፋት ይፈልጋሉ?")) return;
+        try { await inSend("/api/quizzes/questions/" + btn.dataset.id, "DELETE"); renderQuestions(); }
+        catch(e){ alert("ማጥፋት አልተቻለም፦ " + e.message); }
+      });
+    });
+  }
+
+  document.getElementById("inQuestionForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const status = document.getElementById("inQnStatus");
+    const question = document.getElementById("inQnText").value.trim();
+    const option_a = document.getElementById("inOptA").value.trim();
+    const option_b = document.getElementById("inOptB").value.trim();
+    const option_c = document.getElementById("inOptC").value.trim();
+    const option_d = document.getElementById("inOptD").value.trim();
+    const correct_option = document.getElementById("inCorrectOpt").value;
+    if (!correct_option) { status.textContent = "እባክዎ ትክክለኛ መልስ ይምረጡ።"; return; }
+    status.textContent = "እየተጨመረ ነው...";
+    try {
+      await inSend("/api/quizzes/" + currentQuizId + "/questions", "POST", { question, option_a, option_b, option_c, option_d, correct_option });
+      status.textContent = "ተሳክቷል!";
+      e.target.reset();
+      renderQuestions();
+    } catch(err){ status.textContent = "ስህተት፦ " + err.message; }
+  });
+
+  // ---- Roster / Results ----
+  const inRosterStatusLabels = {
+    active: "🟢 በመማር ላይ", completed: "✅ አጠናቅቋል",
+    repeating: "🔁 ይደግማል", dropped: "⛔ አቋርጧል", suspended: "🚫 ታግዷል"
+  };
+  let currentInRoster = [];
+  const inRosterSearch = document.getElementById("inRosterSearch");
+  if (inRosterSearch) inRosterSearch.addEventListener("input", () => renderRosterList());
+
+  async function renderRoster(){
+    const list = document.getElementById("inRosterList");
+    try { currentInRoster = await inGet("/api/courses/" + currentCourseId + "/roster"); }
+    catch(e){ list.innerHTML = "<p class='loading-text'>መጫን አልተቻለም።</p>"; return; }
+    renderRosterList();
+  }
+
+  function renderRosterList(){
+    const list = document.getElementById("inRosterList");
+    const term = (inRosterSearch.value || "").trim().toLowerCase();
+    const filtered = term
+      ? currentInRoster.filter(s => (s.full_name||"").toLowerCase().includes(term) || (s.email||"").toLowerCase().includes(term))
+      : currentInRoster;
+    list.innerHTML = filtered.map(s => {
+      const pct = s.total_lessons > 0 ? Math.round(s.completed_lessons / s.total_lessons * 100) : 0;
+      return `
+      <div class="ib-post">
+        <div class="ib-post-head"><h4>${escapeHtml(s.full_name)}</h4></div>
+        <p>${escapeHtml(s.email||"")} · እድገት፦ ${s.completed_lessons}/${s.total_lessons} (${pct}%)</p>
+        <div class="ib-post-footer">
+          <span class="ib-post-badge">${inRosterStatusLabels[s.status || "active"]}</span>
+          <select class="in-roster-status" data-id="${s.id}">
+            <option value="active" ${s.status==="active"?"selected":""}>በመማር ላይ</option>
+            <option value="completed" ${s.status==="completed"?"selected":""}>አጠናቅቋል</option>
+            <option value="repeating" ${s.status==="repeating"?"selected":""}>ይደግማል</option>
+            <option value="dropped" ${s.status==="dropped"?"selected":""}>አቋርጧል</option>
+            <option value="suspended" ${s.status==="suspended"?"selected":""}>ታግዷል</option>
+          </select>
+          <select class="in-roster-result" data-id="${s.id}">
+            <option value="" ${!s.result?"selected":""}>-- ውጤት --</option>
+            <option value="passed" ${s.result==="passed"?"selected":""}>✅ አልፏል</option>
+            <option value="failed" ${s.result==="failed"?"selected":""}>❌ አላለፈም</option>
+            <option value="repeat" ${s.result==="repeat"?"selected":""}>🔁 ይድገም</option>
+          </select>
+        </div>
+      </div>`;
+    }).join("") || "<p class='loading-text'>ምንም ተማሪ አልተገኘም።</p>";
+
+    list.querySelectorAll(".in-roster-status").forEach(sel => {
+      sel.addEventListener("change", async () => {
+        try { await inSend("/api/courses/" + currentCourseId + "/roster/" + sel.dataset.id, "PUT", { status: sel.value }); renderRoster(); }
+        catch(e){ alert("ማዘመን አልተቻለም፦ " + e.message); }
+      });
+    });
+    list.querySelectorAll(".in-roster-result").forEach(sel => {
+      sel.addEventListener("change", async () => {
+        try { await inSend("/api/courses/" + currentCourseId + "/roster/" + sel.dataset.id, "PUT", { result: sel.value }); renderRoster(); }
+        catch(e){ alert("ማዘመን አልተቻለም፦ " + e.message); }
+      });
+    });
+  }
+
+  // ---- Certificates ----
+  async function renderCerts(){
+    const eligibleList = document.getElementById("inEligibleList");
+    const issuedList = document.getElementById("inIssuedCertsList");
+    let eligible = [], roster = [];
+    try { eligible = await inGet("/api/certificates/eligible-students?course_id=" + currentCourseId); }
+    catch(e){ eligibleList.innerHTML = "<p class='loading-text'>መጫን አልተቻለም።</p>"; }
+    try { roster = await inGet("/api/courses/" + currentCourseId + "/roster"); } catch(e){}
+
+    eligibleList.innerHTML = eligible.map(s => `
+      <div class="ib-post">
+        <div class="ib-post-head"><h4>${escapeHtml(s.full_name)}</h4></div>
+        <p>${escapeHtml(s.email||"")}</p>
+        <div class="ib-post-footer">
+          <button type="button" class="btn btn-primary in-issue-cert" data-id="${s.id}">🏆 ሰርተፍኬት ስጥ</button>
+        </div>
+      </div>`).join("") || "<p class='loading-text'>ሁሉም ብቁ ተማሪዎች ሰርተፍኬት ተሰጥቷቸዋል ወይም ገና ማንም የለም።</p>";
+
+    eligibleList.querySelectorAll(".in-issue-cert").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        if (!confirm("ለዚህ ተማሪ ሰርተፍኬት መስጠት ይፈልጋሉ?")) return;
+        try { await inSend("/api/certificates/issue", "POST", { student_id: btn.dataset.id, course_id: currentCourseId }); renderCerts(); }
+        catch(e){ alert("መስጠት አልተቻለም፦ " + e.message); }
+      });
+    });
+
+    const issued = roster.filter(s => s.certificate_code);
+    issuedList.innerHTML = issued.map(s => `
+      <div class="ib-post">
+        <div class="ib-post-head"><h4>${escapeHtml(s.full_name)}</h4></div>
+        <p>ኮድ፦ ${s.certificate_code} · ${formatDate(s.certificate_issued_at)}</p>
+      </div>`).join("") || "<p class='loading-text'>ገና ምንም ሰርተፍኬት አልተሰጠም።</p>";
+  }
+
   // On page load, check if already logged in
   if (getInToken() && localStorage.getItem("inName")) {
     showLoggedIn(localStorage.getItem("inName"));
