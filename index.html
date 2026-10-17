@@ -2710,6 +2710,24 @@ textarea{ margin-bottom:1rem; resize:vertical; }
         </form>
         <div class="ib-list" id="eduAdminList"></div>
       </div>
+      <div id="instructorsPanel" class="member-db-panel is-hidden">
+        <div class="member-db-head">
+          <h3>👨‍🏫 መምህራን አስተዳደር</h3>
+          <button type="button" id="instructorsPanelCloseBtn" class="so-lock-btn">ዝጋ</button>
+        </div>
+        <form id="instructorForm" class="ib-form">
+          <input type="text" id="itName" placeholder="ሙሉ ስም" required>
+          <input type="text" id="itPhone" placeholder="ስልክ ቁጥር">
+          <input type="email" id="itEmail" placeholder="ኢሜይል (አማራጭ)">
+          <input type="password" id="itPassword" placeholder="የይለፍ ቃል" required>
+          <select id="itAssignCourse">
+            <option value="">-- ኮርስ መድብ (አማራጭ) --</option>
+          </select>
+          <button type="submit" class="btn btn-primary">➕ መምህር መዝግብ</button>
+        </form>
+        <p id="instructorStatus" class="form-status"></p>
+        <div class="ib-list" id="instructorsList"></div>
+      </div>
       <div id="internalPanel" class="member-db-panel is-hidden">
         <div class="member-db-head">
           <h3>ውስጣዊ መዝገብ አስተዳደር</h3>
@@ -4035,6 +4053,7 @@ renderChannelVideos();
     {id:"adminsmgmt", icon:"🔑", title:"የAdmin መለያዎች", desc:"አዲስ ማናጀር ወይም Moderator መለያ መፍጠር፣ ማየትና ማጥፋት። (ለመክፈት ይንኩ)", fullOnly:true},
    {id:"coursesmgmt", icon:"🎓", title:"Bootcamp ኮርስ አስተዳደር", desc:"ኮርሶች መፍጠር፣ ቪዲዮ ትምህርቶች መጨመር፣ ማርም ወይም ማጥፋት። (ለመክፈት ይንኩ)", fullOnly:true, bootcampOk:true},
     {id:"internalmgmt", moderatorOk:true, icon:"🗄️", title:"ውስጣዊ መዝገብ አስተዳደር", desc:"የገንዘብ ሪፖርት፣ የስብሰባ ቃለ ጉባኤ፣ ውስጣዊ ሰነድ እና ስታትስቲክስ መጨመር፣ ማርም ወይም ማጥፋት። (ለመክፈት ይንኩ)", fullOnly:true},
+    {id:"instructorsmgmt", bootcampOk:true, icon:"👨‍🏫", title:"መምህራን አስተዳደር", desc:"መምህራን መዝግበው ለኮርስ ይመድቡ፣ ያርሙ ወይም ያጥፉ። (ለመክፈት ይንኩ)", fullOnly:true},
     {id:"financemgmt", icon:"💰", title:"የፋይናንስ እና ግዢ አስተዳደር", desc:"ገቢ/ወጪ መዝገብ፣ ደረሰኝ፣ ተከፋይ አስተዳደር (ደብል ኢንትሪ ስርዓት)። (ለመክፈት ይንኩ)", fullOnly:true, financeOk:true},
     {id:"meetingsmgmt", moderatorOk:true, icon:"🎥", title:"የስብሰባ አስተዳደር", desc:"Google Meet / Zoom ስብሰባ መርሃግብር ማዘጋጀት እና ማጋራት። (ለመክፈት ይንኩ)", fullOnly:true},
     {id:"assignmentsmgmt", moderatorOk:true, icon:"📝", title:"የስራ ስምሪት እና ሪፖርት", desc:"ለስራ አስፈጻሚዎች ስምሪት መስጠት እና ሪፖርት መቀበል/መከታተል። (ለመክፈት ይንኩ)", fullOnly:true}
@@ -4085,6 +4104,10 @@ renderChannelVideos();
       trainingCard.addEventListener("click", () => { window.toggleTrainingPanel(); if (window.toggleEduPanel) window.toggleEduPanel(); });
     }
     
+    const instructorsCard = cardsGrid.querySelector('[data-card-id="instructorsmgmt"]');
+    if (instructorsCard && window.toggleInstructorsPanel) {
+      instructorsCard.addEventListener("click", () => window.toggleInstructorsPanel());
+    }
     const internalCard = cardsGrid.querySelector('[data-card-id="internalmgmt"]');
     if (internalCard && window.toggleInternalPanel) {
       internalCard.addEventListener("click", () => window.toggleInternalPanel());
@@ -5195,6 +5218,92 @@ function openMemberPhotoLightbox(url){
   if (closeBtn) closeBtn.addEventListener("click", () => panel.style.display = "none");
 })();
   // ---------------- Internal Records Management ----------------
+(function instructorsAdminController(){
+  const panel = document.getElementById("instructorsPanel");
+  const form = document.getElementById("instructorForm");
+  const list = document.getElementById("instructorsList");
+  const closeBtn = document.getElementById("instructorsPanelCloseBtn");
+  const courseSelect = document.getElementById("itAssignCourse");
+  if (!panel || !form || !list) return;
+
+  let instructors = [];
+
+  async function loadCoursesIntoSelect(){
+    try {
+      const courses = await apiGet("/api/courses");
+      courseSelect.innerHTML = `<option value="">-- ኮርስ መድብ (አማራጭ) --</option>` +
+        courses.map(c => `<option value="${c.id}">${escapeHtml(c.title)}</option>`).join("");
+    } catch(e){ console.error(e); }
+  }
+
+  async function render(){
+    try { instructors = await apiGet("/api/instructors"); }
+    catch(e){ list.innerHTML = "<p class='loading-text'>መጫን አልተቻለም።</p>"; return; }
+    list.innerHTML = instructors.map(i => `
+      <div class="ib-post">
+        <div class="ib-post-head"><h4>${escapeHtml(i.full_name)}</h4></div>
+        <p>${escapeHtml(i.phone||"-")} · ${escapeHtml(i.email||"-")}</p>
+        <p>ኮርሶች፦ ${(i.courses||[]).map(c => escapeHtml(c.title)).join("፣ ") || "-"}</p>
+        <div class="ib-post-footer">
+          <button type="button" class="member-db-del in-edit" data-id="${i.id}">አርም</button>
+          <button type="button" class="member-db-del in-del" data-id="${i.id}">አጥፋ</button>
+        </div>
+      </div>`).join("") || "<p class='loading-text'>ገና ምንም መምህር አልተመዘገበም።</p>";
+
+    list.querySelectorAll(".in-edit").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const i = instructors.find(x => String(x.id) === btn.dataset.id);
+        if (!i) return;
+        const full_name = prompt("ሙሉ ስም:", i.full_name);
+        if (full_name === null) return;
+        const phone = prompt("ስልክ:", i.phone || "");
+        if (phone === null) return;
+        const email = prompt("ኢሜይል:", i.email || "");
+        if (email === null) return;
+        try {
+          await apiSend("/api/instructors/" + i.id, "PUT", { full_name: full_name.trim(), phone, email });
+          render();
+        } catch(e){ alert("ማርም አልተቻለም፦ " + e.message); }
+      });
+    });
+    list.querySelectorAll(".in-del").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        if (!confirm("ይህን መምህር ማጥፋት ይፈልጋሉ?")) return;
+        try { await apiSend("/api/instructors/" + btn.dataset.id, "DELETE"); render(); }
+        catch(e){ alert("ማጥፋት አልተቻለም፦ " + e.message); }
+      });
+    });
+  }
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const status = document.getElementById("instructorStatus");
+    const full_name = document.getElementById("itName").value.trim();
+    const phone = document.getElementById("itPhone").value.trim();
+    const email = document.getElementById("itEmail").value.trim();
+    const password = document.getElementById("itPassword").value;
+    const course_id = courseSelect.value;
+    if (!full_name || !password) return;
+    status.textContent = "እየተመዘገበ ነው...";
+    try {
+      const data = await apiSend("/api/instructors/admin-create", "POST", { full_name, phone, email, password });
+      if (course_id) {
+        await apiSend("/api/courses/" + course_id, "PUT", { instructor_id: data.instructor.id });
+      }
+      status.textContent = "ተሳክቷል! መምህር ተመዝግቧል።";
+      form.reset();
+      render();
+    } catch(err){ status.textContent = "ስህተት፦ " + err.message; }
+  });
+
+  if (closeBtn) closeBtn.addEventListener("click", () => panel.style.display = "none");
+  window.toggleInstructorsPanel = function(){
+    const isOpen = panel.style.display !== "none";
+    document.querySelectorAll(".member-db-panel").forEach(p => p.style.display = "none");
+    if (!isOpen) { panel.style.display = "block"; loadCoursesIntoSelect(); render(); panel.scrollIntoView({behavior:"smooth", block:"start"}); }
+  };
+})();
+
 (function internalRecordsController(){
   const form = document.getElementById("internalForm");
   const list = document.getElementById("internalAdminList");
