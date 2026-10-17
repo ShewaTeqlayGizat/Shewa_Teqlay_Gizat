@@ -1576,6 +1576,7 @@ textarea{ margin-bottom:1rem; resize:vertical; }
           <a href="#edu-media">ትምህርታዊ ምስልና ቪዲዮ መመልከቻ</a>
           <a href="#edu-ppt">PowerPoint Tutorials</a>
           <a href="#student-portal">Bootcamp የሰልጣኞች መግቢያ</a>
+          <a href="#instructor-portal">👨‍🏫 የመምህራን መግቢያ</a>
         </div>
       </div>
       <a href="#announcements">ማስታወቂያ <span class="nav-new" style="display:none">አዲስ</span></a>
@@ -2390,6 +2391,111 @@ textarea{ margin-bottom:1rem; resize:vertical; }
 </section>
 
 
+<!-- ===== Instructor Portal ===== -->
+<section id="instructor-portal" class="section section-student-portal alt-bg">
+  <div class="section-inner">
+    <span class="eyebrow">ቡትካምፕ</span>
+    <h2>👨‍🏫 የመምህራን መግቢያ</h2>
+    <p class="section-lead">ትምህርት፣ ፈተና እና ውጤት ለማስተዳደር እና ሰርተፍኬት ለመስጠት እዚህ ይግቡ።</p>
+
+    <div id="inLoggedOut">
+      <form id="inLoginForm" class="ns-admin-form" style="max-width:420px;">
+        <input type="text" id="inLoginName" placeholder="ሙሉ ስም" required>
+        <input type="password" id="inLoginPassword" placeholder="የይለፍ ቃል" required>
+        <button type="submit" class="btn btn-primary">ግባ</button>
+        <p id="inLoginStatus" class="form-status"></p>
+      </form>
+    </div>
+
+    <div id="inLoggedIn" style="display:none;">
+      <p>እንኳን ደህና መጡ፣ <strong id="inWelcomeName"></strong>!</p>
+      <button type="button" id="inLogoutBtn" class="btn">ውጣ</button>
+
+      <div id="inCourseListView" style="margin-top:1.5rem;">
+        <h3>📚 ትምህርቶቼ</h3>
+        <div class="ib-list" id="inCoursesList"></div>
+      </div>
+
+      <div id="inCourseDetailView" style="display:none; margin-top:1.5rem;">
+        <button type="button" id="inBackToCourses" class="btn" style="margin-bottom:1rem;">← ወደ ኮርሶቼ ተመለስ</button>
+        <h3 id="inCourseTitle"></h3>
+
+        <div class="sp-tabs" style="margin-top:1rem;">
+          <button type="button" id="inTabLessons" class="sp-tab active">🎬 ትምህርቶች</button>
+          <button type="button" id="inTabQuizzes" class="sp-tab">❓ ፈተናዎች</button>
+          <button type="button" id="inTabRoster" class="sp-tab">📋 ተማሪዎችና ውጤት</button>
+          <button type="button" id="inTabCerts" class="sp-tab">🏆 ሰርተፍኬት</button>
+        </div>
+
+        <!-- Lessons tab -->
+        <div id="inLessonsView">
+          <form id="inLessonForm" class="ib-form" style="margin-top:1rem;">
+            <input type="text" id="inLTitle" placeholder="የትምህርት ርዕስ" required>
+            <select id="inLType">
+              <option value="video_url">የYouTube ቪዲዮ ሊንክ</option>
+              <option value="video">የቪዲዮ ፋይል</option>
+              <option value="pdf">PDF ፋይል</option>
+              <option value="audio">የድምጽ ፋይል</option>
+            </select>
+            <input type="text" id="inLVideoUrl" placeholder="የቪዲዮ ሊንክ (ለYouTube ብቻ)">
+            <input type="file" id="inLFile" accept="video/*,application/pdf,audio/*">
+            <input type="number" id="inLPosition" placeholder="ቅደም ተከተል (ቁጥር)">
+            <button type="submit" class="btn btn-primary">➕ ትምህርት ጨምር</button>
+          </form>
+          <p id="inLStatus" class="form-status"></p>
+          <div class="ib-list" id="inLessonsList" style="margin-top:1rem;"></div>
+        </div>
+
+        <!-- Quizzes tab -->
+        <div id="inQuizzesView" style="display:none;">
+          <form id="inQuizForm" class="ib-form" style="margin-top:1rem;">
+            <input type="text" id="inQTitle" placeholder="የፈተና ርዕስ" required>
+            <button type="submit" class="btn btn-primary">➕ ፈተና ፍጠር</button>
+          </form>
+          <p id="inQStatus" class="form-status"></p>
+          <div class="ib-list" id="inQuizzesList" style="margin-top:1rem;"></div>
+
+          <div id="inQuestionsSubView" style="display:none; margin-top:1.5rem;">
+            <button type="button" id="inBackToQuizzes" class="btn" style="margin-bottom:1rem;">← ወደ ፈተናዎች ተመለስ</button>
+            <h4 id="inQuizTitleHeading"></h4>
+            <form id="inQuestionForm" class="ib-form">
+              <textarea id="inQnText" placeholder="ጥያቄ" required style="grid-column: 1 / -1; min-height:50px;"></textarea>
+              <input type="text" id="inOptA" placeholder="አማራጭ A">
+              <input type="text" id="inOptB" placeholder="አማራጭ B">
+              <input type="text" id="inOptC" placeholder="አማራጭ C (አማራጭ)">
+              <input type="text" id="inOptD" placeholder="አማራጭ D (አማራጭ)">
+              <select id="inCorrectOpt" required>
+                <option value="">-- ትክክለኛ መልስ --</option>
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+                <option value="D">D</option>
+              </select>
+              <button type="submit" class="btn btn-primary">➕ ጥያቄ ጨምር</button>
+            </form>
+            <p id="inQnStatus" class="form-status"></p>
+            <div class="ib-list" id="inQuestionsList" style="margin-top:1rem;"></div>
+          </div>
+        </div>
+
+        <!-- Roster / results tab -->
+        <div id="inRosterView" style="display:none;">
+          <input type="text" id="inRosterSearch" placeholder="በስም ወይም በኢሜይል ፈልግ..." style="margin-top:1rem;">
+          <div class="ib-list" id="inRosterList" style="margin-top:1rem;"></div>
+        </div>
+
+        <!-- Certificates tab -->
+        <div id="inCertsView" style="display:none;">
+          <h4 style="margin-top:1rem;">🎓 ለማግኘት ብቁ የሆኑ ተማሪዎች</h4>
+          <div class="ib-list" id="inEligibleList"></div>
+          <h4 style="margin-top:1.5rem;">🏆 የተሰጡ ሰርተፍኬቶች</h4>
+          <div class="ib-list" id="inIssuedCertsList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ===== Special Office (password gated) ===== -->
 <section id="special-office" class="section section-special-office">
   <div class="section-inner">
@@ -2603,6 +2709,24 @@ textarea{ margin-bottom:1rem; resize:vertical; }
           <button type="submit" class="btn btn-primary">➕ ይዘት ጨምር</button>
         </form>
         <div class="ib-list" id="eduAdminList"></div>
+      </div>
+      <div id="instructorsPanel" class="member-db-panel is-hidden">
+        <div class="member-db-head">
+          <h3>👨‍🏫 መምህራን አስተዳደር</h3>
+          <button type="button" id="instructorsPanelCloseBtn" class="so-lock-btn">ዝጋ</button>
+        </div>
+        <form id="instructorForm" class="ib-form">
+          <input type="text" id="itName" placeholder="ሙሉ ስም" required>
+          <input type="text" id="itPhone" placeholder="ስልክ ቁጥር">
+          <input type="email" id="itEmail" placeholder="ኢሜይል (አማራጭ)">
+          <input type="password" id="itPassword" placeholder="የይለፍ ቃል" required>
+          <select id="itAssignCourse">
+            <option value="">-- ኮርስ መድብ (አማራጭ) --</option>
+          </select>
+          <button type="submit" class="btn btn-primary">➕ መምህር መዝግብ</button>
+        </form>
+        <p id="instructorStatus" class="form-status"></p>
+        <div class="ib-list" id="instructorsList"></div>
       </div>
       <div id="internalPanel" class="member-db-panel is-hidden">
         <div class="member-db-head">
@@ -3929,6 +4053,7 @@ renderChannelVideos();
     {id:"adminsmgmt", icon:"🔑", title:"የAdmin መለያዎች", desc:"አዲስ ማናጀር ወይም Moderator መለያ መፍጠር፣ ማየትና ማጥፋት። (ለመክፈት ይንኩ)", fullOnly:true},
    {id:"coursesmgmt", icon:"🎓", title:"Bootcamp ኮርስ አስተዳደር", desc:"ኮርሶች መፍጠር፣ ቪዲዮ ትምህርቶች መጨመር፣ ማርም ወይም ማጥፋት። (ለመክፈት ይንኩ)", fullOnly:true, bootcampOk:true},
     {id:"internalmgmt", moderatorOk:true, icon:"🗄️", title:"ውስጣዊ መዝገብ አስተዳደር", desc:"የገንዘብ ሪፖርት፣ የስብሰባ ቃለ ጉባኤ፣ ውስጣዊ ሰነድ እና ስታትስቲክስ መጨመር፣ ማርም ወይም ማጥፋት። (ለመክፈት ይንኩ)", fullOnly:true},
+    {id:"instructorsmgmt", bootcampOk:true, icon:"👨‍🏫", title:"መምህራን አስተዳደር", desc:"መምህራን መዝግበው ለኮርስ ይመድቡ፣ ያርሙ ወይም ያጥፉ። (ለመክፈት ይንኩ)", fullOnly:true},
     {id:"financemgmt", icon:"💰", title:"የፋይናንስ እና ግዢ አስተዳደር", desc:"ገቢ/ወጪ መዝገብ፣ ደረሰኝ፣ ተከፋይ አስተዳደር (ደብል ኢንትሪ ስርዓት)። (ለመክፈት ይንኩ)", fullOnly:true, financeOk:true},
     {id:"meetingsmgmt", moderatorOk:true, icon:"🎥", title:"የስብሰባ አስተዳደር", desc:"Google Meet / Zoom ስብሰባ መርሃግብር ማዘጋጀት እና ማጋራት። (ለመክፈት ይንኩ)", fullOnly:true},
     {id:"assignmentsmgmt", moderatorOk:true, icon:"📝", title:"የስራ ስምሪት እና ሪፖርት", desc:"ለስራ አስፈጻሚዎች ስምሪት መስጠት እና ሪፖርት መቀበል/መከታተል። (ለመክፈት ይንኩ)", fullOnly:true}
@@ -3979,6 +4104,10 @@ renderChannelVideos();
       trainingCard.addEventListener("click", () => { window.toggleTrainingPanel(); if (window.toggleEduPanel) window.toggleEduPanel(); });
     }
     
+    const instructorsCard = cardsGrid.querySelector('[data-card-id="instructorsmgmt"]');
+    if (instructorsCard && window.toggleInstructorsPanel) {
+      instructorsCard.addEventListener("click", () => window.toggleInstructorsPanel());
+    }
     const internalCard = cardsGrid.querySelector('[data-card-id="internalmgmt"]');
     if (internalCard && window.toggleInternalPanel) {
       internalCard.addEventListener("click", () => window.toggleInternalPanel());
@@ -5089,6 +5218,92 @@ function openMemberPhotoLightbox(url){
   if (closeBtn) closeBtn.addEventListener("click", () => panel.style.display = "none");
 })();
   // ---------------- Internal Records Management ----------------
+(function instructorsAdminController(){
+  const panel = document.getElementById("instructorsPanel");
+  const form = document.getElementById("instructorForm");
+  const list = document.getElementById("instructorsList");
+  const closeBtn = document.getElementById("instructorsPanelCloseBtn");
+  const courseSelect = document.getElementById("itAssignCourse");
+  if (!panel || !form || !list) return;
+
+  let instructors = [];
+
+  async function loadCoursesIntoSelect(){
+    try {
+      const courses = await apiGet("/api/courses");
+      courseSelect.innerHTML = `<option value="">-- ኮርስ መድብ (አማራጭ) --</option>` +
+        courses.map(c => `<option value="${c.id}">${escapeHtml(c.title)}</option>`).join("");
+    } catch(e){ console.error(e); }
+  }
+
+  async function render(){
+    try { instructors = await apiGet("/api/instructors"); }
+    catch(e){ list.innerHTML = "<p class='loading-text'>መጫን አልተቻለም።</p>"; return; }
+    list.innerHTML = instructors.map(i => `
+      <div class="ib-post">
+        <div class="ib-post-head"><h4>${escapeHtml(i.full_name)}</h4></div>
+        <p>${escapeHtml(i.phone||"-")} · ${escapeHtml(i.email||"-")}</p>
+        <p>ኮርሶች፦ ${(i.courses||[]).map(c => escapeHtml(c.title)).join("፣ ") || "-"}</p>
+        <div class="ib-post-footer">
+          <button type="button" class="member-db-del in-edit" data-id="${i.id}">አርም</button>
+          <button type="button" class="member-db-del in-del" data-id="${i.id}">አጥፋ</button>
+        </div>
+      </div>`).join("") || "<p class='loading-text'>ገና ምንም መምህር አልተመዘገበም።</p>";
+
+    list.querySelectorAll(".in-edit").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const i = instructors.find(x => String(x.id) === btn.dataset.id);
+        if (!i) return;
+        const full_name = prompt("ሙሉ ስም:", i.full_name);
+        if (full_name === null) return;
+        const phone = prompt("ስልክ:", i.phone || "");
+        if (phone === null) return;
+        const email = prompt("ኢሜይል:", i.email || "");
+        if (email === null) return;
+        try {
+          await apiSend("/api/instructors/" + i.id, "PUT", { full_name: full_name.trim(), phone, email });
+          render();
+        } catch(e){ alert("ማርም አልተቻለም፦ " + e.message); }
+      });
+    });
+    list.querySelectorAll(".in-del").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        if (!confirm("ይህን መምህር ማጥፋት ይፈልጋሉ?")) return;
+        try { await apiSend("/api/instructors/" + btn.dataset.id, "DELETE"); render(); }
+        catch(e){ alert("ማጥፋት አልተቻለም፦ " + e.message); }
+      });
+    });
+  }
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const status = document.getElementById("instructorStatus");
+    const full_name = document.getElementById("itName").value.trim();
+    const phone = document.getElementById("itPhone").value.trim();
+    const email = document.getElementById("itEmail").value.trim();
+    const password = document.getElementById("itPassword").value;
+    const course_id = courseSelect.value;
+    if (!full_name || !password) return;
+    status.textContent = "እየተመዘገበ ነው...";
+    try {
+      const data = await apiSend("/api/instructors/admin-create", "POST", { full_name, phone, email, password });
+      if (course_id) {
+        await apiSend("/api/courses/" + course_id, "PUT", { instructor_id: data.instructor.id });
+      }
+      status.textContent = "ተሳክቷል! መምህር ተመዝግቧል።";
+      form.reset();
+      render();
+    } catch(err){ status.textContent = "ስህተት፦ " + err.message; }
+  });
+
+  if (closeBtn) closeBtn.addEventListener("click", () => panel.style.display = "none");
+  window.toggleInstructorsPanel = function(){
+    const isOpen = panel.style.display !== "none";
+    document.querySelectorAll(".member-db-panel").forEach(p => p.style.display = "none");
+    if (!isOpen) { panel.style.display = "block"; loadCoursesIntoSelect(); render(); panel.scrollIntoView({behavior:"smooth", block:"start"}); }
+  };
+})();
+
 (function internalRecordsController(){
   const form = document.getElementById("internalForm");
   const list = document.getElementById("internalAdminList");
@@ -7069,6 +7284,417 @@ function openMemberPhotoLightbox(url){
   // On page load, check if already logged in
   if (getExecToken() && localStorage.getItem("execName")) {
     showLoggedIn(localStorage.getItem("execName"));
+  }
+})();
+// ---------------- Instructor Portal ----------------
+(function instructorPortalController(){
+  const loggedOut = document.getElementById("inLoggedOut");
+  const loggedIn = document.getElementById("inLoggedIn");
+  if (!loggedOut || !loggedIn) return;
+
+  const loginForm = document.getElementById("inLoginForm");
+  const welcomeName = document.getElementById("inWelcomeName");
+  const logoutBtn = document.getElementById("inLogoutBtn");
+  const courseListView = document.getElementById("inCourseListView");
+  const courseDetailView = document.getElementById("inCourseDetailView");
+
+  function getInToken(){ return localStorage.getItem("inToken") || ""; }
+  function setInToken(t){ localStorage.setItem("inToken", t); }
+  function clearInToken(){ localStorage.removeItem("inToken"); localStorage.removeItem("inName"); }
+
+  async function inGet(path){
+    const res = await fetch(API_BASE + path, { headers: { "Authorization": "Bearer " + getInToken() } });
+    if (!res.ok) { const d = await res.json().catch(()=>({})); throw new Error(d.error || ("Request failed: " + res.status)); }
+    return res.json();
+  }
+  async function inSend(path, method, body, isFormData){
+    const headers = { "Authorization": "Bearer " + getInToken() };
+    let payload = body;
+    if (!isFormData) { headers["Content-Type"] = "application/json"; payload = JSON.stringify(body || {}); }
+    const res = await fetch(API_BASE + path, { method, headers, body: payload });
+    const data = await res.json().catch(()=>({}));
+    if (!res.ok) throw new Error(data.error || "Request failed");
+    return data;
+  }
+
+  function showLoggedIn(name){
+    loggedOut.style.display = "none";
+    loggedIn.style.display = "block";
+    welcomeName.textContent = name;
+    loadMyCourses();
+  }
+  function showLoggedOut(){
+    loggedOut.style.display = "block";
+    loggedIn.style.display = "none";
+  }
+
+  loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const full_name = document.getElementById("inLoginName").value.trim();
+    const password = document.getElementById("inLoginPassword").value;
+    const status = document.getElementById("inLoginStatus");
+    status.textContent = "እየገባ ነው...";
+    try {
+      const res = await fetch(API_BASE + "/api/instructors/login", {
+        method: "POST", headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ full_name, password })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Login failed");
+      setInToken(data.token);
+      localStorage.setItem("inName", data.instructor.full_name);
+      showLoggedIn(data.instructor.full_name);
+    } catch(err){ status.textContent = "ስህተት፦ " + err.message; }
+  });
+
+  logoutBtn.addEventListener("click", () => { clearInToken(); showLoggedOut(); });
+
+  let currentCourseId = null;
+  let activeTab = "lessons";
+
+  async function loadMyCourses(){
+    const list = document.getElementById("inCoursesList");
+    let courses = [];
+    try { courses = await inGet("/api/instructors/my-courses"); }
+    catch(e){ list.innerHTML = "<p class='loading-text'>መጫን አልተቻለም።</p>"; return; }
+    list.innerHTML = courses.map(c => `
+      <div class="ib-post">
+        <div class="ib-post-head"><h4>${escapeHtml(c.title)}</h4></div>
+        <p>${escapeHtml(c.description || "")}</p>
+        <div class="ib-post-footer">
+          <button type="button" class="btn btn-primary in-open-course" data-id="${c.id}" data-title="${escapeHtml(c.title)}">ክፈት</button>
+        </div>
+      </div>`).join("") || "<p class='loading-text'>ገና ምንም ኮርስ አልተመደበልዎትም።</p>";
+    list.querySelectorAll(".in-open-course").forEach(btn => {
+      btn.addEventListener("click", () => openCourse(btn.dataset.id, btn.dataset.title));
+    });
+  }
+
+  function openCourse(courseId, title){
+    currentCourseId = courseId;
+    document.getElementById("inCourseTitle").textContent = title;
+    courseListView.style.display = "none";
+    courseDetailView.style.display = "block";
+    showTab("lessons");
+  }
+  document.getElementById("inBackToCourses").addEventListener("click", () => {
+    courseDetailView.style.display = "none";
+    courseListView.style.display = "block";
+  });
+
+  const tabBtns = {
+    lessons: document.getElementById("inTabLessons"),
+    quizzes: document.getElementById("inTabQuizzes"),
+    roster: document.getElementById("inTabRoster"),
+    certs: document.getElementById("inTabCerts"),
+  };
+  const tabViews = {
+    lessons: document.getElementById("inLessonsView"),
+    quizzes: document.getElementById("inQuizzesView"),
+    roster: document.getElementById("inRosterView"),
+    certs: document.getElementById("inCertsView"),
+  };
+  function showTab(tab){
+    activeTab = tab;
+    Object.keys(tabBtns).forEach(k => tabBtns[k].classList.toggle("active", k === tab));
+    Object.keys(tabViews).forEach(k => tabViews[k].style.display = (k === tab ? "block" : "none"));
+    if (tab === "lessons") renderLessons();
+    if (tab === "quizzes") { document.getElementById("inQuestionsSubView").style.display = "none"; document.getElementById("inQuizzesList").parentElement.style.display=""; renderQuizzes(); }
+    if (tab === "roster") renderRoster();
+    if (tab === "certs") renderCerts();
+  }
+  Object.keys(tabBtns).forEach(k => tabBtns[k].addEventListener("click", () => showTab(k)));
+
+  // ---- Lessons ----
+  async function renderLessons(){
+    const list = document.getElementById("inLessonsList");
+    let course;
+    try { course = await inGet("/api/courses/" + currentCourseId); }
+    catch(e){ list.innerHTML = "<p class='loading-text'>መጫን አልተቻለም።</p>"; return; }
+    const lessons = course.lessons || [];
+    list.innerHTML = lessons.map(l => `
+      <div class="ib-post">
+        <div class="ib-post-head"><h4>${escapeHtml(l.title)}</h4></div>
+        <div class="ib-post-footer">
+          <button type="button" class="member-db-del in-lesson-edit" data-id="${l.id}">አርም</button>
+          <button type="button" class="member-db-del in-lesson-del" data-id="${l.id}">አጥፋ</button>
+        </div>
+      </div>`).join("") || "<p class='loading-text'>ገና ምንም ትምህርት አልተጨመረም።</p>";
+
+    list.querySelectorAll(".in-lesson-edit").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const l = lessons.find(x => String(x.id) === btn.dataset.id);
+        if (!l) return;
+        const newTitle = prompt("ርዕስ:", l.title);
+        if (newTitle === null) return;
+        const fd = new FormData();
+        fd.append("title", newTitle.trim());
+        try { await inSend("/api/courses/lessons/" + l.id, "PUT", fd, true); renderLessons(); }
+        catch(e){ alert("ማርም አልተቻለም፦ " + e.message); }
+      });
+    });
+    list.querySelectorAll(".in-lesson-del").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        if (!confirm("ይህን ትምህርት ማጥፋት ይፈልጋሉ?")) return;
+        try { await inSend("/api/courses/lessons/" + btn.dataset.id, "DELETE"); renderLessons(); }
+        catch(e){ alert("ማጥፋት አልተቻለም፦ " + e.message); }
+      });
+    });
+  }
+
+  document.getElementById("inLessonForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const status = document.getElementById("inLStatus");
+    const fd = new FormData();
+    fd.append("title", document.getElementById("inLTitle").value.trim());
+    fd.append("lesson_type", document.getElementById("inLType").value);
+    fd.append("video_url", document.getElementById("inLVideoUrl").value.trim());
+    fd.append("position", document.getElementById("inLPosition").value || "0");
+    const file = document.getElementById("inLFile").files[0];
+    if (file) fd.append("file", file);
+    status.textContent = "እየተጨመረ ነው...";
+    try {
+      await inSend("/api/courses/" + currentCourseId + "/lessons", "POST", fd, true);
+      status.textContent = "ተሳክቷል!";
+      e.target.reset();
+      renderLessons();
+    } catch(err){ status.textContent = "ስህተት፦ " + err.message; }
+  });
+
+  // ---- Quizzes ----
+  let currentQuizzes = [];
+  let currentQuizId = null;
+
+  async function renderQuizzes(){
+    const list = document.getElementById("inQuizzesList");
+    try { currentQuizzes = await inGet("/api/quizzes?course_id=" + currentCourseId); }
+    catch(e){ list.innerHTML = "<p class='loading-text'>መጫን አልተቻለም።</p>"; return; }
+    list.innerHTML = currentQuizzes.map(q => `
+      <div class="ib-post">
+        <div class="ib-post-head"><h4>${escapeHtml(q.title)}</h4></div>
+        <div class="ib-post-footer">
+          <button type="button" class="btn btn-primary in-quiz-open" data-id="${q.id}" data-title="${escapeHtml(q.title)}">❓ ጥያቄዎች</button>
+          <button type="button" class="member-db-del in-quiz-edit" data-id="${q.id}">አርም</button>
+          <button type="button" class="member-db-del in-quiz-del" data-id="${q.id}">አጥፋ</button>
+        </div>
+      </div>`).join("") || "<p class='loading-text'>ገና ምንም ፈተና አልተጨመረም።</p>";
+
+    list.querySelectorAll(".in-quiz-open").forEach(btn => {
+      btn.addEventListener("click", () => openQuestions(btn.dataset.id, btn.dataset.title));
+    });
+    list.querySelectorAll(".in-quiz-edit").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const q = currentQuizzes.find(x => String(x.id) === btn.dataset.id);
+        if (!q) return;
+        const newTitle = prompt("ርዕስ:", q.title);
+        if (newTitle === null) return;
+        try { await inSend("/api/quizzes/" + q.id, "PUT", { title: newTitle.trim() }); renderQuizzes(); }
+        catch(e){ alert("ማርም አልተቻለም፦ " + e.message); }
+      });
+    });
+    list.querySelectorAll(".in-quiz-del").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        if (!confirm("ይህን ፈተና ማጥፋት ይፈልጋሉ?")) return;
+        try { await inSend("/api/quizzes/" + btn.dataset.id, "DELETE"); renderQuizzes(); }
+        catch(e){ alert("ማጥፋት አልተቻለም፦ " + e.message); }
+      });
+    });
+  }
+
+  document.getElementById("inQuizForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const status = document.getElementById("inQStatus");
+    const title = document.getElementById("inQTitle").value.trim();
+    status.textContent = "እየተፈጠረ ነው...";
+    try {
+      await inSend("/api/quizzes", "POST", { course_id: currentCourseId, title });
+      status.textContent = "ተሳክቷል!";
+      e.target.reset();
+      renderQuizzes();
+    } catch(err){ status.textContent = "ስህተት፦ " + err.message; }
+  });
+
+  let currentQuestions = [];
+
+  function openQuestions(quizId, title){
+    currentQuizId = quizId;
+    document.getElementById("inQuizTitleHeading").textContent = title;
+    document.getElementById("inQuizzesList").parentElement.style.display = "none";
+    document.getElementById("inQuestionsSubView").style.display = "block";
+    renderQuestions();
+  }
+  document.getElementById("inBackToQuizzes").addEventListener("click", () => {
+    document.getElementById("inQuestionsSubView").style.display = "none";
+    document.getElementById("inQuizzesList").parentElement.style.display = "";
+  });
+
+  async function renderQuestions(){
+    const list = document.getElementById("inQuestionsList");
+    let quiz;
+    try { quiz = await inGet("/api/quizzes/" + currentQuizId + "/admin"); }
+    catch(e){ list.innerHTML = "<p class='loading-text'>መጫን አልተቻለም።</p>"; return; }
+    currentQuestions = quiz.questions || [];
+    list.innerHTML = currentQuestions.map(q => `
+      <div class="ib-post">
+        <div class="ib-post-head"><h4>${escapeHtml(q.question)}</h4></div>
+        <p>A) ${escapeHtml(q.option_a||"")} · B) ${escapeHtml(q.option_b||"")} ${q.option_c ? "· C) " + escapeHtml(q.option_c) : ""} ${q.option_d ? "· D) " + escapeHtml(q.option_d) : ""}</p>
+        <p style="color:green;">✓ ትክክለኛ መልስ: ${q.correct_option}</p>
+        <div class="ib-post-footer">
+          <button type="button" class="member-db-del in-question-edit" data-id="${q.id}">አርም</button>
+          <button type="button" class="member-db-del in-question-del" data-id="${q.id}">አጥፋ</button>
+        </div>
+      </div>`).join("") || "<p class='loading-text'>ገና ምንም ጥያቄ አልተጨመረም።</p>";
+
+    list.querySelectorAll(".in-question-edit").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const q = currentQuestions.find(x => String(x.id) === btn.dataset.id);
+        if (!q) return;
+        const question = prompt("ጥያቄ:", q.question);
+        if (question === null) return;
+        const option_a = prompt("A)", q.option_a || "");
+        if (option_a === null) return;
+        const option_b = prompt("B)", q.option_b || "");
+        if (option_b === null) return;
+        const option_c = prompt("C) (አማራጭ)", q.option_c || "");
+        if (option_c === null) return;
+        const option_d = prompt("D) (አማራጭ)", q.option_d || "");
+        if (option_d === null) return;
+        const correct_option = prompt("ትክክለኛ መልስ (A/B/C/D):", q.correct_option || "");
+        if (correct_option === null) return;
+        try {
+          await inSend("/api/quizzes/questions/" + q.id, "PUT", {
+            question: question.trim(), option_a, option_b, option_c, option_d, correct_option: correct_option.trim()
+          });
+          renderQuestions();
+        } catch(e){ alert("ማርም አልተቻለም፦ " + e.message); }
+      });
+    });
+    list.querySelectorAll(".in-question-del").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        if (!confirm("ይህን ጥያቄ ማጥፋት ይፈልጋሉ?")) return;
+        try { await inSend("/api/quizzes/questions/" + btn.dataset.id, "DELETE"); renderQuestions(); }
+        catch(e){ alert("ማጥፋት አልተቻለም፦ " + e.message); }
+      });
+    });
+  }
+
+  document.getElementById("inQuestionForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const status = document.getElementById("inQnStatus");
+    const question = document.getElementById("inQnText").value.trim();
+    const option_a = document.getElementById("inOptA").value.trim();
+    const option_b = document.getElementById("inOptB").value.trim();
+    const option_c = document.getElementById("inOptC").value.trim();
+    const option_d = document.getElementById("inOptD").value.trim();
+    const correct_option = document.getElementById("inCorrectOpt").value;
+    if (!correct_option) { status.textContent = "እባክዎ ትክክለኛ መልስ ይምረጡ።"; return; }
+    status.textContent = "እየተጨመረ ነው...";
+    try {
+      await inSend("/api/quizzes/" + currentQuizId + "/questions", "POST", { question, option_a, option_b, option_c, option_d, correct_option });
+      status.textContent = "ተሳክቷል!";
+      e.target.reset();
+      renderQuestions();
+    } catch(err){ status.textContent = "ስህተት፦ " + err.message; }
+  });
+
+  // ---- Roster / Results ----
+  const inRosterStatusLabels = {
+    active: "🟢 በመማር ላይ", completed: "✅ አጠናቅቋል",
+    repeating: "🔁 ይደግማል", dropped: "⛔ አቋርጧል", suspended: "🚫 ታግዷል"
+  };
+  let currentInRoster = [];
+  const inRosterSearch = document.getElementById("inRosterSearch");
+  if (inRosterSearch) inRosterSearch.addEventListener("input", () => renderRosterList());
+
+  async function renderRoster(){
+    const list = document.getElementById("inRosterList");
+    try { currentInRoster = await inGet("/api/courses/" + currentCourseId + "/roster"); }
+    catch(e){ list.innerHTML = "<p class='loading-text'>መጫን አልተቻለም።</p>"; return; }
+    renderRosterList();
+  }
+
+  function renderRosterList(){
+    const list = document.getElementById("inRosterList");
+    const term = (inRosterSearch.value || "").trim().toLowerCase();
+    const filtered = term
+      ? currentInRoster.filter(s => (s.full_name||"").toLowerCase().includes(term) || (s.email||"").toLowerCase().includes(term))
+      : currentInRoster;
+    list.innerHTML = filtered.map(s => {
+      const pct = s.total_lessons > 0 ? Math.round(s.completed_lessons / s.total_lessons * 100) : 0;
+      return `
+      <div class="ib-post">
+        <div class="ib-post-head"><h4>${escapeHtml(s.full_name)}</h4></div>
+        <p>${escapeHtml(s.email||"")} · እድገት፦ ${s.completed_lessons}/${s.total_lessons} (${pct}%)</p>
+        <div class="ib-post-footer">
+          <span class="ib-post-badge">${inRosterStatusLabels[s.status || "active"]}</span>
+          <select class="in-roster-status" data-id="${s.id}">
+            <option value="active" ${s.status==="active"?"selected":""}>በመማር ላይ</option>
+            <option value="completed" ${s.status==="completed"?"selected":""}>አጠናቅቋል</option>
+            <option value="repeating" ${s.status==="repeating"?"selected":""}>ይደግማል</option>
+            <option value="dropped" ${s.status==="dropped"?"selected":""}>አቋርጧል</option>
+            <option value="suspended" ${s.status==="suspended"?"selected":""}>ታግዷል</option>
+          </select>
+          <select class="in-roster-result" data-id="${s.id}">
+            <option value="" ${!s.result?"selected":""}>-- ውጤት --</option>
+            <option value="passed" ${s.result==="passed"?"selected":""}>✅ አልፏል</option>
+            <option value="failed" ${s.result==="failed"?"selected":""}>❌ አላለፈም</option>
+            <option value="repeat" ${s.result==="repeat"?"selected":""}>🔁 ይድገም</option>
+          </select>
+        </div>
+      </div>`;
+    }).join("") || "<p class='loading-text'>ምንም ተማሪ አልተገኘም።</p>";
+
+    list.querySelectorAll(".in-roster-status").forEach(sel => {
+      sel.addEventListener("change", async () => {
+        try { await inSend("/api/courses/" + currentCourseId + "/roster/" + sel.dataset.id, "PUT", { status: sel.value }); renderRoster(); }
+        catch(e){ alert("ማዘመን አልተቻለም፦ " + e.message); }
+      });
+    });
+    list.querySelectorAll(".in-roster-result").forEach(sel => {
+      sel.addEventListener("change", async () => {
+        try { await inSend("/api/courses/" + currentCourseId + "/roster/" + sel.dataset.id, "PUT", { result: sel.value }); renderRoster(); }
+        catch(e){ alert("ማዘመን አልተቻለም፦ " + e.message); }
+      });
+    });
+  }
+
+  // ---- Certificates ----
+  async function renderCerts(){
+    const eligibleList = document.getElementById("inEligibleList");
+    const issuedList = document.getElementById("inIssuedCertsList");
+    let eligible = [], roster = [];
+    try { eligible = await inGet("/api/certificates/eligible-students?course_id=" + currentCourseId); }
+    catch(e){ eligibleList.innerHTML = "<p class='loading-text'>መጫን አልተቻለም።</p>"; }
+    try { roster = await inGet("/api/courses/" + currentCourseId + "/roster"); } catch(e){}
+
+    eligibleList.innerHTML = eligible.map(s => `
+      <div class="ib-post">
+        <div class="ib-post-head"><h4>${escapeHtml(s.full_name)}</h4></div>
+        <p>${escapeHtml(s.email||"")}</p>
+        <div class="ib-post-footer">
+          <button type="button" class="btn btn-primary in-issue-cert" data-id="${s.id}">🏆 ሰርተፍኬት ስጥ</button>
+        </div>
+      </div>`).join("") || "<p class='loading-text'>ሁሉም ብቁ ተማሪዎች ሰርተፍኬት ተሰጥቷቸዋል ወይም ገና ማንም የለም።</p>";
+
+    eligibleList.querySelectorAll(".in-issue-cert").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        if (!confirm("ለዚህ ተማሪ ሰርተፍኬት መስጠት ይፈልጋሉ?")) return;
+        try { await inSend("/api/certificates/issue", "POST", { student_id: btn.dataset.id, course_id: currentCourseId }); renderCerts(); }
+        catch(e){ alert("መስጠት አልተቻለም፦ " + e.message); }
+      });
+    });
+
+    const issued = roster.filter(s => s.certificate_code);
+    issuedList.innerHTML = issued.map(s => `
+      <div class="ib-post">
+        <div class="ib-post-head"><h4>${escapeHtml(s.full_name)}</h4></div>
+        <p>ኮድ፦ ${s.certificate_code} · ${formatDate(s.certificate_issued_at)}</p>
+      </div>`).join("") || "<p class='loading-text'>ገና ምንም ሰርተፍኬት አልተሰጠም።</p>";
+  }
+
+  // On page load, check if already logged in
+  if (getInToken() && localStorage.getItem("inName")) {
+    showLoggedIn(localStorage.getItem("inName"));
   }
 })();
 </script>
